@@ -1,16 +1,19 @@
 package org.example;
 
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import java.util.ArrayList;
 
 public abstract class SimulationCore {
     double sum = 0.0;
-    ArrayList<Double> partialResults = new ArrayList<>();
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
     public double runSimulation(int repCount) {
         this.sum = 0.0;
-        this.partialResults.clear();
+        this.dataset.clear();
         for(int i = 0; i < repCount; i++) {
             experiment();
-            partialResults.add(calculateResult(i));
+            dataset.addValue(calculateResult(i), "PI", Integer.toString(i));
         }
         return calculateResult(repCount);
     }
