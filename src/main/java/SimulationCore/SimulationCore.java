@@ -1,8 +1,6 @@
-package org.example;
+package SimulationCore;
 
 import org.jfree.data.category.DefaultCategoryDataset;
-
-import java.util.ArrayList;
 
 public abstract class SimulationCore {
     double sum = 0.0;

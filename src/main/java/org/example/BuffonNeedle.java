@@ -1,5 +1,7 @@
 package org.example;
 
+import SimulationCore.SimulationCore;
+
 import java.util.Random;
 
 import static java.lang.Math.sin;
@@ -9,6 +11,7 @@ public class BuffonNeedle extends SimulationCore {
     Random randAlfa;
     int d;
     int l;
+    double sum = 0.0;
     public BuffonNeedle(Random randY, Random randAlfa, int d, int l) {
         this.randAlfa = randAlfa;
         this.randY = randY;
