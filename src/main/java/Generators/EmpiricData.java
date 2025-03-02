@@ -7,20 +7,18 @@ public class EmpiricData<T> {
     private double probability;
     private int seed = -1;
 
-    public EmpiricData(Pair<T,T> interval, double probability) {
-        this.interval = interval;
-        this.probability = probability;
-    }
 
-    public EmpiricData(Pair<T,T> interval, double probability, int seed) {
-        this.interval = interval;
-        this.probability = probability;
-        this.seed = seed;
-    }
 
     public EmpiricData(T min, T max, double probability) {
         this.interval = new Pair<>(min,max);
         this.probability = probability;
+
+    }
+
+    public EmpiricData(T min, T max, double probability, int seed) {
+        this.interval = new Pair<>(min,max);
+        this.probability = probability;
+        this.seed = seed;
 
     }
 
