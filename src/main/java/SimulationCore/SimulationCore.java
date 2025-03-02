@@ -3,19 +3,15 @@ package SimulationCore;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public abstract class SimulationCore {
-    double sum = 0.0;
-    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-    public double runSimulation(int repCount) {
-        this.sum = 0.0;
-        this.dataset.clear();
+    public void runSimulation(int repCount) {
+        beforeSimulation();
         for(int i = 0; i < repCount; i++) {
             experiment();
-            dataset.addValue(calculateResult(i), "PI", Integer.toString(i));
         }
-        return calculateResult(repCount);
+        afterSimulation();
     }
     protected abstract void experiment();
-    protected abstract double calculateResult(int repCount);
-
+    protected abstract void beforeSimulation();
+    protected abstract void afterSimulation();
 }

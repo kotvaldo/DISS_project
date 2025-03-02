@@ -31,8 +31,14 @@ public class BuffonNeedle extends SimulationCore {
     }
 
     @Override
-    protected double calculateResult(int repCount) {
-        return 2*l/(d*(sum/repCount));
+    protected void beforeSimulation() {
+        this.sum = 0.0;
     }
+
+    @Override
+    protected void afterSimulation() {
+
+    }
+
 
 }

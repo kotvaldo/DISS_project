@@ -2,7 +2,7 @@ package Generators;
 
 import java.util.Random;
 
-public abstract class BaseGenerator<T> extends Random {
+public abstract class BaseGenerator<T> {
     protected Random baseRandom;
     protected int seed;
 

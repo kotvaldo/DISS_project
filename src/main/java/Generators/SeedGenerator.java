@@ -7,7 +7,6 @@ public class SeedGenerator {
     private SeedGenerator() {}
 
     public static Integer sampleSeed() {
-        random.setSeed(System.currentTimeMillis());
         return random.nextInt();
     }
 

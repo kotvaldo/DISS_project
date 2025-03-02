@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class EmpiricDiscrete extends Empiric<Integer>{
 
-    protected EmpiricDiscrete(ArrayList<EmpiricData<Integer>> listOfData, int seed) {
+    public EmpiricDiscrete(ArrayList<EmpiricData<Integer>> listOfData, int seed) {
         super(listOfData, seed);
     }
 
@@ -15,8 +15,6 @@ public class EmpiricDiscrete extends Empiric<Integer>{
 
     @Override
     public Integer sample() {
-        if(checkProbabilities()) throw new IllegalStateException("Sum of probabilities is not 1");
-        if(checkOverlapping()) throw new IllegalStateException("Overlapping intervals");
         double probability = this.baseRandom.nextDouble();
         int index = 0;
 

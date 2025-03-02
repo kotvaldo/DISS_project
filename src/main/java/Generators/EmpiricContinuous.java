@@ -13,8 +13,6 @@ public class EmpiricContinuous extends Empiric<Double>{
     }
     @Override
     public Double sample() {
-        if(!checkProbabilities()) throw new IllegalStateException("Sum of probabilities is not 1");
-        if(!checkOverlapping()) throw new IllegalStateException("Overlapping intervals");
         double probability = this.baseRandom.nextDouble();
         int index = 0;
 
