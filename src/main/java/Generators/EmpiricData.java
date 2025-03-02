@@ -15,10 +15,10 @@ public class EmpiricData<T> {
 
     }
 
-    public EmpiricData(T min, T max, double probability, int seed) {
+    public EmpiricData(T min, T max, double probability, int targetSeed) {
         this.interval = new Pair<>(min,max);
         this.probability = probability;
-        this.seed = seed;
+        this.seed = targetSeed;
 
     }
 

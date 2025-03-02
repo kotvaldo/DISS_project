@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<EmpiricData<Double>> list = new ArrayList<EmpiricData<Double>>();
-        EmpiricData<Double> priklad = new EmpiricData<Double>(0.1, 0.2, 0.2);
-        EmpiricData<Double> priklad2 = new EmpiricData<Double>(0.2, 0.4, 0.2);
-        EmpiricData<Double> priklad3 = new EmpiricData<Double>(0.4, 1000.0, 0.6);
+        ArrayList<EmpiricData<Double>> list = new ArrayList<>();
+        EmpiricData<Double> priklad = new EmpiricData<>(0.1, 0.2, 0.2);
+        EmpiricData<Double> priklad2 = new EmpiricData<>(0.2, 0.4, 0.2);
+        EmpiricData<Double> priklad3 = new EmpiricData<>(0.4, 1000.0, 0.6);
         list.add(priklad);
         list.add(priklad2);
         list.add(priklad3);
