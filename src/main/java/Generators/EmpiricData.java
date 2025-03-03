@@ -5,7 +5,7 @@ import Utility.Pair;
 public class EmpiricData<T> {
     private Pair<T,T> interval;
     private double probability;
-    private int seed = -1;
+    private Integer seed = null;
 
 
 
@@ -15,7 +15,7 @@ public class EmpiricData<T> {
 
     }
 
-    public EmpiricData(T min, T max, double probability, int targetSeed) {
+    public EmpiricData(T min, T max, double probability, Integer targetSeed) {
         this.interval = new Pair<>(min,max);
         this.probability = probability;
         this.seed = targetSeed;
@@ -38,7 +38,7 @@ public class EmpiricData<T> {
         this.probability = probability;
     }
 
-    public int getSeed() {
+    public Integer getSeed() {
         return seed;
     }
 

@@ -1,7 +1,6 @@
 package Generators;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class EmpiricContinuous extends Empiric<Double>{
     public EmpiricContinuous(ArrayList<EmpiricData<Double>> listOfData, int seed) {
@@ -19,15 +18,11 @@ public class EmpiricContinuous extends Empiric<Double>{
     }
 
     @Override
-    protected void initializeRandoms() {
-        maxIndex = listOfValues.size() - 1;
-        listOfRandoms = new ArrayList<>();
-        for (EmpiricData<Double> listOfValue : listOfValues) {
-            if (listOfValue.getSeed() != -1) {
-                listOfRandoms.add(new UniformContinuous(listOfValue.getInterval().first(),listOfValue.getInterval().second(),listOfValue.getSeed()));
-            } else {
-                listOfRandoms.add(new UniformContinuous(listOfValue.getInterval().first(),listOfValue.getInterval().second()));
-            }
+    protected void initializeRandom(Double a, Double b, Integer seed) {
+        if (seed != null) {
+            listOfRandoms.add(new UniformContinuous(a ,b, seed));
+        } else {
+            listOfRandoms.add(new UniformContinuous(a,b));
         }
     }
 

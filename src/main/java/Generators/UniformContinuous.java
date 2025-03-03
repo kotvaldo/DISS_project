@@ -1,7 +1,5 @@
 package Generators;
 
-import java.util.Random;
-
 public class UniformContinuous extends BaseGenerator<Double> {
 
     private final double min;

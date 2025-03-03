@@ -1,7 +1,6 @@
 package Generators;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
     protected ArrayList<EmpiricData<T>> listOfValues;
@@ -15,7 +14,7 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
         if(!checkProbabilities()) {
             throw new IllegalArgumentException("Probabilities are not correct, not Equals to 1.");
         } else {
-            initializeRandoms();
+            initialize();
         }
     }
 
@@ -25,7 +24,7 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
         if(!checkProbabilities()) {
             throw new IllegalArgumentException("Probabilities are not correct, not Equals to 1.");
         } else {
-            initializeRandoms();
+            initialize();
         }
     }
     
@@ -60,8 +59,17 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
     }
 
     protected abstract T generateValue(int index);
+    protected abstract void initializeRandom(T a, T b, Integer seed);
 
 
+
+    private void initialize() {
+        maxIndex = listOfValues.size() - 1;
+        listOfRandoms = new ArrayList<>();
+        for (EmpiricData<T> listOfValue : listOfValues) {
+           initializeRandom(listOfValue.getInterval().first(), listOfValue.getInterval().second(), listOfValue.getSeed());
+        }
+    }
     private boolean checkProbabilities() {
         double sum = listOfValues.stream()
                 .mapToDouble(EmpiricData::getProbability)
@@ -69,7 +77,7 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
 
         return Math.abs(sum - 1.0) == 0.0;
     }
-    protected abstract void initializeRandoms();
+
 
 
 
