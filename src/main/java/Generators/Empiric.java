@@ -22,7 +22,7 @@ public abstract class Empiric<T> extends BaseGenerator<T> {
     protected Empiric(ArrayList<EmpiricData<T>> listOfData) {
         super();
         listOfValues = listOfData;
-        if(checkProbabilities()) {
+        if(!checkProbabilities()) {
             throw new IllegalArgumentException("Probabilities are not correct, not Equals to 1.");
         } else {
             initializeRandoms();

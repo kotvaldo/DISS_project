@@ -31,33 +31,35 @@ class EmpiricDiscreteTest {
 
     @Test
     void testGenerateValue() {
-
         ArrayList<EmpiricData<Integer>> list = new ArrayList<>();
         list.add(new EmpiricData<>(1, 2, 0.2));
         list.add(new EmpiricData<>(2, 3, 0.2));
         list.add(new EmpiricData<>(4, 6, 0.6));
 
-        EmpiricDiscrete empiricContinuous = new EmpiricDiscrete(list);
+        EmpiricDiscrete empiricDiscrete = new EmpiricDiscrete(list);
 
-
-        double value = empiricContinuous.sample();
-
-        assertTrue(value >= 1 && value < 5, "Generated value should be within the defined range");
+        for (int i = 0; i < 1000; i++) {
+            int value = empiricDiscrete.sample();
+            assertTrue(value >= 1 && value <= 6, "Generated value should be within the defined range");
+        }
     }
 
     @Test
-    void testGenerateValueWithSeed() {
-
+    void testGenerateValueWithProbabilities() {
         ArrayList<EmpiricData<Integer>> list = new ArrayList<>();
-        list.add(new EmpiricData<>(0, 10000000, 1.0));
+        list.add(new EmpiricData<>(1, 2, 0.2));
+        list.add(new EmpiricData<>(3, 5, 0.2));
+        list.add(new EmpiricData<>(6, 7, 0.6));
 
-        EmpiricDiscrete empiricContinuous1 = new EmpiricDiscrete(list, 42); // Seed = 42
-        EmpiricDiscrete empiricContinuous2 = new EmpiricDiscrete(list, 42); // Same seed
+        EmpiricDiscrete empiricDiscrete = new EmpiricDiscrete(list);
 
-        double value1 = empiricContinuous1.sample();
-        double value2 = empiricContinuous2.sample();
+        for (int i = 0; i < 1000; i++) {
+            int value = empiricDiscrete.sampleWithProb(0.4);
+            assertTrue(value >= 6 && value <= 7, "Generated value should be within the defined range");
+        }
 
 
-        assertNotEquals(value1, value2, "Values should not be the same, because we have more than one Random generator");
     }
+
+
 }

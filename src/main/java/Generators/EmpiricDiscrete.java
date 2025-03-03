@@ -36,7 +36,7 @@ public class EmpiricDiscrete extends Empiric<Integer>{
                 Random random = this.listOfRandoms.get(index);
                 int a = listOfValues.get(index).getInterval().first();
                 int b = listOfValues.get(index).getInterval().second();
-                return (int) (a + (b - a) * random.nextDouble());
+                return random.nextInt(a, b + 1);
             }
             index++;
         }
