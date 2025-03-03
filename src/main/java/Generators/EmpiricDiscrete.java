@@ -16,10 +16,20 @@ public class EmpiricDiscrete extends Empiric<Integer>{
 
     @Override
     protected Integer generateValue(int index) {
-        Random random = listOfRandoms.get(index);
-        int a = listOfValues.get(index).getInterval().first();
-        int b = listOfValues.get(index).getInterval().second();
-        return random.nextInt(a, b + 1);
+        BaseGenerator<Integer> random = listOfRandoms.get(index);
+        return random.sample();
     }
 
+    @Override
+    protected void initializeRandoms() {
+        maxIndex = listOfValues.size() - 1;
+        listOfRandoms = new ArrayList<>();
+        for (EmpiricData<Integer> listOfValue : listOfValues) {
+            if (listOfValue.getSeed() != -1) {
+                listOfRandoms.add(new UniformDiscrete(listOfValue.getInterval().first(),listOfValue.getInterval().second(),listOfValue.getSeed()));
+            } else {
+                listOfRandoms.add(new UniformDiscrete(listOfValue.getInterval().first(),listOfValue.getInterval().second()));
+            }
+        }
+    }
 }

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
     protected ArrayList<EmpiricData<T>> listOfValues;
-    protected ArrayList<Random> listOfRandoms;
+    protected ArrayList<BaseGenerator<T>> listOfRandoms;
     protected int maxIndex;
     protected double cumulativeProbability;
 
@@ -62,7 +62,6 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
     protected abstract T generateValue(int index);
 
 
-
     private boolean checkProbabilities() {
         double sum = listOfValues.stream()
                 .mapToDouble(EmpiricData::getProbability)
@@ -70,18 +69,8 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
 
         return Math.abs(sum - 1.0) == 0.0;
     }
+    protected abstract void initializeRandoms();
 
-    private void initializeRandoms() {
-        maxIndex = listOfValues.size() - 1;
-        listOfRandoms = new ArrayList<>();
-        for (EmpiricData<T> listOfValue : listOfValues) {
-            if (listOfValue.getSeed() != -1) {
-                listOfRandoms.add(new Random(listOfValue.getSeed()));
-            } else {
-                listOfRandoms.add(new Random(this.nextSeed()));
-            }
-        }
-    }
 
 
 }

@@ -14,10 +14,21 @@ public class EmpiricContinuous extends Empiric<Double>{
 
     @Override
     protected Double generateValue(int index) {
-        Random random = listOfRandoms.get(index);
-        double a = listOfValues.get(index).getInterval().first();
-        double b = listOfValues.get(index).getInterval().second();
-        return a + (b - a) * random.nextDouble();
+        BaseGenerator<Double> random = listOfRandoms.get(index);
+        return random.sample();
+    }
+
+    @Override
+    protected void initializeRandoms() {
+        maxIndex = listOfValues.size() - 1;
+        listOfRandoms = new ArrayList<>();
+        for (EmpiricData<Double> listOfValue : listOfValues) {
+            if (listOfValue.getSeed() != -1) {
+                listOfRandoms.add(new UniformContinuous(listOfValue.getInterval().first(),listOfValue.getInterval().second(),listOfValue.getSeed()));
+            } else {
+                listOfRandoms.add(new UniformContinuous(listOfValue.getInterval().first(),listOfValue.getInterval().second()));
+            }
+        }
     }
 
 }
