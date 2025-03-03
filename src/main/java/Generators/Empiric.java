@@ -3,11 +3,11 @@ package Generators;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Empiric<T> extends BaseGenerator<T> {
+public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
     protected ArrayList<EmpiricData<T>> listOfValues;
     protected ArrayList<Random> listOfRandoms;
     protected int maxIndex;
-
+    protected double cumulativeProbability;
 
     protected Empiric(ArrayList<EmpiricData<T>> listOfData, int seed) {
         super(seed);
@@ -27,17 +27,43 @@ public abstract class Empiric<T> extends BaseGenerator<T> {
         } else {
             initializeRandoms();
         }
+    }
+    
+    @Override
+    public T sample() {
+        double probability = Math.random();
+        cumulativeProbability = 0.0;
 
+        for (int i = 0; i < listOfValues.size(); i++) {
+            cumulativeProbability += listOfValues.get(i).getProbability();
 
+            if (probability < cumulativeProbability) {
+                return generateValue(i);
+            }
+        }
+
+        throw new IllegalStateException("Error in probability distribution");
     }
 
+    public T sampleWithProb(double probability) {
+        cumulativeProbability = 0.0;
 
-    @Override
-    public abstract T sample();
+        for (int i = 0; i < listOfValues.size(); i++) {
+            cumulativeProbability += listOfValues.get(i).getProbability();
 
-    public abstract T sampleWithProb(double probability);
+            if (probability < cumulativeProbability) {
+                return generateValue(i);
+            }
+        }
 
-    protected boolean checkProbabilities() {
+        throw new IllegalStateException("Error in probability distribution");
+    }
+
+    protected abstract T generateValue(int index);
+
+
+
+    private boolean checkProbabilities() {
         double sum = listOfValues.stream()
                 .mapToDouble(EmpiricData::getProbability)
                 .sum();
