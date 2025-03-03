@@ -21,15 +21,11 @@ public class EmpiricDiscrete extends Empiric<Integer>{
     }
 
     @Override
-    protected void initializeRandoms() {
-        maxIndex = listOfValues.size() - 1;
-        listOfRandoms = new ArrayList<>();
-        for (EmpiricData<Integer> listOfValue : listOfValues) {
-            if (listOfValue.getSeed() != -1) {
-                listOfRandoms.add(new UniformDiscrete(listOfValue.getInterval().first(),listOfValue.getInterval().second(),listOfValue.getSeed()));
-            } else {
-                listOfRandoms.add(new UniformDiscrete(listOfValue.getInterval().first(),listOfValue.getInterval().second()));
-            }
+    protected void initializeRandom(Integer a, Integer b, Integer seed) {
+        if (seed != null) {
+            listOfRandoms.add(new UniformDiscrete(a ,b, seed));
+        } else {
+            listOfRandoms.add(new UniformDiscrete(a,b));
         }
     }
 }
