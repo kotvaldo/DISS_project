@@ -1,7 +1,5 @@
 package Generators;
 
-import java.util.Random;
-
 public class UniformDiscrete extends BaseGenerator<Integer> {
     private final int min;
     private final int max;

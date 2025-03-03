@@ -1,7 +1,6 @@
 package Generators;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class EmpiricDiscrete extends Empiric<Integer>{
 

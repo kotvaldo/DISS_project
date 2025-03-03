@@ -1,7 +1,6 @@
 package Generators;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class EmpiricContinuous extends Empiric<Double>{
     public EmpiricContinuous(ArrayList<EmpiricData<Double>> listOfData, int seed) {
