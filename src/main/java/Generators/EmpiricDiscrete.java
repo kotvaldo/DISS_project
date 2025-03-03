@@ -16,6 +16,16 @@ public class EmpiricDiscrete extends Empiric<Integer>{
     @Override
     public Integer sample() {
         double probability = this.baseRandom.nextDouble();
+        return algorithm(probability);
+
+    }
+
+    @Override
+    public Integer sampleWithProb(double probability) {
+        return algorithm(probability);
+    }
+
+    private int algorithm(double probability) {
         int index = 0;
 
         double cumulativeProbability = 0.0;
@@ -26,11 +36,10 @@ public class EmpiricDiscrete extends Empiric<Integer>{
                 Random random = this.listOfRandoms.get(index);
                 int a = listOfValues.get(index).getInterval().first();
                 int b = listOfValues.get(index).getInterval().second();
-                return (int) (a + (b-a) *  random.nextDouble());
+                return (int) (a + (b - a) * random.nextDouble());
             }
             index++;
         }
         throw new IllegalStateException("Some error happend when returning sample");
-
     }
 }

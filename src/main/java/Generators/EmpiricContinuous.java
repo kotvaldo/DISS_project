@@ -14,6 +14,16 @@ public class EmpiricContinuous extends Empiric<Double>{
     @Override
     public Double sample() {
         double probability = this.baseRandom.nextDouble();
+        return algorithm(probability);
+
+    }
+
+    @Override
+    public Double sampleWithProb(double probability) {
+        return algorithm(probability);
+    }
+
+    private double algorithm(double probability) {
         int index = 0;
 
         double cumulativeProbability = 0.0;
@@ -24,11 +34,10 @@ public class EmpiricContinuous extends Empiric<Double>{
                 Random random = this.listOfRandoms.get(index);
                 double a = listOfValues.get(index).getInterval().first();
                 double b = listOfValues.get(index).getInterval().second();
-                return a + (b-a) *  random.nextDouble();
+                return a + (b - a) * random.nextDouble();
             }
             index++;
         }
         throw new IllegalStateException("Some error happend when returning sample");
-
     }
 }
