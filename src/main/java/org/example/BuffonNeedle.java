@@ -31,6 +31,16 @@ public class BuffonNeedle extends SimulationCore {
     }
 
     @Override
+    protected void beforeRunSimulation() {
+
+    }
+
+    @Override
+    protected void afterRunSimulation() {
+
+    }
+
+    @Override
     protected void beforeSimulation() {
         this.sum = 0.0;
     }
