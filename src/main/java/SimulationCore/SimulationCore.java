@@ -1,7 +1,5 @@
 package SimulationCore;
 
-import org.jfree.data.category.DefaultCategoryDataset;
-
 public abstract class SimulationCore {
 
     public void runSimulation(int repCount) {
