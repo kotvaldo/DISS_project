@@ -13,33 +13,23 @@ public class EmpiricDiscrete extends Empiric<Integer>{
         super(listOfData);
     }
 
-    @Override
-    public Integer sample() {
-        double probability = this.baseRandom.nextDouble();
-        return algorithm(probability);
 
+    @Override
+    protected Integer generateValue(int index) {
+        BaseGenerator<Integer> random = listOfRandoms.get(index);
+        return random.sample();
     }
 
     @Override
-    public Integer sampleWithProb(double probability) {
-        return algorithm(probability);
-    }
-
-    private int algorithm(double probability) {
-        int index = 0;
-
-        double cumulativeProbability = 0.0;
-        for (EmpiricData<Integer> data : listOfValues) {
-            cumulativeProbability += data.getProbability();
-
-            if (probability < cumulativeProbability) {
-                Random random = this.listOfRandoms.get(index);
-                int a = listOfValues.get(index).getInterval().first();
-                int b = listOfValues.get(index).getInterval().second();
-                return random.nextInt(a, b + 1);
+    protected void initializeRandoms() {
+        maxIndex = listOfValues.size() - 1;
+        listOfRandoms = new ArrayList<>();
+        for (EmpiricData<Integer> listOfValue : listOfValues) {
+            if (listOfValue.getSeed() != -1) {
+                listOfRandoms.add(new UniformDiscrete(listOfValue.getInterval().first(),listOfValue.getInterval().second(),listOfValue.getSeed()));
+            } else {
+                listOfRandoms.add(new UniformDiscrete(listOfValue.getInterval().first(),listOfValue.getInterval().second()));
             }
-            index++;
         }
-        throw new IllegalStateException("Some error happend when returning sample");
     }
 }
