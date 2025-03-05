@@ -34,13 +34,13 @@ class EmpiricContinuousTest {
         ArrayList<EmpiricData<Double>> list = new ArrayList<>();
         list.add(new EmpiricData<>(0.1, 0.2, 0.2));
         list.add(new EmpiricData<>(0.2, 0.4, 0.2));
-        list.add(new EmpiricData<>(0.4, 0.5, 0.6));
+        list.add(new EmpiricData<>(0.4, 180.0, 0.6));
 
         EmpiricContinuous empiricContinuous = new EmpiricContinuous(list, 0);
 
         for (int i = 0; i < 1000; i++) {
             double value = empiricContinuous.sample();
-            assertTrue(value >= 0.1 && value < 1000.0, "Generated value should be within the defined range");
+            assertTrue(value >= 0.1 && value <= 180.0, "Generated value should be within the defined range");
         }
     }
 

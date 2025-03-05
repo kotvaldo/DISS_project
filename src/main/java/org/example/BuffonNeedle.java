@@ -1,5 +1,6 @@
 package org.example;
 
+import Generators.UniformContinuous;
 import SimulationCore.SimulationCore;
 
 import java.util.Random;
@@ -7,22 +8,22 @@ import java.util.Random;
 import static java.lang.Math.sin;
 
 public class BuffonNeedle extends SimulationCore {
-    Random randY;
-    Random randAlfa;
     int d;
     int l;
+    UniformContinuous randY;
+    UniformContinuous randAlfa;
     double sum = 0.0;
-    public BuffonNeedle(Random randY, Random randAlfa, int d, int l) {
-        this.randAlfa = randAlfa;
-        this.randY = randY;
+    public BuffonNeedle(int d, int l) {
         this.d = d;
         this.l = l;
+        randY = new UniformContinuous(0, d);
+        randAlfa = new UniformContinuous(0, 180);
     }
 
     @Override
     protected void experiment() {
-        double y = randY.nextDouble() * d;
-        double alfa = randAlfa.nextDouble() * 180;
+        double y = randY.sample();
+        double alfa = randAlfa.sample();
         double radians = Math.toRadians(alfa);
         double a = (l * sin(radians));
         if((y + a) >= d){
@@ -32,22 +33,25 @@ public class BuffonNeedle extends SimulationCore {
 
     @Override
     protected void beforeRunSimulation() {
-
+        this.sum = 0.0;
     }
 
+    public void setRepCount(int repCount){
+        this.repCount = repCount;
+    }
     @Override
     protected void afterRunSimulation() {
-
+        System.out.println(this.sum);
+        double result =  2*l/(d*(sum/repCount));
+        System.out.println(result);
     }
 
     @Override
     protected void beforeSimulation() {
-        this.sum = 0.0;
     }
 
     @Override
     protected void afterSimulation() {
-
     }
 
 

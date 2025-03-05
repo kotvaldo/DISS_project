@@ -1,15 +1,22 @@
 package SimulationCore;
 
-public abstract class SimulationCore {
+public abstract class SimulationCore implements Runnable {
 
-    public void runSimulation(int repCount) {
-        beforeSimulation();
+    protected long repCount;
+
+    @Override
+    public void run() {
+        runSimulation();
+    }
+
+    private void runSimulation() {
+        beforeRunSimulation();
         for(int i = 0; i < repCount; i++) {
-            beforeRunSimulation();
+            beforeSimulation();
             experiment();
-            afterRunSimulation();
+            afterSimulation();
         }
-        afterSimulation();
+        afterRunSimulation();
     }
     protected abstract void experiment();
     protected abstract void beforeRunSimulation();
