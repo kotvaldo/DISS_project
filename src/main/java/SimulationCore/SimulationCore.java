@@ -1,9 +1,15 @@
 package SimulationCore;
 
-public abstract class SimulationCore {
+public abstract class SimulationCore implements Runnable {
 
     protected long repCount;
-    public void runSimulation() {
+
+    @Override
+    public void run() {
+        runSimulation();
+    }
+
+    private void runSimulation() {
         beforeRunSimulation();
         for(int i = 0; i < repCount; i++) {
             beforeSimulation();

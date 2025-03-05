@@ -16,7 +16,6 @@ public class BuffonNeedle extends SimulationCore {
     public BuffonNeedle(int d, int l) {
         this.d = d;
         this.l = l;
-        this.repCount = 10000000;
         randY = new UniformContinuous(0, d);
         randAlfa = new UniformContinuous(0, 180);
     }
@@ -37,6 +36,9 @@ public class BuffonNeedle extends SimulationCore {
         this.sum = 0.0;
     }
 
+    public void setRepCount(int repCount){
+        this.repCount = repCount;
+    }
     @Override
     protected void afterRunSimulation() {
         System.out.println(this.sum);

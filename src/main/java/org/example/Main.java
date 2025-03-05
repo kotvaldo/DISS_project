@@ -5,11 +5,15 @@ import Generators.EmpiricContinuous;
 import Generators.EmpiricData;
 import Generators.EmpiricDiscrete;
 import Generators.SeedGenerator;
+import SimulationCore.SimulationManager;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
 
 public class Main {
     public static void main(String[] args) {
+
+
         /*ArrayList<EmpiricData<Double>> list = new ArrayList<>();
         EmpiricData<Double> priklad = new EmpiricData<>(0.1, 0.2, 0.2);
         EmpiricData<Double> priklad2 = new EmpiricData<>(0.2, 0.4, 0.2);
@@ -36,8 +40,11 @@ public class Main {
 
         System.out.println(empiricDiscrete.sample());*/
 
+        SimulationManager simulationManager = new SimulationManager(1);
+
         BuffonNeedle buffonNeedle = new BuffonNeedle(10,5);
-        buffonNeedle.runSimulation();
+        buffonNeedle.setRepCount(10000000);
+        simulationManager.startSimulation(buffonNeedle);
     }
 }
 
