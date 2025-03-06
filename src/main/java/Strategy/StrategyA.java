@@ -18,28 +18,17 @@ public class StrategyA extends Strategy {
             int curr_day = i + 1;
             int added_count_1 = 0, added_count_2 = 0, added_count_3 = 0;
 
-            int current_demand1 = this.demand1Dist.sample();
-            int current_demand2 = this.demand2Dist.sample();
-            int current_demand3 = this.demand3Dist.sample();
 
             if (curr_day <= 10) {
                 if (decisionMaker.sample() < supplier1Before11.sample()) {
                     added_count_1 = this.SUPRESSORS_BUY_COUNT;
-                }
-                if (decisionMaker.sample() < supplier1Before11.sample()) {
                     added_count_2 = this.BREAK_PLATES_BUY_COUNT;
-                }
-                if (decisionMaker.sample() < supplier1Before11.sample()) {
                     added_count_3 = this.HEADLIGHTS_BUY_COUNT;
                 }
             } else {
                 if (decisionMaker.sample() < supplier1After11.sample()) {
                     added_count_1 = this.SUPRESSORS_BUY_COUNT;
-                }
-                if (decisionMaker.sample() < supplier1After11.sample()) {
                     added_count_2 = this.BREAK_PLATES_BUY_COUNT;
-                }
-                if (decisionMaker.sample() < supplier1After11.sample()) {
                     added_count_3 = this.HEADLIGHTS_BUY_COUNT;
                 }
             }
@@ -51,6 +40,10 @@ public class StrategyA extends Strategy {
             totalCost += this.suppressors * 4 * this.SUPPRESSORS_PRICE;
             totalCost += this.breakPlates * 4 * this.BREAK_PLATES_PRICE;
             totalCost += this.headlights * 4 * this.HEADLIGHTS_PRICE;
+
+            int current_demand1 = this.demand1Dist.sample();
+            int current_demand2 = this.demand2Dist.sample();
+            int current_demand3 = this.demand3Dist.sample();
 
             this.suppressors -= current_demand1;
             this.breakPlates -= current_demand2;
@@ -71,9 +64,9 @@ public class StrategyA extends Strategy {
             }
             totalCost += penalty;
 
-            totalCost += this.suppressors * 3 * this.SUPPRESSORS_PRICE;
+           /* totalCost += this.suppressors * 3 * this.SUPPRESSORS_PRICE;
             totalCost += this.breakPlates * 3 * this.BREAK_PLATES_PRICE;
-            totalCost += this.headlights * 3 * this.HEADLIGHTS_PRICE;
+            totalCost += this.headlights * 3 * this.HEADLIGHTS_PRICE;*/
         }
         return totalCost;
     }
