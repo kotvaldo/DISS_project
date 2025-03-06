@@ -21,6 +21,6 @@ public class UniformDiscrete extends BaseGenerator<Integer> {
 
     @Override
     public Integer sample() {
-        return this.baseRandom.nextInt(min, max + 1);
+        return this.baseRandom.nextInt(min, max);
     }
 }
