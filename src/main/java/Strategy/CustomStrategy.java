@@ -8,7 +8,7 @@ public class CustomStrategy implements IStrategy {
     }
 
     @Override
-    public void algorithm(double totalCost, ArrayList<Integer> totalProducts) {
-
+    public double algorithm(double totalCost) {
+        return totalCost;
     }
 }

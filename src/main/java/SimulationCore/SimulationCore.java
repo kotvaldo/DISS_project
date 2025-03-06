@@ -3,6 +3,7 @@ package SimulationCore;
 public abstract class SimulationCore implements Runnable {
 
     protected long repCount;
+    protected int actualRepCount;
 
     @Override
     public void run() {

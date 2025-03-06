@@ -8,8 +8,8 @@ public class StrategyD extends Strategy {
     }
 
     @Override
-    public void algorithm(double totalCost, ArrayList<Integer> totalProducts) {
-
+    public double algorithm(double totalCost) {
+        return totalCost;
     }
 
 }

@@ -5,10 +5,11 @@ import Generators.EmpiricContinuous;
 import Generators.EmpiricData;
 import Generators.EmpiricDiscrete;
 import Generators.SeedGenerator;
+import SimulationCore.MonteCarlo;
 import SimulationCore.SimulationManager;
+import Strategy.StrategyA;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
 public class Main {
@@ -40,98 +41,16 @@ public class Main {
         empiricDiscrete.sample();
 
         System.out.println(empiricDiscrete.sample());*/
-        ArrayList<EmpiricData<Integer>> list = new ArrayList<>();
-        list.add(new EmpiricData<>(1, 3, 0.2));
-        list.add(new EmpiricData<>(3, 5, 0.2));
-        list.add(new EmpiricData<>(5, 7, 0.6));
 
-        EmpiricDiscrete empiricDiscrete = new EmpiricDiscrete(list);
-        int count_1 = 0;
-        int count_2 = 0;
-        int count_3 = 0;
-        for (int i = 0; i < 100000; i++) {
-            int value = empiricDiscrete.sample();
-
-            if(value >= 1 && value < 3) count_1++;
-            if(value >= 3 && value < 5) count_2++;
-            if(value >= 5 && value < 7) count_3++;
-
-
-        }
-        System.out.println((double)count_1/100000);
-        System.out.println((double)count_2/100000);
-        System.out.println((double)count_3/100000);
-        System.out.println("-------------------------------------------------------------------------------");
-
-        count_1 = 0;
-        count_2 = 0;
-        count_3 = 0;
-        ArrayList<EmpiricData<Double>> list1 = new ArrayList<>();
-        list1.add(new EmpiricData<>(0.1, 0.2, 0.2));
-        list1.add(new EmpiricData<>(0.2, 0.4, 0.2));
-        list1.add(new EmpiricData<>(0.4, 0.5, 0.6));
-
-        EmpiricContinuous empiricContinuous = new EmpiricContinuous(list1);
-        for (int i = 0; i < 100000; i++) {
-            double value = empiricContinuous.sample();
-
-            if(value >= 0.1 && value < 0.2) count_1++;
-            if(value >= 0.2 && value <0.4) count_2++;
-            if(value >= 0.4 && value < 0.5) count_3++;
-
-
-        }
-        System.out.println((double)count_1/100000);
-        System.out.println((double)count_2/100000);
-        System.out.println((double)count_3/100000);
-
-        System.out.println("-------------------------------------------------------------------------------");
-        var empiricData = new ArrayList<>(Arrays.asList(
-                new EmpiricData<>(0.05, 0.1, 0.4),
-                new EmpiricData<>(0.1, 0.5, 0.3),
-                new EmpiricData<>(0.5, 0.7, 0.2),
-                new EmpiricData<>(0.7, 0.8, 0.06),
-                new EmpiricData<>(0.8, 0.95, 0.04)
-        ));
-
-        var empiricData2 = new ArrayList<>(Arrays.asList(
-                new EmpiricData<>(0.05, 0.1, 0.2),
-                new EmpiricData<>(0.1, 0.5, 0.4),
-                new EmpiricData<>(0.5, 0.7, 0.3),
-                new EmpiricData<>(0.7, 0.8, 0.06),
-                new EmpiricData<>(0.8, 0.95, 0.04)
-        ));
-        var supplier2Before = new EmpiricContinuous(empiricData);
-        var supplier2After = new EmpiricContinuous(empiricData2);
-        count_1 = 0;
-        count_2 = 0;
-        count_3 = 0;
-        int count_4 = 0;
-        int count_5 = 0;
-        for (int i = 0; i < 1000000; i++) {
-            double value = supplier2Before.sample();
-
-            if(value >= 0.05 && value < 0.1) count_1++;
-            if(value >= 0.1 && value < 0.5) count_2++;
-            if(value >= 0.5 && value < 0.7) count_3++;
-            if(value >= 0.7 && value < 0.8) count_4++;
-            if(value >= 0.8 && value < 0.95) count_5++;
-
-
-        }
-        System.out.println((double)count_1/1000000);
-        System.out.println((double)count_2/1000000);
-        System.out.println((double)count_3/1000000);
-        System.out.println((double)count_4/1000000);
-        System.out.println((double)count_5/1000000);
-        System.out.println("-------------------------------------------------------------------------------");
         SimulationManager simulationManager = new SimulationManager(1);
-
-        BuffonNeedle buffonNeedle = new BuffonNeedle(10,5);
-        buffonNeedle.setRepCount(10000000);
-        simulationManager.startSimulation(buffonNeedle);
-        simulationManager.stopAllSimulations();
-        System.out.println("-------------------------------------------------------------------------------");
+        StrategyA strategyA = new StrategyA();
+        MonteCarlo buffonNeedle = new MonteCarlo();
+        buffonNeedle.setStrategy(strategyA);
+        buffonNeedle.setReplicationCount(1000);
+        //simulationManager.startSimulation(buffonNeedle);
+        BuffonNeedle buffonNeedle1 = new BuffonNeedle(10,5);
+        simulationManager.startSimulation(buffonNeedle1);
+        buffonNeedle1.run();
     }
 }
 
