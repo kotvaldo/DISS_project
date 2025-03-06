@@ -39,6 +39,28 @@ public class Main {
         empiricDiscrete.sample();
 
         System.out.println(empiricDiscrete.sample());*/
+        ArrayList<EmpiricData<Integer>> list = new ArrayList<>();
+        list.add(new EmpiricData<>(1, 3, 0.2));
+        list.add(new EmpiricData<>(3, 5, 0.2));
+        list.add(new EmpiricData<>(5, 7, 0.6));
+
+        EmpiricDiscrete empiricDiscrete = new EmpiricDiscrete(list);
+        int count_1 = 0;
+        int count_2 = 0;
+        int count_3 = 0;
+        for (int i = 0; i < 100000; i++) {
+            int value = empiricDiscrete.sample();
+
+            if(value >= 1 && value < 3) count_1++;
+            if(value >= 3 && value < 5) count_2++;
+            if(value >= 5 && value < 7) count_3++;
+
+
+        }
+
+        System.out.println((double)count_1/100000);
+        System.out.println((double)count_2/100000);
+        System.out.println((double)count_3/100000);
 
         SimulationManager simulationManager = new SimulationManager(1);
 
