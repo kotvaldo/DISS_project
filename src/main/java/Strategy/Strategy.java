@@ -1,9 +1,6 @@
 package Strategy;
 
-import Generators.EmpiricData;
-import Generators.EmpiricDiscrete;
-import Generators.UniformContinuous;
-import Generators.UniformDiscrete;
+import Generators.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +27,11 @@ public class Strategy implements IStrategy {
     protected UniformDiscrete demand2Dist;
     protected EmpiricDiscrete demand3Dist;
 
+    protected EmpiricContinuous supplier2Before;
+    protected EmpiricContinuous supplier2After;
+    protected ArrayList<EmpiricData<Double>> empiricData;
+    protected ArrayList<EmpiricData<Double>> empiricData2;
+
     protected UniformContinuous decisionMaker;
 
     protected Strategy() {
@@ -43,6 +45,24 @@ public class Strategy implements IStrategy {
         this.demand2Dist = new UniformDiscrete(60,251);
         this.demand3Dist = new EmpiricDiscrete(empiricDataArrayList);
         this.decisionMaker = new UniformContinuous(0,1);
+
+        empiricData = new ArrayList<>(Arrays.asList(
+                new EmpiricData<>(0.05, 0.1, 0.4),
+                new EmpiricData<>(0.1, 0.5, 0.3),
+                new EmpiricData<>(0.5, 0.7, 0.2),
+                new EmpiricData<>(0.7, 0.8, 0.06),
+                new EmpiricData<>(0.8, 0.95, 0.04)
+        ));
+
+        empiricData2 = new ArrayList<>(Arrays.asList(
+                new EmpiricData<>(0.05, 0.1, 0.2),
+                new EmpiricData<>(0.1, 0.5, 0.4),
+                new EmpiricData<>(0.5, 0.7, 0.3),
+                new EmpiricData<>(0.7, 0.8, 0.06),
+                new EmpiricData<>(0.8, 0.95, 0.04)
+        ));
+        this.supplier2Before = new EmpiricContinuous(empiricData);
+        this.supplier2After = new EmpiricContinuous(empiricData2);
     }
 
     @Override
