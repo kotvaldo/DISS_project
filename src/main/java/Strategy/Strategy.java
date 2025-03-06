@@ -13,9 +13,9 @@ public class Strategy implements IStrategy {
     protected final int BREAK_PLATES_BUY_COUNT = 200;
     protected final int HEADLIGHTS_BUY_COUNT = 150;
 
-    protected int suppressors;
-    protected int breakPlates;
-    protected int headlights;
+    protected int suppressors = 0;
+    protected int breakPlates = 0;
+    protected int headlights = 0;
 
     protected final double SUPPRESSORS_PRICE = 0.2;
     protected final double BREAK_PLATES_PRICE = 0.3;
@@ -42,7 +42,7 @@ public class Strategy implements IStrategy {
         this.demand1Dist = new UniformDiscrete(50,101);
         this.demand2Dist = new UniformDiscrete(60,251);
         this.demand3Dist = new EmpiricDiscrete(empiricDataArrayList);
-        this.decisionMaker = new UniformContinuous(0.0,1.0);
+        this.decisionMaker = new UniformContinuous(0,1);
     }
 
     @Override
