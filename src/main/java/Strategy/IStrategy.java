@@ -1,8 +1,8 @@
 package Strategy;
 
-import java.util.ArrayList;
+import SimulationCore.MonteCarlo;
 
 public interface IStrategy {
-    double algorithm(double totalCost);
+    void algorithm();
 
 }
