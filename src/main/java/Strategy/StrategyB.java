@@ -18,29 +18,26 @@ public class StrategyB extends Strategy {
             int curr_day = i + 1;
             int added_count_1 = 0, added_count_2 = 0, added_count_3 = 0;
 
-            System.out.println("------ Deň " + curr_day + " ------");
+            //System.out.println("------ Deň " + curr_day + " ------");
 
-            double decisionValue = decisionMaker.sample();
-            double supplierProbability = (curr_day <= 15) ? supplier2Before.sample() : supplier2After.sample();
+            if (curr_day <= 13) {
+                if (decisionMaker.sample() < supplier2Before.sample()) added_count_1 = this.SUPRESSORS_BUY_COUNT;
+                if (decisionMaker.sample() < supplier2Before.sample())  added_count_2 = this.BREAK_PLATES_BUY_COUNT;
+                if (decisionMaker.sample() < supplier2Before.sample())   added_count_3 = this.HEADLIGHTS_BUY_COUNT;
 
-            System.out.println("Decision Maker hodnota: " + decisionValue);
-            System.out.println("Pravdepodobnosť dodávateľa " + ((curr_day <= 15) ? "pred 15. dňom" : "po 15. dni") + ": " + supplierProbability);
-
-            if (decisionValue < supplierProbability) {
-                added_count_1 = this.SUPRESSORS_BUY_COUNT;
-                added_count_2 = this.BREAK_PLATES_BUY_COUNT;
-                added_count_3 = this.HEADLIGHTS_BUY_COUNT;
-
-              System.out.println("Nákup: " + added_count_1 + " suppressors, " + added_count_2 + " break plates, " + added_count_3 + " headlights");
             } else {
-              System.out.println("Nákup sa neuskutočnil.");
+                if (decisionMaker.sample() < supplier2After.sample())   added_count_1 = this.SUPRESSORS_BUY_COUNT;
+
+                if (decisionMaker.sample() < supplier2After.sample())  added_count_2 = this.BREAK_PLATES_BUY_COUNT;
+                if (decisionMaker.sample() < supplier2After.sample())   added_count_3 = this.HEADLIGHTS_BUY_COUNT;
+
             }
 
             this.suppressors += added_count_1;
             this.breakPlates += added_count_2;
             this.headlights += added_count_3;
 
-            System.out.println("Stav skladu po nákupe: " + this.suppressors + " suppressors, " + this.breakPlates + " break plates, " + this.headlights + " headlights");
+            //System.out.println("Stav skladu po nákupe: " + this.suppressors + " suppressors, " + this.breakPlates + " break plates, " + this.headlights + " headlights");
 
             totalCost += this.suppressors * 4 * this.SUPPRESSORS_PRICE;
             totalCost += this.breakPlates * 4 * this.BREAK_PLATES_PRICE;
@@ -50,7 +47,7 @@ public class StrategyB extends Strategy {
             int current_demand2 = this.demand2Dist.sample();
             int current_demand3 = this.demand3Dist.sample();
 
-            System.out.println("Dopyt: " + current_demand1 + " suppressors, " + current_demand2 + " break plates, " + current_demand3 + " headlights");
+            //System.out.println("Dopyt: " + current_demand1 + " suppressors, " + current_demand2 + " break plates, " + current_demand3 + " headlights");
 
             this.suppressors -= current_demand1;
             this.breakPlates -= current_demand2;
@@ -61,25 +58,25 @@ public class StrategyB extends Strategy {
             if (this.suppressors < 0) {
                 double itemPenalty = Math.abs(this.suppressors) * FINE_FOR_ONE;
                 penalty += itemPenalty;
-              System.out.println("Pokuta za suppressors: " + itemPenalty);
+              //System.out.println("Pokuta za suppressors: " + itemPenalty);
                 this.suppressors = 0;
             }
             if (this.breakPlates < 0) {
                 double itemPenalty = Math.abs(this.breakPlates) * FINE_FOR_ONE;
                 penalty += itemPenalty;
-            System.out.println("Pokuta za break plates: " + itemPenalty);
+            //System.out.println("Pokuta za break plates: " + itemPenalty);
                 this.breakPlates = 0;
             }
             if (this.headlights < 0) {
                 double itemPenalty = Math.abs(this.headlights) * FINE_FOR_ONE;
                 penalty += itemPenalty;
-          System.out.println("Pokuta za headlights: " + itemPenalty);
+          //System.out.println("Pokuta za headlights: " + itemPenalty);
                 this.headlights = 0;
             }
 
             totalCost += penalty;
 
-            System.out.println("Celkové náklady po dni " + curr_day + ": " + totalCost);
+            //System.out.println("Celkové náklady po dni " + curr_day + ": " + totalCost);
         }
         return totalCost;
     }
