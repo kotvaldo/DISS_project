@@ -8,8 +8,6 @@ import Generators.SeedGenerator;
 import SimulationCore.MonteCarlo;
 import SimulationCore.SimulationManager;
 import Strategy.StrategyA;
-import Strategy.StrategyB;
-import Strategy.StrategyC;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -44,23 +42,15 @@ public class Main {
 
         System.out.println(empiricDiscrete.sample());*/
 
-
         SimulationManager simulationManager = new SimulationManager(1);
-        StrategyB strategyB = new StrategyB();
         StrategyA strategyA = new StrategyA();
-        StrategyC strategyC = new StrategyC();
-        StrategyC strategyD = new StrategyC();
-        MonteCarlo monteCarlo = new MonteCarlo();
-        monteCarlo.setStrategy(strategyD);
-        monteCarlo.setReplicationCount(10000000);
+        MonteCarlo buffonNeedle = new MonteCarlo();
+        buffonNeedle.setStrategy(strategyA);
+        buffonNeedle.setReplicationCount(1000);
         //simulationManager.startSimulation(buffonNeedle);
-       /* BuffonNeedle buffonNeedle1 = new BuffonNeedle(10,5);
-        buffonNeedle1.setRepCount(100000000);*/
-        simulationManager.startSimulation(monteCarlo);
-        simulationManager.stopAllSimulations();
-        //monteCarlo.runSimulation();
-        //monteCarlo.runSimulation();
-
+        BuffonNeedle buffonNeedle1 = new BuffonNeedle(10,5);
+        simulationManager.startSimulation(buffonNeedle1);
+        buffonNeedle1.run();
     }
 }
 
