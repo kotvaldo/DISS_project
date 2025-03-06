@@ -41,9 +41,8 @@ public class BuffonNeedle extends SimulationCore {
     }
     @Override
     protected void afterRunSimulation() {
-        System.out.println(this.sum);
         double result =  2*l/(d*(sum/repCount));
-        System.out.println(result);
+        System.out.println("PI > " + result);
     }
 
     @Override

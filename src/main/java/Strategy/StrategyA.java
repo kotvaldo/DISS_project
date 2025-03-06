@@ -5,8 +5,8 @@ import Generators.UniformContinuous;
 import java.util.ArrayList;
 
 public class StrategyA extends Strategy {
-    private final UniformContinuous supplier1Before11;
-    private final UniformContinuous supplier1After11;
+    private  UniformContinuous supplier1Before11;
+    private  UniformContinuous supplier1After11;
     public StrategyA() {
         super();
         this.supplier1Before11 = new UniformContinuous(0.1,0.7);
@@ -22,7 +22,6 @@ public class StrategyA extends Strategy {
             int current_demand2 = this.demand2Dist.sample();
             int current_demand3 = this.demand3Dist.sample();
 
-            // Rozhodnutie o objednávke na základe pravdepodobnosti dodania
             if (curr_day <= 10) {
                 if (decisionMaker.sample() < supplier1Before11.sample()) {
                     added_count_1 = this.SUPRESSORS_BUY_COUNT;

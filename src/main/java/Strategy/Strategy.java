@@ -39,10 +39,10 @@ public class Strategy implements IStrategy {
                 new EmpiricData<>(100, 140, 0.3),
                 new EmpiricData<>(140, 160, 0.1)
         ));
-        this.demand1Dist = new UniformDiscrete(50,100);
-        this.demand2Dist = new UniformDiscrete(60,250);
+        this.demand1Dist = new UniformDiscrete(50,101);
+        this.demand2Dist = new UniformDiscrete(60,251);
         this.demand3Dist = new EmpiricDiscrete(empiricDataArrayList);
-        this.decisionMaker = new UniformContinuous(0,1);
+        this.decisionMaker = new UniformContinuous(0.0,1.0);
     }
 
     @Override

@@ -42,15 +42,22 @@ public class Main {
 
         System.out.println(empiricDiscrete.sample());*/
 
-        SimulationManager simulationManager = new SimulationManager(1);
+        ArrayList<EmpiricData<Integer>> list = new ArrayList<>();
+        list.add(new EmpiricData<>(1, 3, 0.2));
+        list.add(new EmpiricData<>(3, 5, 0.2));
+        list.add(new EmpiricData<>(5, 7, 0.6));
+
+
+        /*SimulationManager simulationManager = new SimulationManager(1);
         StrategyA strategyA = new StrategyA();
-        MonteCarlo buffonNeedle = new MonteCarlo();
-        buffonNeedle.setStrategy(strategyA);
-        buffonNeedle.setReplicationCount(1000);
+        MonteCarlo monteCarlo = new MonteCarlo();
+        monteCarlo.setStrategy(strategyA);
+        monteCarlo.setReplicationCount(1000);
         //simulationManager.startSimulation(buffonNeedle);
         BuffonNeedle buffonNeedle1 = new BuffonNeedle(10,5);
-        simulationManager.startSimulation(buffonNeedle1);
-        buffonNeedle1.run();
+        buffonNeedle1.setRepCount(100000000);
+        simulationManager.startSimulation(monteCarlo);
+        simulationManager.stopAllSimulations();*/
     }
 }
 
