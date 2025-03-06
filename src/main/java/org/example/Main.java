@@ -9,6 +9,7 @@ import SimulationCore.MonteCarlo;
 import SimulationCore.SimulationManager;
 import Strategy.StrategyA;
 import Strategy.StrategyB;
+import Strategy.StrategyC;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -47,6 +48,7 @@ public class Main {
         SimulationManager simulationManager = new SimulationManager(1);
         StrategyB strategyB = new StrategyB();
         StrategyA strategyA = new StrategyA();
+        StrategyC strategyC = new StrategyC();
         MonteCarlo monteCarlo = new MonteCarlo();
         monteCarlo.setStrategy(strategyB);
         monteCarlo.setReplicationCount(100000);
