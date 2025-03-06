@@ -8,6 +8,7 @@ import Generators.SeedGenerator;
 import SimulationCore.SimulationManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
 public class Main {
@@ -84,7 +85,46 @@ public class Main {
         System.out.println((double)count_2/100000);
         System.out.println((double)count_3/100000);
 
+        System.out.println("-------------------------------------------------------------------------------");
+        var empiricData = new ArrayList<>(Arrays.asList(
+                new EmpiricData<>(0.05, 0.1, 0.4),
+                new EmpiricData<>(0.1, 0.5, 0.3),
+                new EmpiricData<>(0.5, 0.7, 0.2),
+                new EmpiricData<>(0.7, 0.8, 0.06),
+                new EmpiricData<>(0.8, 0.95, 0.04)
+        ));
 
+        var empiricData2 = new ArrayList<>(Arrays.asList(
+                new EmpiricData<>(0.05, 0.1, 0.2),
+                new EmpiricData<>(0.1, 0.5, 0.4),
+                new EmpiricData<>(0.5, 0.7, 0.3),
+                new EmpiricData<>(0.7, 0.8, 0.06),
+                new EmpiricData<>(0.8, 0.95, 0.04)
+        ));
+        var supplier2Before = new EmpiricContinuous(empiricData);
+        var supplier2After = new EmpiricContinuous(empiricData2);
+        count_1 = 0;
+        count_2 = 0;
+        count_3 = 0;
+        int count_4 = 0;
+        int count_5 = 0;
+        for (int i = 0; i < 1000000; i++) {
+            double value = supplier2Before.sample();
+
+            if(value >= 0.05 && value < 0.1) count_1++;
+            if(value >= 0.1 && value < 0.5) count_2++;
+            if(value >= 0.5 && value < 0.7) count_3++;
+            if(value >= 0.7 && value < 0.8) count_4++;
+            if(value >= 0.8 && value < 0.95) count_5++;
+
+
+        }
+        System.out.println((double)count_1/1000000);
+        System.out.println((double)count_2/1000000);
+        System.out.println((double)count_3/1000000);
+        System.out.println((double)count_4/1000000);
+        System.out.println((double)count_5/1000000);
+        System.out.println("-------------------------------------------------------------------------------");
         SimulationManager simulationManager = new SimulationManager(1);
 
         BuffonNeedle buffonNeedle = new BuffonNeedle(10,5);
