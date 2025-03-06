@@ -2,7 +2,9 @@ package Strategy;
 
 import SimulationCore.MonteCarlo;
 
+import java.util.ArrayList;
+
 public interface IStrategy {
-    void algorithm();
+    void algorithm(double totalCost, ArrayList<Integer> totalProducts);
 
 }
