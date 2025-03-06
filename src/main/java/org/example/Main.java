@@ -57,16 +57,41 @@ public class Main {
 
 
         }
-
         System.out.println((double)count_1/100000);
         System.out.println((double)count_2/100000);
         System.out.println((double)count_3/100000);
+        System.out.println("-------------------------------------------------------------------------------");
+
+        count_1 = 0;
+        count_2 = 0;
+        count_3 = 0;
+        ArrayList<EmpiricData<Double>> list1 = new ArrayList<>();
+        list1.add(new EmpiricData<>(0.1, 0.2, 0.2));
+        list1.add(new EmpiricData<>(0.2, 0.4, 0.2));
+        list1.add(new EmpiricData<>(0.4, 0.5, 0.6));
+
+        EmpiricContinuous empiricContinuous = new EmpiricContinuous(list1);
+        for (int i = 0; i < 100000; i++) {
+            double value = empiricContinuous.sample();
+
+            if(value >= 0.1 && value < 0.2) count_1++;
+            if(value >= 0.2 && value <0.4) count_2++;
+            if(value >= 0.4 && value < 0.5) count_3++;
+
+
+        }
+        System.out.println((double)count_1/100000);
+        System.out.println((double)count_2/100000);
+        System.out.println((double)count_3/100000);
+
 
         SimulationManager simulationManager = new SimulationManager(1);
 
         BuffonNeedle buffonNeedle = new BuffonNeedle(10,5);
         buffonNeedle.setRepCount(10000000);
         simulationManager.startSimulation(buffonNeedle);
+        simulationManager.stopAllSimulations();
+        System.out.println("-------------------------------------------------------------------------------");
     }
 }
 
