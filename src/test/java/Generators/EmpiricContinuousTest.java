@@ -53,12 +53,27 @@ class EmpiricContinuousTest {
 
         EmpiricContinuous empiricContinuous = new EmpiricContinuous(list, 0);
 
-        for (int i = 0; i < 1000; i++) {
-            double value = empiricContinuous.sampleWithProb(0.2);
-            assertTrue(value >= 0.2 && value <= 0.4, "Generated value should be within the defined range");
+        for (int i = 0; i < 1000000; i++) {
+            double value = empiricContinuous.sampleWithProb(0.9);
+            assertTrue(value >= 0.4 && value < 0.5, "Generated value should be within the defined range");
         }
 
 
+    }
+
+    @Test
+    void testGenerateValueWithProbabilitiesBad() {
+        ArrayList<EmpiricData<Double>> list = new ArrayList<>();
+        list.add(new EmpiricData<>(0.1, 0.2, 0.2));
+        list.add(new EmpiricData<>(0.2, 0.4, 0.2));
+        list.add(new EmpiricData<>(0.4, 0.5, 0.6));
+
+        EmpiricContinuous empiricContinuous = new EmpiricContinuous(list, 0);
+
+        for (int i = 0; i < 1000000; i++) {
+            double value = empiricContinuous.sampleWithProb(0.9);
+            assertTrue(!(value >= 0 && value < 0.4) && !(value >= 0.5 && value < 1)); //"Generated value should be within the defined range");
+        }
     }
 
 

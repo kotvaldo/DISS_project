@@ -10,7 +10,7 @@ public abstract class SimulationCore implements Runnable {
         runSimulation();
     }
 
-    private void runSimulation() {
+    public void runSimulation() {
         beforeRunSimulation();
         for(int i = 0; i < repCount; i++) {
             beforeSimulation();
