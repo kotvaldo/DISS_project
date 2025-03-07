@@ -11,6 +11,7 @@ public abstract class BaseGenerator<T extends Number> {
         seedGenerator = new SeedGenerator();
         this.seed = seed;
         baseRandom = new Random(seed);
+        seedGenerator = new SeedGenerator();
     }
 
     protected BaseGenerator() {

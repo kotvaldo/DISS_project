@@ -64,9 +64,9 @@ public class StrategyA extends Strategy {
             }
             totalCost += penalty;
 
-           /* totalCost += this.suppressors * 3 * this.SUPPRESSORS_PRICE;
+            totalCost += this.suppressors * 3 * this.SUPPRESSORS_PRICE;
             totalCost += this.breakPlates * 3 * this.BREAK_PLATES_PRICE;
-            totalCost += this.headlights * 3 * this.HEADLIGHTS_PRICE;*/
+            totalCost += this.headlights * 3 * this.HEADLIGHTS_PRICE;
         }
         return totalCost;
     }
