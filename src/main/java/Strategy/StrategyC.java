@@ -39,6 +39,9 @@ public class StrategyC extends Strategy {
     }
     @Override
     public double algorithm(double totalCost) {
+        suppressors = 0;
+        headlights = 0;
+        breakPlates = 0;
         for (int i = 0; i < 30; i++) {
             int curr_day = i + 1;
             int added_count_1 = 0, added_count_2 = 0, added_count_3 = 0;
@@ -107,9 +110,9 @@ public class StrategyC extends Strategy {
             }
             totalCost += penalty;
 
-           /* totalCost += this.suppressors * 3 * this.SUPPRESSORS_PRICE;
+            totalCost += this.suppressors * 3 * this.SUPPRESSORS_PRICE;
             totalCost += this.breakPlates * 3 * this.BREAK_PLATES_PRICE;
-            totalCost += this.headlights * 3 * this.HEADLIGHTS_PRICE;*/
+            totalCost += this.headlights * 3 * this.HEADLIGHTS_PRICE;
         }
         return totalCost;
     }

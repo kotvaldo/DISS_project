@@ -14,6 +14,9 @@ public class StrategyB extends Strategy {
 
     }
     public double algorithm(double totalCost) {
+        this.suppressors = 0;
+        this.breakPlates = 0;
+        this.headlights = 0;
         for (int i = 0; i < 30; i++) {
             int curr_day = i + 1;
             int added_count_1 = 0, added_count_2 = 0, added_count_3 = 0;

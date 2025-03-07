@@ -4,8 +4,9 @@ import Strategy.IStrategy;
 
 public class MonteCarlo extends SimulationCore {
     private IStrategy strategy;
-    private double totalCost;
-    private double averageCost = 0.0;
+    private double totalCost = 0;
+    private double averageCost = 0;
+    
 
     @Override
     protected void experiment() {
