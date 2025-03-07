@@ -8,17 +8,18 @@ public abstract class BaseGenerator<T extends Number> {
     protected int seed;
 
     protected BaseGenerator(int seed) {
+        seedGenerator = new SeedGenerator();
         this.seed = seed;
         baseRandom = new Random(seed);
-        seedGenerator = new SeedGenerator();
     }
 
     protected BaseGenerator() {
+        seedGenerator = new SeedGenerator();
         baseRandom = new Random(nextSeed());
     }
     public abstract T sample();
 
     protected Integer nextSeed() {
-        return SeedGenerator.sampleSeed();
+        return this.seedGenerator.sampleSeed();
     }
 }
