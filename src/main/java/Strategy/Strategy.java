@@ -10,9 +10,9 @@ public class Strategy implements IStrategy {
     protected final int BREAK_PLATES_BUY_COUNT = 200;
     protected final int HEADLIGHTS_BUY_COUNT = 150;
 
-    protected int suppressors = 0;
-    protected int breakPlates = 0;
-    protected int headlights = 0;
+    protected int suppressors;
+    protected int breakPlates;
+    protected int headlights;
 
     protected final double SUPPRESSORS_PRICE = 0.2;
     protected final double BREAK_PLATES_PRICE = 0.3;
@@ -63,6 +63,7 @@ public class Strategy implements IStrategy {
         ));
         this.supplier2Before = new EmpiricContinuous(empiricData);
         this.supplier2After = new EmpiricContinuous(empiricData2);
+
     }
 
     @Override

@@ -14,6 +14,9 @@ public class StrategyA extends Strategy {
     }
     @Override
     public double algorithm(double totalCost) {
+        this.suppressors = 0;
+        this.breakPlates = 0;
+        this.headlights = 0;
         for (int i = 0; i < 30; i++) {
             int curr_day = i + 1;
             int added_count_1 = 0, added_count_2 = 0, added_count_3 = 0;
@@ -49,7 +52,7 @@ public class StrategyA extends Strategy {
             this.breakPlates -= current_demand2;
             this.headlights -= current_demand3;
 
-            double penalty = 0;
+            double penalty = 0.0;
             if (this.suppressors < 0) {
                 penalty += Math.abs(this.suppressors) * FINE_FOR_ONE;
                 this.suppressors = 0;
