@@ -1,12 +1,20 @@
-package SimulationCore;
+package MonteCarlo;
 
+import SimulationCore.*;
 import Strategy.IStrategy;
 
 public class MonteCarlo extends SimulationCore {
     private IStrategy strategy;
     private double totalCost = 0;
     private double averageCost = 0;
-    
+    private UpdateListener listener;
+    private int burnCount = 0;
+    private int updateFrequency = 0;
+
+    public MonteCarlo() {
+
+
+    }
 
     @Override
     protected void experiment() {
@@ -19,12 +27,12 @@ public class MonteCarlo extends SimulationCore {
     protected void beforeRunSimulation() {
         this.actualRepCount = 0;
         this.totalCost = 0.0;
+        this.isCancelled = false;
     }
 
     @Override
     protected void afterRunSimulation() {
-        System.out.println("Total Cost: " + this.totalCost);
-        System.out.println("Average Cost: " + this.averageCost);
+
     }
 
     @Override
@@ -36,8 +44,11 @@ public class MonteCarlo extends SimulationCore {
     protected void afterSimulation() {
         if (this.actualRepCount > 0) {
             this.averageCost = this.totalCost / this.actualRepCount;
+            if(actualRepCount % 1000 == 0 && actualRepCount > burnCount) {
+                this.listener.onUpdate(this.averageCost);
+            }
         }
-        System.out.println("Average Cost: " + this.averageCost);
+
     }
 
     public IStrategy getStrategy() {
@@ -58,5 +69,24 @@ public class MonteCarlo extends SimulationCore {
 
     public void setAverageCost(double averageCost) {
         this.averageCost = averageCost;
+    }
+
+    public int getRepCount() {
+        return this.actualRepCount;
+    }
+
+    public void setListener(UpdateListener listener) {
+        this.listener = listener;
+    }
+    public void cancel() {
+        this.isCancelled = true;
+    }
+
+    public void setBurnCount(int burnCount) {
+        this.burnCount = burnCount;
+    }
+
+    public void setUpdateFrequency(int updateFrequency) {
+        this.updateFrequency = updateFrequency;
     }
 }
