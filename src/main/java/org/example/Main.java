@@ -51,7 +51,7 @@ public class Main {
         StrategyC strategyC = new StrategyC();
         StrategyC strategyD = new StrategyC();
         MonteCarlo monteCarlo = new MonteCarlo();
-        monteCarlo.setStrategy(strategyD);
+        monteCarlo.setStrategy(strategyB);
         monteCarlo.setReplicationCount(10000000);
         //simulationManager.startSimulation(buffonNeedle);
        /* BuffonNeedle buffonNeedle1 = new BuffonNeedle(10,5);
