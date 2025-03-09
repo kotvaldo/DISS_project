@@ -5,7 +5,7 @@ import Strategy.IStrategy;
 import javax.swing.*;
 
 public class MonteCarloGUI extends AbstractSimulationGUI {
-    private MonteCarlo monteCarlo;
+    private final MonteCarlo monteCarlo;
     private MonteCarloWorker worker;
     private IStrategy strategy;
 
@@ -13,7 +13,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         super("Monte Carlo Simulation");
         this.strategy = strategy;
         monteCarlo = new MonteCarlo();
-        monteCarlo.setStrategy(strategy);
+        monteCarlo.setStrategy(this.strategy);
 
         monteCarlo.setListener(value -> SwingUtilities.invokeLater(() -> series.add(monteCarlo.getRepCount(), value)));
     }
