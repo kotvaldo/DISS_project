@@ -44,7 +44,7 @@ public class MonteCarlo extends SimulationCore {
     protected void afterSimulation() {
         if (this.actualRepCount > 0) {
             this.averageCost = this.totalCost / this.actualRepCount;
-            if(actualRepCount % 1000 == 0 && actualRepCount > burnCount) {
+            if(actualRepCount % updateFrequency == 0 && actualRepCount > burnCount) {
                 this.listener.onUpdate(this.averageCost);
             }
         }

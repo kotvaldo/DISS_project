@@ -23,7 +23,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         if (worker == null || worker.isDone()) {
             chart.clearSubtitles();
             series.clear();
-
+            this.clearStatistic();
             try {
                 int replications = Integer.parseInt(replicationsInput.getText());
                 int burnIn = Integer.parseInt(burnInInput.getText());
@@ -50,6 +50,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         if (worker != null && !worker.isDone()) {
             worker.cancel(true);
             monteCarlo.cancel();
+            this.updateStatisticsFromDataset();
         }
     }
 
@@ -64,6 +65,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         protected void done() {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
+            updateStatisticsFromDataset();
         }
     }
 }
