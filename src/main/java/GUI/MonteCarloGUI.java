@@ -31,6 +31,8 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     private JTextField supplierBFrequency;
     private JTextField supplierAOffset;
     private JTextField supplierBOffset;
+    private JCheckBox supplierAAllowed;
+    private JCheckBox supplierBAllowed;
     private JButton barChartButton;
     private final JFreeChart barChart;
     DefaultCategoryDataset barChartDataset;
@@ -113,48 +115,79 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
+        // Suppressors Delivery Count
         gbc.gridx = 0; gbc.gridy = 0;
         customPanel.add(new JLabel("Suppressors Delivery Count:"), gbc);
         gbc.gridx = 1;
         product1Field = new JTextField(5);
         customPanel.add(product1Field, gbc);
 
+        // Break Plates Delivery Count
         gbc.gridx = 0; gbc.gridy = 1;
         customPanel.add(new JLabel("Break Plates Delivery Count:"), gbc);
         gbc.gridx = 1;
         product2Field = new JTextField(5);
         customPanel.add(product2Field, gbc);
 
+        // Headlights Delivery Count
         gbc.gridx = 0; gbc.gridy = 2;
         customPanel.add(new JLabel("Headlights Delivery Count:"), gbc);
         gbc.gridx = 1;
         product3Field = new JTextField(5);
         customPanel.add(product3Field, gbc);
 
+        // Supplier A
         gbc.gridx = 0; gbc.gridy = 3;
         customPanel.add(new JLabel("Supplier A frequency (Every 'x' week):"), gbc);
         gbc.gridx = 1;
         supplierAFrequency = new JTextField(5);
+        supplierAFrequency.setEnabled(false);
         customPanel.add(supplierAFrequency, gbc);
+
+
+        //Supplier A Allowed
+        gbc.gridx = 2;
+        supplierAAllowed = new JCheckBox("Allowed");
+        customPanel.add(supplierAAllowed, gbc);
 
         gbc.gridx = 0; gbc.gridy = 4;
         customPanel.add(new JLabel("Offset A:"), gbc);
         gbc.gridx = 1;
         supplierAOffset = new JTextField(5);
+        supplierAOffset.setEnabled(false);
         customPanel.add(supplierAOffset, gbc);
 
-        // Section: Supplier B
+        // Supplier B
         gbc.gridx = 0; gbc.gridy = 5;
         customPanel.add(new JLabel("Supplier B frequency (Every 'x' week):"), gbc);
         gbc.gridx = 1;
         supplierBFrequency = new JTextField(5);
+        supplierBFrequency.setEnabled(false); // Disabled by default
         customPanel.add(supplierBFrequency, gbc);
+
+        //Supplier B Allowed
+        gbc.gridx = 2;
+        supplierBAllowed = new JCheckBox("Allowed");
+        customPanel.add(supplierBAllowed, gbc);
 
         gbc.gridx = 0; gbc.gridy = 6;
         customPanel.add(new JLabel("Offset B:"), gbc);
         gbc.gridx = 1;
         supplierBOffset = new JTextField(5);
+        supplierBOffset.setEnabled(false);
         customPanel.add(supplierBOffset, gbc);
+
+        supplierAAllowed.addActionListener(e -> {
+            boolean enabled = supplierAAllowed.isSelected();
+            supplierAFrequency.setEnabled(enabled);
+            supplierAOffset.setEnabled(enabled);
+        });
+
+        supplierBAllowed.addActionListener(e -> {
+            boolean enabled = supplierBAllowed.isSelected();
+            supplierBFrequency.setEnabled(enabled);
+            supplierBOffset.setEnabled(enabled);
+        });
 
         customPanel.setVisible(false);
     }
@@ -177,10 +210,16 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
                     customStrategy.setSuppressorsDeliveryCount(Integer.parseInt(product1Field.getText()));
                     customStrategy.setBreakPlatesDeliveryCount(Integer.parseInt(product2Field.getText()));
                     customStrategy.setHeadlightsDeliveryCount(Integer.parseInt(product3Field.getText()));
-                    customStrategy.setSupplierAFrequency(Integer.parseInt(supplierAFrequency.getText()));
-                    customStrategy.setSupplierBFrequency(Integer.parseInt(supplierBFrequency.getText()));
-                    customStrategy.setSupplierAOffset(Integer.parseInt(supplierAOffset.getText()));
-                    customStrategy.setSupplierBOffset(Integer.parseInt(supplierBOffset.getText()));
+                    if(supplierAAllowed.isSelected()) {
+                        customStrategy.setSupplierAFrequency(Integer.parseInt(supplierAFrequency.getText()));
+                        customStrategy.setSupplierAOffset(Integer.parseInt(supplierAOffset.getText()));
+                    }
+                    if(supplierBAllowed.isSelected()) {
+                        customStrategy.setSupplierBFrequency(Integer.parseInt(supplierBFrequency.getText()));
+                        customStrategy.setSupplierBOffset(Integer.parseInt(supplierBOffset.getText()));
+                    }
+                    customStrategy.setSupplier1Allowed(supplierAAllowed.isSelected());
+                    customStrategy.setSupplier1Allowed(supplierBAllowed.isSelected());
                     monteCarlo.setStrategy(customStrategy);
                 } else {
                     IStrategy strategy = flyWeightStrategyFactory.getStrategy(strategyString);
