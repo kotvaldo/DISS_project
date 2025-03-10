@@ -13,8 +13,8 @@ public class StrategyA extends Strategy {
 
 
     @Override
-    protected void setUpSupply(int curr_day) {
-        if (curr_day <= 10) {
+    protected void setUpSupply(int curr_week) {
+        if (curr_week <= 10) {
             if (decisionMaker.sample() < supplier1Before.sample()) {
                 added_count_1 = this.SUPRESSORS_BUY_COUNT;
                 added_count_2 = this.BREAK_PLATES_BUY_COUNT;

@@ -41,9 +41,9 @@ public class StrategyD extends Strategy {
     }
 
     @Override
-    protected void setUpSupply(int curr_day) {
-        if (curr_day % 2 != 0) {
-            if(curr_day <= 10) {
+    protected void setUpSupply(int curr_week) {
+        if (curr_week % 2 != 0) {
+            if(curr_week <= 10) {
                 if (decisionMaker.sample() < supplier1Before.sample()) {
                     added_count_1 = this.SUPRESSORS_BUY_COUNT;
                     added_count_2 = this.BREAK_PLATES_BUY_COUNT;
@@ -58,7 +58,7 @@ public class StrategyD extends Strategy {
             }
 
         } else {
-            if(curr_day <= 15) {
+            if(curr_week <= 15) {
                 if (decisionMaker.sample() < supplier2Before.sample()) {
                     added_count_1 = this.SUPRESSORS_BUY_COUNT;
                     added_count_2 = this.BREAK_PLATES_BUY_COUNT;

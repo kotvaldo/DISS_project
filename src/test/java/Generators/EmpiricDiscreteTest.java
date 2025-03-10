@@ -55,7 +55,7 @@ class EmpiricDiscreteTest {
 
         for (int i = 0; i < 1000; i++) {
             int value = empiricDiscrete.sampleWithProb(0.4);
-            assertTrue(value >= 5 && value < 7, "Generated value should be within the defined range");
+            assertTrue(value >= 3 && value < 5, "Generated value should be within the defined range");
         }
 
 

@@ -54,13 +54,13 @@ public abstract class Strategy implements IStrategy {
     public double  algorithm(double totalCost) {
         clearAll();
         for (int i = 0; i < 30; i++) {
-            int curr_day = i + 1;
+            int curr_week = i + 1;
             this.added_count_1 = 0;
             this.added_count_2 = 0;
             this.added_count_3 = 0;
 
 
-            setUpSupply(curr_day);
+            setUpSupply(curr_week);
 
             this.suppressors += added_count_1;
             this.breakPlates += added_count_2;
@@ -101,7 +101,7 @@ public abstract class Strategy implements IStrategy {
         return totalCost;
     }
 
-    protected abstract void setUpSupply(int curr_day);
+    protected abstract void setUpSupply(int curr_week);
 
     protected void clearAll() {
         this.suppressors = 0;

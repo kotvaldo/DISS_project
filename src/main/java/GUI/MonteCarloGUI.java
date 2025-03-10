@@ -4,6 +4,8 @@ import FlyWeightFactory.FlyWeightStrategyFactory;
 import MonteCarlo.MonteCarlo;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -25,8 +27,12 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         super("Monte Carlo Simulation");
         monteCarlo = new MonteCarlo();
         flyWeightStrategyFactory = new FlyWeightStrategyFactory();
-        monteCarlo.setListener(value -> SwingUtilities.invokeLater(() -> series.add(monteCarlo.getRepCount(), value)));
-    }
+        monteCarlo.setListener(value ->
+                SwingUtilities.invokeLater(() -> {
+                    series.add(monteCarlo.getRepCount(), value);
+                    updateChartRange();
+                })
+        );    }
 
 
     @Override
@@ -34,8 +40,17 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         series = new XYSeries("Simulation Average");
         XYSeriesCollection dataset = new XYSeriesCollection(series);
         chart = ChartFactory.createXYLineChart("Simulation", "Iterations", "Average Value", dataset);
-        chart.getXYPlot().getRangeAxis().setFixedAutoRange(150);
         chart.getXYPlot().getDomainAxis().setAutoRange(true);
+        chart.getXYPlot().getRangeAxis().setFixedAutoRange(500);
+    }
+    private void updateChartRange() {
+        XYPlot plot = chart.getXYPlot();
+        ValueAxis rangeAxis = plot.getRangeAxis();
+
+        double minY = series.getMinY();
+        double maxY = series.getMaxY();
+
+        rangeAxis.setRange(minY - 10, maxY + 10);
     }
 
     @Override
@@ -60,37 +75,57 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     @Override
     protected void setupCustomPanel() {
         customPanel = new JPanel();
-        customPanel.setLayout(new GridLayout(6, 2, 5, 5));
+        customPanel.setLayout(new GridBagLayout());
         customPanel.setBorder(BorderFactory.createTitledBorder("Custom Settings"));
 
-        // Section: Number of Products
-        customPanel.add(new JLabel("Number of products 1:"));
-        product1Field = new JTextField("0", 5);
-        customPanel.add(product1Field);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        customPanel.add(new JLabel("Number of products 2:"));
-        product2Field = new JTextField("0", 5);
-        customPanel.add(product2Field);
+        gbc.gridx = 0; gbc.gridy = 0;
+        customPanel.add(new JLabel("Suppressors Delivery Count:"), gbc);
+        gbc.gridx = 1;
+        product1Field = new JTextField(5);
+        customPanel.add(product1Field, gbc);
 
-        customPanel.add(new JLabel("Number of products 3:"));
-        product3Field = new JTextField("0", 5);
-        customPanel.add(product3Field);
+        gbc.gridx = 0; gbc.gridy = 1;
+        customPanel.add(new JLabel("Break Plates Delivery Count:"), gbc);
+        gbc.gridx = 1;
+        product2Field = new JTextField(5);
+        customPanel.add(product2Field, gbc);
 
-        customPanel.add(new JLabel("Supplier A frequency (per week):"));
-        JTextField supplierAFrequency = new JTextField("1", 5);
-        customPanel.add(supplierAFrequency);
+        gbc.gridx = 0; gbc.gridy = 2;
+        customPanel.add(new JLabel("Headlights Delivery Count:"), gbc);
+        gbc.gridx = 1;
+        product3Field = new JTextField(5);
+        customPanel.add(product3Field, gbc);
 
-        customPanel.add(new JLabel("Supplier B frequency (per week):"));
-        JTextField supplierBFrequency = new JTextField("1", 5);
-        customPanel.add(supplierBFrequency);
+        // Section: Supplier A
+        gbc.gridx = 0; gbc.gridy = 3;
+        customPanel.add(new JLabel("Supplier A frequency (per week):"), gbc);
+        gbc.gridx = 1;
+        JTextField supplierAFrequency = new JTextField(5);
+        customPanel.add(supplierAFrequency, gbc);
 
-        customPanel.add(new JLabel("Supplier A frequency (per month):"));
-        JTextField supplierAFrequencyPerMonth = new JTextField("1", 5);
-        customPanel.add(supplierAFrequencyPerMonth);
+        gbc.gridx = 0; gbc.gridy = 4;
+        customPanel.add(new JLabel("Offset A:"), gbc);
+        gbc.gridx = 1;
+        JTextField supplierAOffset = new JTextField(5);
+        customPanel.add(supplierAOffset, gbc);
 
-        customPanel.add(new JLabel("Supplier B frequency (per month):"));
-        JTextField supplierBFrequencyPerMonth = new JTextField("1", 5);
-        customPanel.add(supplierBFrequencyPerMonth);
+        // Section: Supplier B
+        gbc.gridx = 0; gbc.gridy = 5;
+        customPanel.add(new JLabel("Supplier B frequency (per week):"), gbc);
+        gbc.gridx = 1;
+        JTextField supplierBFrequency = new JTextField(5);
+        customPanel.add(supplierBFrequency, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 6;
+        customPanel.add(new JLabel("Offset B:"), gbc);
+        gbc.gridx = 1;
+        JTextField supplierBOffset = new JTextField(5);
+        customPanel.add(supplierBOffset, gbc);
 
         customPanel.setVisible(false);
     }
@@ -185,6 +220,8 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
             worker.cancel(true);
             monteCarlo.cancel();
             this.updateStatisticsFromDataset();
+
+
         }
     }
 
