@@ -1,7 +1,5 @@
 package Strategy;
 
-import Generators.UniformContinuous;
-
 public class StrategyA extends Strategy {
 
     public StrategyA() {

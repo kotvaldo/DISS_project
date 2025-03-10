@@ -87,10 +87,6 @@ public class MonteCarlo extends SimulationCore {
     }
 
 
-    public ArrayList<Double> getCostPerWeek() {
-        return weeklyCosts;
-    }
-
     public ArrayList<Double> getWeeklyCostsCopy() {
         return weeklyCostsCopy;
     }

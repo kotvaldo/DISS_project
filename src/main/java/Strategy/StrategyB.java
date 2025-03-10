@@ -1,12 +1,5 @@
 package Strategy;
 
-import Generators.EmpiricContinuous;
-import Generators.EmpiricData;
-import Generators.UniformContinuous;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class StrategyB extends Strategy {
 
 

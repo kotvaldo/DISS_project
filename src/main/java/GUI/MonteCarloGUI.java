@@ -4,7 +4,6 @@ import FlyWeightFactory.FlyWeightStrategyFactory;
 import MonteCarlo.MonteCarlo;
 import Strategy.CustomStrategy;
 import Strategy.IStrategy;
-import org.apache.commons.math3.distribution.TDistribution;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -19,7 +18,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class MonteCarloGUI extends AbstractSimulationGUI {
@@ -36,7 +34,6 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     private JButton barChartButton;
     private final JFreeChart barChart;
     DefaultCategoryDataset barChartDataset;
-    private ArrayList<Double> weeklyCosts;
 
 
     public MonteCarloGUI() {
