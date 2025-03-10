@@ -3,6 +3,8 @@ package MonteCarlo;
 import SimulationCore.*;
 import Strategy.IStrategy;
 
+import java.util.ArrayList;
+
 public class MonteCarlo extends SimulationCore {
     private IStrategy strategy;
     private double totalCost = 0;
@@ -10,16 +12,18 @@ public class MonteCarlo extends SimulationCore {
     private UpdateListener listener;
     private int burnCount = 0;
     private int updateFrequency = 0;
+    private final ArrayList<Double> weeklyCosts;
+    private ArrayList<Double> weeklyCostsCopy;
 
     public MonteCarlo() {
-
+        weeklyCosts = new ArrayList<>();
 
     }
 
     @Override
     protected void experiment() {
         if (strategy != null) {
-            totalCost = strategy.algorithm(totalCost);
+            totalCost = strategy.algorithm(totalCost, weeklyCosts);
         }
     }
 
@@ -38,6 +42,8 @@ public class MonteCarlo extends SimulationCore {
     @Override
     protected void beforeSimulation() {
         this.actualRepCount++;
+        weeklyCostsCopy = new ArrayList<>(weeklyCosts);
+        this.weeklyCosts.clear();
     }
 
     @Override
@@ -48,12 +54,8 @@ public class MonteCarlo extends SimulationCore {
                 this.listener.onUpdate(this.averageCost);
             }
         }
-
     }
 
-    public IStrategy getStrategy() {
-        return strategy;
-    }
 
     public void setStrategy(IStrategy strategy) {
         this.strategy = strategy;
@@ -63,13 +65,6 @@ public class MonteCarlo extends SimulationCore {
         this.repCount = replicationCount;
     }
 
-    public double getAverageCost() {
-        return averageCost;
-    }
-
-    public void setAverageCost(double averageCost) {
-        this.averageCost = averageCost;
-    }
 
     public int getRepCount() {
         return this.actualRepCount;
@@ -78,6 +73,7 @@ public class MonteCarlo extends SimulationCore {
     public void setListener(UpdateListener listener) {
         this.listener = listener;
     }
+
     public void cancel() {
         this.isCancelled = true;
     }
@@ -88,5 +84,14 @@ public class MonteCarlo extends SimulationCore {
 
     public void setUpdateFrequency(int updateFrequency) {
         this.updateFrequency = updateFrequency;
+    }
+
+
+    public ArrayList<Double> getCostPerWeek() {
+        return weeklyCosts;
+    }
+
+    public ArrayList<Double> getWeeklyCostsCopy() {
+        return weeklyCostsCopy;
     }
 }

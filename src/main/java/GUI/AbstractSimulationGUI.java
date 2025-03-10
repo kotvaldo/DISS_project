@@ -1,11 +1,13 @@
 package GUI;
 
+import org.apache.commons.math3.distribution.TDistribution;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public abstract class AbstractSimulationGUI extends JFrame {
     protected XYSeries series;
@@ -99,6 +101,9 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected abstract void setupCustomChart();
     protected abstract void setupCustomInput();
     protected abstract void setupCustomPanel();
+    protected abstract void startSimulation();
+    protected abstract void stopSimulation();
+
 
     protected void clearStatistic() {
         meanLabel.setText("Mean: N/A");
@@ -109,6 +114,60 @@ public abstract class AbstractSimulationGUI extends JFrame {
         confidenceIntervalLabel90.setText("90% CI: N/A");
     }
 
-    protected abstract void startSimulation();
-    protected abstract void stopSimulation();
+    protected void updateStatisticsFromDataset() {
+        int count = series.getItemCount();
+        if (count == 0) return;
+
+        double sum = 0;
+        double[] values = new double[count];
+
+        for (int i = 0; i < count; i++) {
+            double value = series.getY(i).doubleValue();
+            values[i] = value;
+            sum += value;
+        }
+
+        double mean = sum / count;
+
+        Arrays.sort(values);
+        double median = (count % 2 == 0) ?
+                (values[count / 2 - 1] + values[count / 2]) / 2.0 : values[count / 2];
+
+        double varianceSum = 0;
+        for (double value : values) {
+            varianceSum += Math.pow(value - mean, 2);
+        }
+        double variance = varianceSum / (count - 1);
+        double stdDev = Math.sqrt(variance);
+
+        double z90, z95;
+        if (count < 30) {
+            int degreesOfFreedom = count - 1;
+            TDistribution tDist = new TDistribution(degreesOfFreedom);
+            z90 = tDist.inverseCumulativeProbability(0.95);
+            z95 = tDist.inverseCumulativeProbability(0.975);
+        } else {
+            z90 = 1.6449; // Z-score pre 90%
+            z95 = 1.9600; // Z-score pre 95%
+        }
+
+        double ci90 = z90 * (stdDev / Math.sqrt(count));
+        double ci95 = z95 * (stdDev / Math.sqrt(count));
+
+        double lower90 = mean - ci90;
+        double upper90 = mean + ci90;
+        double lower95 = mean - ci95;
+        double upper95 = mean + ci95;
+
+        SwingUtilities.invokeLater(() -> {
+            meanLabel.setText("Mean: " + String.format("%.2f", mean));
+            medianLabel.setText("Median: " + String.format("%.2f", median));
+            varianceLabel.setText("Variance: " + String.format("%.2f", variance));
+            stdDevLabel.setText("Standard Deviation: " + String.format("%.2f", stdDev));
+            confidenceIntervalLabel95.setText("95% CI: [" + String.format("%.2f", lower95) + ", " + String.format("%.2f", upper95) + "]");
+            confidenceIntervalLabel90.setText("90% CI: [" + String.format("%.2f", lower90) + ", " + String.format("%.2f", upper90) + "]");
+        });
+    }
+
+
 }

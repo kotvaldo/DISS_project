@@ -3,12 +3,9 @@ package Strategy;
 import Generators.UniformContinuous;
 
 public class StrategyA extends Strategy {
-    private final UniformContinuous supplier1Before;
-    private final UniformContinuous supplier1After;
+
     public StrategyA() {
         super();
-        this.supplier1Before = new UniformContinuous(0.1,0.7);
-        this.supplier1After = new UniformContinuous(0.3,0.95);
     }
 
 

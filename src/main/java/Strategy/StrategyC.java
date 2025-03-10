@@ -8,33 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class StrategyC extends Strategy {
-    private final EmpiricContinuous supplier2Before;
-    private final EmpiricContinuous supplier2After;
-    private ArrayList<EmpiricData<Double>> empiricData;
-    private ArrayList<EmpiricData<Double>> empiricData2;
-    private final UniformContinuous supplier1Before;
-    private final UniformContinuous supplier1After;
+
     public StrategyC() {
         super();
-        this.supplier1Before = new UniformContinuous(0.1,0.7);
-        this.supplier1After = new UniformContinuous(0.3,0.95);
-        empiricData = new ArrayList<>(Arrays.asList(
-                new EmpiricData<>(0.05, 0.1, 0.4),
-                new EmpiricData<>(0.1, 0.5, 0.3),
-                new EmpiricData<>(0.5, 0.7, 0.2),
-                new EmpiricData<>(0.7, 0.8, 0.06),
-                new EmpiricData<>(0.8, 0.95, 0.04)
-        ));
 
-        empiricData2 = new ArrayList<>(Arrays.asList(
-                new EmpiricData<>(0.05, 0.1, 0.2),
-                new EmpiricData<>(0.1, 0.5, 0.4),
-                new EmpiricData<>(0.5, 0.7, 0.3),
-                new EmpiricData<>(0.7, 0.8, 0.06),
-                new EmpiricData<>(0.8, 0.95, 0.04)
-        ));
-        this.supplier2Before = new EmpiricContinuous(empiricData);
-        this.supplier2After = new EmpiricContinuous(empiricData2);
 
     }
 
