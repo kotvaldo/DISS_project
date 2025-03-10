@@ -99,7 +99,6 @@ public abstract class Strategy implements IStrategy {
 
         }
         return totalCost;
-
     }
 
     protected abstract void setUpSupply(int curr_day);
