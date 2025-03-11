@@ -219,7 +219,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
                         customStrategy.setSupplierBOffset(Integer.parseInt(supplierBOffset.getText()));
                     }
                     customStrategy.setSupplier1Allowed(supplierAAllowed.isSelected());
-                    customStrategy.setSupplier1Allowed(supplierBAllowed.isSelected());
+                    customStrategy.setSupplier2Allowed(supplierBAllowed.isSelected());
                     monteCarlo.setStrategy(customStrategy);
                 } else {
                     IStrategy strategy = flyWeightStrategyFactory.getStrategy(strategyString);
