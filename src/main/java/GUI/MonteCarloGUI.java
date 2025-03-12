@@ -282,7 +282,9 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         costPlot.setRenderer(costRenderer);
 
         CategoryAxis costXAxis = costPlot.getDomainAxis();
-        costXAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        costXAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+        costXAxis.setTickLabelFont(new Font("SansSerif", Font.BOLD, 9));
+
 
         JFreeChart fineChart = ChartFactory.createLineChart(
                 "Weekly Fine Analysis",

@@ -1,6 +1,8 @@
 package Strategy;
 
 import Generators.*;
+import Parameters.IParameters;
+import Parameters.StrategyParameters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,10 +76,12 @@ public abstract class Strategy implements IStrategy {
     }
 
     @Override
-    public double algorithm(double totalCost, ArrayList<Double> dailyCostsArrayList, ArrayList<Double> dailyFineCostsArrayList) {
+    public double algorithm(IParameters parameters) {
+        StrategyParameters acutalParameters = (StrategyParameters) parameters;
         clearAll();
-
+        double totalCosts = acutalParameters.getTotalCost();
         for (int i = 0; i < 30; i++) { // 30 weeks
+
             int curr_week = i + 1;
 
             this.added_count_1 = 0;
@@ -91,12 +95,25 @@ public abstract class Strategy implements IStrategy {
             this.headlights += added_count_3;
 
             double weeklyCost = 0.0;
+            if(acutalParameters.getActualRepCount() < acutalParameters.getTargetRepCount()) {
+                weeklyCost += addStorageCosts(4, acutalParameters.getDailyCosts());
+            } else {
+                weeklyCost += addStorageCosts(4, null);
+            }
 
-            weeklyCost += addStorageCosts(4, dailyCostsArrayList);
+            int demand1 = this.demand1Dist.sample();
+            int demand2 = this.demand2Dist.sample();
+            int demand3 = this.demand3Dist.sample();
 
-            this.suppressors -= this.demand1Dist.sample();
-            this.breakPlates -= this.demand2Dist.sample();
-            this.headlights -= this.demand3Dist.sample();
+            this.suppressors -= demand1;
+            this.breakPlates -= demand2;
+            this.headlights -= demand3;
+
+            if(acutalParameters.getActualRepCount() < acutalParameters.getTargetAVGRepCount()) {
+                acutalParameters.getSuppressorsDemand().add(demand1);
+                acutalParameters.getBreakPlatesDemand().add(demand2);
+                acutalParameters.getHeadlightsDemand().add(demand3);
+            }
 
 
             double penalty = calculatePenalty();
@@ -104,27 +121,33 @@ public abstract class Strategy implements IStrategy {
                     + this.breakPlates * this.BREAK_PLATES_PRICE
                     + this.headlights * this.HEADLIGHTS_PRICE) + penalty;
 
+            if(acutalParameters.getActualRepCount() < acutalParameters.getTargetRepCount()) {
+                if(acutalParameters.getDailyFineCosts().isEmpty()) {
+                    acutalParameters.getDailyFineCosts().add(penalty);
+                } else {
+                    acutalParameters.getDailyFineCosts().add(penalty + acutalParameters.getDailyFineCosts().getLast());
+                }
 
-            if(dailyFineCostsArrayList.isEmpty()) {
-                dailyFineCostsArrayList.add(penalty);
-            } else {
-                dailyFineCostsArrayList.add(penalty + dailyFineCostsArrayList.getLast());
-            }
 
+                if(acutalParameters.getDailyCosts().isEmpty()) {
+                    acutalParameters.getDailyCosts().add(fridayCost);
+                } else {
+                    acutalParameters.getDailyCosts().add(fridayCost + acutalParameters.getDailyCosts().getLast());
+                }
 
-            if(dailyCostsArrayList.isEmpty()) {
-                dailyCostsArrayList.add(fridayCost);
-            } else {
-                dailyCostsArrayList.add(fridayCost + dailyCostsArrayList.getLast());
             }
             weeklyCost += fridayCost;
 
-            weeklyCost += addStorageCosts(2, dailyCostsArrayList);
+            if(acutalParameters.getActualRepCount() < acutalParameters.getTargetRepCount()) {
 
-            totalCost += weeklyCost;
+                weeklyCost += addStorageCosts(2, acutalParameters.getDailyCosts());
+            } else {
+                weeklyCost += addStorageCosts(2, null);
+            }
+            totalCosts += weeklyCost;
         }
 
-        return totalCost;
+        return totalCosts;
     }
 
 
@@ -135,11 +158,14 @@ public abstract class Strategy implements IStrategy {
                     + this.breakPlates * this.BREAK_PLATES_PRICE
                     + this.headlights * this.HEADLIGHTS_PRICE;
 
-            if(costList.isEmpty()) {
-                costList.add(dailyCost);
-            } else {
-                costList.add(dailyCost + costList.getLast());
-            }
+
+           if(costList != null) {
+               if(costList.isEmpty()) {
+                   costList.add(dailyCost);
+               } else {
+                   costList.add(dailyCost + costList.getLast());
+               }
+           }
             totalStorageCost += dailyCost;
         }
         return totalStorageCost;
