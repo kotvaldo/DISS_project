@@ -74,7 +74,7 @@ public abstract class Strategy implements IStrategy {
     }
 
     @Override
-    public double algorithm(double totalCost, ArrayList<Double> dailyCostsArrayList) {
+    public double algorithm(double totalCost, ArrayList<Double> dailyCostsArrayList, ArrayList<Double> dailyFineCostsArrayList) {
         clearAll();
 
         for (int i = 0; i < 30; i++) { // 30 weeks
@@ -103,6 +103,13 @@ public abstract class Strategy implements IStrategy {
             double fridayCost = (this.suppressors * this.SUPPRESSORS_PRICE
                     + this.breakPlates * this.BREAK_PLATES_PRICE
                     + this.headlights * this.HEADLIGHTS_PRICE) + penalty;
+
+
+            if(dailyFineCostsArrayList.isEmpty()) {
+                dailyFineCostsArrayList.add(penalty);
+            } else {
+                dailyFineCostsArrayList.add(penalty + dailyFineCostsArrayList.getLast());
+            }
 
 
             if(dailyCostsArrayList.isEmpty()) {

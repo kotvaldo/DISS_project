@@ -9,8 +9,13 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -36,6 +41,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     private JButton barChartButton;
     private final JFreeChart barChart;
     DefaultCategoryDataset barChartDataset;
+    DefaultCategoryDataset barChartFineDataset;
 
 
     public MonteCarloGUI() {
@@ -85,19 +91,29 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         });
         inputPanel.add(strategyComboBox);
 
-        barChartButton = new JButton("Show Bar Chart");
+        barChartButton = new JButton("Show Analysis");
         barChartButton.addActionListener(e -> {
             barChartDataset.clear();
-            ArrayList<Double> costData = new ArrayList<>(monteCarlo.getWeeklyCostsCopy());
+
+            ArrayList<Double> costData = new ArrayList<>(monteCarlo.getDailyCostsCopy());
+            ArrayList<Double> fineData = new ArrayList<>(monteCarlo.getDailyFineCostsCopy());
+
+            DefaultCategoryDataset lineDataset = new DefaultCategoryDataset();
 
             for (int i = 0; i < costData.size(); i++) {
                 double cost = costData.get(i);
                 barChartDataset.addValue(cost, "Cost", String.valueOf(i + 1));
+
+                if (i < fineData.size()) {
+                    double fine = fineData.get(i);
+                    lineDataset.addValue(fine, "Fine", String.valueOf(i + 1));
+                }
             }
 
-            showBarChart();
+            showSeparateCharts(barChartDataset, lineDataset);
         });
         barChartButton.setEnabled(false);
+
 
         inputPanel.add(barChartButton);
 
@@ -253,25 +269,53 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         }
     }
 
-    private void showBarChart() {
-        int width = 900;
-        int height = 400;
+    private void showSeparateCharts(DefaultCategoryDataset barDataset, DefaultCategoryDataset lineDataset) {
 
-        ChartPanel chartPanel = new ChartPanel(barChart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(width, height));
+        JFreeChart costChart = ChartFactory.createBarChart(
+                "Daily Cost Analysis",
+                "Days",
+                "Cost (€)",
+                barDataset
+        );
 
-        JFrame chartFrame = new JFrame("Bar Chart");
-        chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        chartFrame.setSize(width, height);
-        chartFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        chartFrame.setLocationRelativeTo(null);
-        chartFrame.getContentPane().add(chartPanel);
-        chartFrame.setVisible(true);
+        CategoryPlot costPlot = costChart.getCategoryPlot();
+        BarRenderer costRenderer = new BarRenderer();
+        costRenderer.setSeriesPaint(0, Color.BLUE);
+        costPlot.setRenderer(costRenderer);
 
-        CategoryAxis xAxis = barChart.getCategoryPlot().getDomainAxis();
-        xAxis.setTickLabelFont(new Font("SansSerif", Font.BOLD, 9));
-        xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+        CategoryAxis costXAxis = costPlot.getDomainAxis();
+        costXAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+
+        JFreeChart fineChart = ChartFactory.createLineChart(
+                "Weekly Fine Analysis",
+                "Days",
+                "Fine (€)",
+                lineDataset
+        );
+
+        CategoryPlot finePlot = fineChart.getCategoryPlot();
+        LineAndShapeRenderer fineRenderer = new LineAndShapeRenderer();
+        fineRenderer.setSeriesPaint(0, Color.RED);
+        fineRenderer.setSeriesStroke(0, new BasicStroke(2.0f));
+        finePlot.setRenderer(fineRenderer);
+
+        CategoryAxis fineXAxis = finePlot.getDomainAxis();
+        fineXAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+
+        JFrame costFrame = new JFrame("Cost Chart");
+        costFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        costFrame.setSize(800, 600);
+        costFrame.add(new ChartPanel(costChart));
+        costFrame.setVisible(true);
+
+        JFrame fineFrame = new JFrame("Fine Chart");
+        fineFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        fineFrame.setSize(800, 600);
+        fineFrame.add(new ChartPanel(fineChart));
+        fineFrame.setVisible(true);
     }
+
+
 
     private void updateChartRange() {
         XYPlot plot = chart.getXYPlot();

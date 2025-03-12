@@ -12,18 +12,20 @@ public class MonteCarlo extends SimulationCore {
     private UpdateListener listener;
     private int burnCount = 0;
     private int updateFrequency = 0;
-    private final ArrayList<Double> weeklyCosts;
-    private ArrayList<Double> weeklyCostsCopy;
+    private final ArrayList<Double> dailyCosts;
+    private final ArrayList<Double> dailyFineCosts;
+    private ArrayList<Double> dailyFineCostsCopy;
+    private ArrayList<Double> dailyCostsCopy;
 
     public MonteCarlo() {
-        weeklyCosts = new ArrayList<>();
-
+        dailyCosts = new ArrayList<>();
+        dailyFineCosts = new ArrayList<>();
     }
 
     @Override
     protected void experiment() {
         if (strategy != null) {
-            totalCost = strategy.algorithm(totalCost, weeklyCosts);
+            totalCost = strategy.algorithm(totalCost, dailyCosts, dailyFineCosts);
         }
     }
 
@@ -42,8 +44,10 @@ public class MonteCarlo extends SimulationCore {
     @Override
     protected void beforeSimulation() {
         this.actualRepCount++;
-        weeklyCostsCopy = new ArrayList<>(weeklyCosts);
-        this.weeklyCosts.clear();
+        dailyCostsCopy = new ArrayList<>(dailyCosts);
+        dailyFineCostsCopy = new ArrayList<>(dailyFineCosts);
+        this.dailyCosts.clear();
+        this.dailyFineCosts.clear();
     }
 
     @Override
@@ -87,7 +91,11 @@ public class MonteCarlo extends SimulationCore {
     }
 
 
-    public ArrayList<Double> getWeeklyCostsCopy() {
-        return weeklyCostsCopy;
+    public ArrayList<Double> getDailyCostsCopy() {
+        return dailyCostsCopy;
+    }
+
+    public ArrayList<Double> getDailyFineCostsCopy() {
+        return dailyFineCostsCopy;
     }
 }
