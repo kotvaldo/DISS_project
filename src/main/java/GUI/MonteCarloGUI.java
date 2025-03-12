@@ -9,10 +9,8 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
@@ -39,7 +37,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     private JCheckBox supplierAAllowed;
     private JCheckBox supplierBAllowed;
     private JButton barChartButton;
-    private final JFreeChart barChart;
+    private JFreeChart barChart;
     DefaultCategoryDataset barChartDataset;
     DefaultCategoryDataset barChartFineDataset;
 
