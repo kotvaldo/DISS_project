@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class MonteCarlo extends SimulationCore {
     private IStrategy strategy;
     private double totalCost = 0;
-    private double averageCost = 0;
     private UpdateListener listener;
     private int burnCount = 0;
     private int updateFrequency = 0;
@@ -84,9 +83,9 @@ public class MonteCarlo extends SimulationCore {
     @Override
     protected void afterSimulation() {
         if (this.actualRepCount > 0) {
-            this.averageCost = this.totalCost / this.actualRepCount;
+            double averageCost = this.totalCost / this.actualRepCount;
             if (actualRepCount % updateFrequency == 0 && actualRepCount >= burnCount) {
-                this.listener.onUpdate(this.averageCost);
+                this.listener.onUpdate(averageCost);
             }
         }
 

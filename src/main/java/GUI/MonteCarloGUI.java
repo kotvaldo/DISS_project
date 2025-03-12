@@ -77,13 +77,13 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         strategyComboBox.addItem("StrategyC");
         strategyComboBox.addItem("StrategyD");
         strategyComboBox.addItem("Custom");
-        strategyComboBox.addActionListener(e -> {
+        strategyComboBox.addActionListener(_ -> {
             this.customPanel.setVisible("Custom".equals(strategyComboBox.getSelectedItem()));
         });
         inputPanel.add(strategyComboBox);
 
         barChartButton = new JButton("Show Analysis");
-        barChartButton.addActionListener(e -> {
+        barChartButton.addActionListener(_ -> {
             barChartDataset.clear();
 
             ArrayList<Double> costData = new ArrayList<>(monteCarlo.getDailyCostsCopy());
@@ -184,13 +184,13 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         supplierBOffset.setEnabled(false);
         customPanel.add(supplierBOffset, gbc);
 
-        supplierAAllowed.addActionListener(e -> {
+        supplierAAllowed.addActionListener(_ -> {
             boolean enabled = supplierAAllowed.isSelected();
             supplierAFrequency.setEnabled(enabled);
             supplierAOffset.setEnabled(enabled);
         });
 
-        supplierBAllowed.addActionListener(e -> {
+        supplierBAllowed.addActionListener(_ -> {
             boolean enabled = supplierBAllowed.isSelected();
             supplierBFrequency.setEnabled(enabled);
             supplierBOffset.setEnabled(enabled);
