@@ -47,7 +47,7 @@ public class MonteCarlo extends SimulationCore {
             params.setBreakPlatesDemand(breakPlatesDemand);
             params.setTargetRepCount((int) (this.repCount * 0.1));
             params.setDailyFineCosts(dailyFineCosts);
-            params.setTargetAVGRepCount((int) (this.repCount * 0.01));
+            params.setTargetAVGRepCount((int) (this.repCount > 1000 ? 1000 : 0.5 * this.repCount));
             totalCost = strategy.algorithm(params);
         }
     }
