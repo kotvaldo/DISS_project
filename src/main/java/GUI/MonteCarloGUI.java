@@ -77,9 +77,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         strategyComboBox.addItem("StrategyC");
         strategyComboBox.addItem("StrategyD");
         strategyComboBox.addItem("Custom");
-        strategyComboBox.addActionListener(_ -> {
-            this.customPanel.setVisible("Custom".equals(strategyComboBox.getSelectedItem()));
-        });
+        strategyComboBox.addActionListener(_ -> this.customPanel.setVisible("Custom".equals(strategyComboBox.getSelectedItem())));
         inputPanel.add(strategyComboBox);
 
         barChartButton = new JButton("Show Analysis");
