@@ -37,9 +37,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     private JCheckBox supplierAAllowed;
     private JCheckBox supplierBAllowed;
     private JButton barChartButton;
-    private JFreeChart barChart;
     DefaultCategoryDataset barChartDataset;
-    DefaultCategoryDataset barChartFineDataset;
 
 
     public MonteCarloGUI() {
@@ -53,12 +51,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
                 })
         );
         barChartDataset = new DefaultCategoryDataset();
-        barChart = ChartFactory.createBarChart(
-                "Weekly Cost Graph",
-                "Week",
-                "Cost",
-                barChartDataset
-        );
+
     }
 
 

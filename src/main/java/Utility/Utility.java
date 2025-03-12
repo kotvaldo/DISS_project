@@ -8,23 +8,6 @@ public class Utility {
 
     }
 
-    public static ArrayList<Integer> exponentialSmoothing(ArrayList<Integer> demandHistory, double alpha) {
-        ArrayList<Integer> predictions = new ArrayList<>();
-
-        if (demandHistory.isEmpty()) return predictions;
-
-        double smoothedValue = demandHistory.getFirst();
-        predictions.add((int) Math.round(smoothedValue));
-
-        for (int i = 1; i < demandHistory.size(); i++) {
-            int actualDemand = demandHistory.get(i);
-            smoothedValue = alpha * actualDemand + (1 - alpha) * smoothedValue;
-            predictions.add((int) Math.round(smoothedValue));
-        }
-
-        return predictions;
-    }
-
     public static int trimmedMean(ArrayList<Integer> demandList, double trimPercent) {
         if (demandList.isEmpty()) return 0;
 

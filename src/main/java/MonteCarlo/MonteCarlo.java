@@ -3,7 +3,6 @@ package MonteCarlo;
 import Parameters.StrategyParameters;
 import SimulationCore.*;
 import Strategy.IStrategy;
-import Strategy.Strategy;
 import Utility.Utility;
 
 import java.util.ArrayList;
