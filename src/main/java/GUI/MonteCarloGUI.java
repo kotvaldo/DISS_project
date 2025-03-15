@@ -315,7 +315,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         double minY = series.getMinY();
         double maxY = series.getMaxY();
 
-        rangeAxis.setRange(minY - 10, maxY + 10);
+        rangeAxis.setRange(minY - 1 , maxY + 1);
     }
 
 

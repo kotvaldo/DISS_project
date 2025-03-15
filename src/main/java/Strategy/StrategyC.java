@@ -10,7 +10,7 @@ public class StrategyC extends Strategy {
 
     @Override
     protected void setUpSupply(int curr_week) {
-        if (curr_week % 2 == 0) {
+        if (curr_week % 2 != 0) {
             if(curr_week <= 10) {
                 if (decisionMaker.sample() < supplier1Before.sample()) {
                     added_count_1 = this.SUPRESSORS_BUY_COUNT;
