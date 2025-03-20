@@ -12,9 +12,10 @@ class SeedGeneratorTest {
     void testSeedsNotEqual() {
         ArrayList<Integer> listOfSeeds = new ArrayList<>();
         int numberOfSeeds = 20;
+        SeedGenerator seedGenerator = new SeedGenerator();
 
         for (int i = 0; i < numberOfSeeds; i++) {
-            listOfSeeds.add(SeedGenerator.sampleSeed());
+            listOfSeeds.add(seedGenerator.sampleSeed());
         }
 
 

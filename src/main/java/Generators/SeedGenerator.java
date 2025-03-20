@@ -3,10 +3,12 @@ package Generators;
 import java.util.Random;
 
 public class SeedGenerator {
-    private static final Random random = new Random();
-    private SeedGenerator() {}
+    private Random random;
+    public SeedGenerator() {
+        random = new Random();
+    }
 
-    public static Integer sampleSeed() {
+    public Integer sampleSeed() {
         return random.nextInt();
     }
 

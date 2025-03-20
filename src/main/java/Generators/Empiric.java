@@ -49,7 +49,6 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
 
         for (int i = 0; i < listOfValues.size(); i++) {
             cumulativeProbability += listOfValues.get(i).getProbability();
-
             if (probability < cumulativeProbability) {
                 return generateValue(i);
             }
