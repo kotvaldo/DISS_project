@@ -1,9 +1,7 @@
-package org.example;
+package MonteCarlo;
 
 import Generators.UniformContinuous;
 import SimulationCore.SimulationCore;
-
-import java.util.Random;
 
 import static java.lang.Math.sin;
 
