@@ -8,7 +8,7 @@ public class EventSimulationCore extends SimulationCore {
     PriorityQueue<Event> events;
 
     public EventSimulationCore() {
-
+        events = new PriorityQueue<>();
     }
     @Override
     protected void experiment() {
@@ -34,4 +34,5 @@ public class EventSimulationCore extends SimulationCore {
     protected void afterSimulation() {
 
     }
+
 }
