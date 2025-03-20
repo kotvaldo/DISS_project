@@ -45,7 +45,7 @@ public class MonteCarlo extends SimulationCore {
             params.setHeadlightsDemand(headlightsDemand);
             params.setSuppressorsDemand(suppressorsDemand);
             params.setBreakPlatesDemand(breakPlatesDemand);
-            params.setTargetRepCount((int) (this.repCount * 0.7));
+            params.setTargetRepCount((int) (this.repCount * 0.5));
             params.setDailyFineCosts(dailyFineCosts);
             params.setTargetAVGRepCount((int) (this.repCount > 1000 ? 1000 : 0.5 * this.repCount));
             totalCost = strategy.algorithm(params);
@@ -72,7 +72,7 @@ public class MonteCarlo extends SimulationCore {
         this.actualRepCount++;
         dailyCostsCopy = new ArrayList<>(dailyCosts);
         dailyFineCostsCopy = new ArrayList<>(dailyFineCosts);
-        if(actualRepCount < (int) (this.repCount * 0.7)) {
+        if(actualRepCount < (int) (this.repCount * 0.5)) {
             this.dailyCosts.clear();
             this.dailyFineCosts.clear();
         }
