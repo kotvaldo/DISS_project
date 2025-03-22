@@ -23,14 +23,14 @@ public class Triangular extends BaseGenerator<Double> {
     @Override
     public Double sample() {
         double random = this.baseRandom.nextDouble();
-        double invRandom = 1 - random;
         double fc = (this.mod - min) / (max - min);
 
-        if(random < fc) {
-            return (min + Math.sqrt(random * (max-min) * (mod - min)));
+        if (random < fc) {
+            return min + Math.sqrt(random * (max - min) * (mod - min));
         } else {
-            return (max + Math.sqrt(invRandom * (max-min) * (max - mod)));
+            return max - Math.sqrt((1 - random) * (max - min) * (max - mod));
         }
-
     }
+
+
 }
