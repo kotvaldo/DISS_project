@@ -8,7 +8,7 @@ import Utility.Utility;
 
 import java.util.ArrayList;
 
-public class MonteCarlo extends SimulationCore {
+public class MonteCarloCore extends SimulationCore {
     private IStrategy strategy;
     private double totalCost = 0;
     private int burnCount = 0;
@@ -21,16 +21,15 @@ public class MonteCarlo extends SimulationCore {
     private final ArrayList<Integer> breakPlatesDemand;
     private final ArrayList<Integer> headlightsDemand;
     StrategyParameters params;
-    MonteCarloState monteCarloState;
 
-    public MonteCarlo() {
+    public MonteCarloCore() {
         dailyCosts = new ArrayList<>();
         dailyFineCosts = new ArrayList<>();
         suppressorsDemand = new ArrayList<>();
         breakPlatesDemand = new ArrayList<>();
         headlightsDemand = new ArrayList<>();
         params = new StrategyParameters();
-        monteCarloState = new MonteCarloState();
+        state = new MonteCarloState();
 
     }
 
@@ -86,8 +85,9 @@ public class MonteCarlo extends SimulationCore {
     protected void afterSimulation() {
         if (this.actualRepCount > 0) {
             double averageCost = this.totalCost / this.actualRepCount;
-            this.monteCarloState.setAverage(averageCost);
-            this.monteCarloState.setRepCount(actualRepCount);
+            MonteCarloState monteCarloState = (MonteCarloState) state;
+            monteCarloState.setAverage(averageCost);
+            monteCarloState.setRepCount(actualRepCount);
             if (actualRepCount % updateFrequency == 0 && actualRepCount >= burnCount) {
                 this.listener.setState(monteCarloState);
                 this.listener.notifyObservers();

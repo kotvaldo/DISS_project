@@ -2,6 +2,7 @@ package SimulationCore;
 
 import Observer.ISubject;
 import Observer.Subject;
+import State.IState;
 
 public abstract class SimulationCore {
 
@@ -9,7 +10,7 @@ public abstract class SimulationCore {
     protected int actualRepCount;
     protected boolean isCancelled = false;
     protected ISubject listener;
-
+    protected IState state;
 
 
     public void runSimulation() {

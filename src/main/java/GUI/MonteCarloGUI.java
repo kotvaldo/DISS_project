@@ -1,7 +1,7 @@
 package GUI;
 
 import FlyWeightFactory.FlyWeightStrategyFactory;
-import MonteCarlo.MonteCarlo;
+import MonteCarlo.MonteCarloCore;
 import Observer.MonteCarloGraphObserver;
 import Strategy.CustomStrategy;
 import Strategy.IStrategy;
@@ -11,9 +11,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -28,7 +26,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class MonteCarloGUI extends AbstractSimulationGUI {
-    private final MonteCarlo monteCarlo;
+    private final MonteCarloCore monteCarloCore;
     private MonteCarloWorker worker;
     private final FlyWeightStrategyFactory flyWeightStrategyFactory;
     private JComboBox<String> strategyComboBox;
@@ -52,7 +50,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
 
     public MonteCarloGUI() {
         super("Monte Carlo Simulation");
-        monteCarlo = new MonteCarlo();
+        monteCarloCore = new MonteCarloCore();
         flyWeightStrategyFactory = new FlyWeightStrategyFactory();
 
 
@@ -73,7 +71,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
 
         MonteCarloGraphObserver monteCarloGraphObserver = new MonteCarloGraphObserver(this.series, this.chart);
         this.subject.attachObserver(monteCarloGraphObserver);
-        this.monteCarlo.setListener(subject);
+        this.monteCarloCore.setListener(subject);
     }
 
 
@@ -106,8 +104,8 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         barChartButton.addActionListener(_ -> {
             barChartDataset.clear();
 
-            ArrayList<Double> costData = new ArrayList<>(monteCarlo.getDailyCostsCopy());
-            ArrayList<Double> fineData = new ArrayList<>(monteCarlo.getDailyFineCostsCopy());
+            ArrayList<Double> costData = new ArrayList<>(monteCarloCore.getDailyCostsCopy());
+            ArrayList<Double> fineData = new ArrayList<>(monteCarloCore.getDailyFineCostsCopy());
 
             DefaultCategoryDataset lineDataset = new DefaultCategoryDataset();
 
@@ -247,14 +245,14 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
                     }
                     customStrategy.setSupplier1Allowed(supplierAAllowed.isSelected());
                     customStrategy.setSupplier2Allowed(supplierBAllowed.isSelected());
-                    monteCarlo.setStrategy(customStrategy);
+                    monteCarloCore.setStrategy(customStrategy);
                 } else {
                     IStrategy strategy = flyWeightStrategyFactory.getStrategy(strategyString);
-                    monteCarlo.setStrategy(strategy);
+                    monteCarloCore.setStrategy(strategy);
                 }
-                monteCarlo.setReplicationCount(replications);
-                monteCarlo.setBurnCount(burnIn);
-                monteCarlo.setUpdateFrequency(updateFrequency);
+                monteCarloCore.setReplicationCount(replications);
+                monteCarloCore.setBurnCount(burnIn);
+                monteCarloCore.setUpdateFrequency(updateFrequency);
 
 
                 worker = new MonteCarloWorker();
@@ -273,7 +271,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     protected void stopSimulation() {
         if (worker != null && !worker.isDone()) {
             worker.cancel(true);
-            monteCarlo.cancel();
+            monteCarloCore.cancel();
             this.updateStatisticsFromDataset();
 
 
@@ -398,7 +396,7 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     private class MonteCarloWorker extends SwingWorker<Void, Void> {
         @Override
         protected Void doInBackground() {
-            monteCarlo.runSimulation();
+            monteCarloCore.runSimulation();
             return null;
         }
 

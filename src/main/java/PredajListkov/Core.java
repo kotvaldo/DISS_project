@@ -1,8 +1,8 @@
 package PredajListkov;
 
-import EventSimulation.BaseEventSimulationCore;
+import EventSimulation.EventSimulationCore;
 
-public class Core extends BaseEventSimulationCore {
+public class Core extends EventSimulationCore {
     @Override
     protected void experiment() {
 
@@ -25,6 +25,11 @@ public class Core extends BaseEventSimulationCore {
 
     @Override
     protected void afterSimulation() {
+
+    }
+
+    @Override
+    protected void dataHandling() {
 
     }
 }
