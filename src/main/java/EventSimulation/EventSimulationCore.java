@@ -42,10 +42,20 @@ public abstract class EventSimulationCore extends SimulationCore {
 
             if(paused) {
                 dataHandling();
-                if(this.state != null) {}
+                if(this.state != null) {
+                    this.listener.setState(this.state);
+                    this.listener.notifyObservers();
+                }
+                while(paused) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                    }
+                }
             }
 
         }
+        generateSystemEvent = false;
     }
 
     @Override
