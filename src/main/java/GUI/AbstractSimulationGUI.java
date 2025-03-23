@@ -39,6 +39,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
         inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
 
+        this.subject = new Subject();
+
         JPanel controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);

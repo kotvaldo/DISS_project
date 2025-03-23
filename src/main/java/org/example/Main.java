@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        /*SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             MonteCarloGUI gui = new MonteCarloGUI();
             gui.setVisible(true);
             System.out.println("GUI executed");
-        });*/
+        });
 
 
         /**

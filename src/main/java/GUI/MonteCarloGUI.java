@@ -54,9 +54,6 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         super("Monte Carlo Simulation");
         monteCarlo = new MonteCarlo();
         flyWeightStrategyFactory = new FlyWeightStrategyFactory();
-        MonteCarloGraphObserver monteCarloGraphObserver = new MonteCarloGraphObserver(this.series, this.chart);
-        this.subject.attachObserver(monteCarloGraphObserver);
-        this.monteCarlo.setListener(subject);
 
 
         barChartDataset = new DefaultCategoryDataset();
@@ -73,6 +70,10 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         this.statsPanel.add(stdDevLabel);
         this.statsPanel.add(confidenceIntervalLabel95);
         this.statsPanel.add(confidenceIntervalLabel90);
+
+        MonteCarloGraphObserver monteCarloGraphObserver = new MonteCarloGraphObserver(this.series, this.chart);
+        this.subject.attachObserver(monteCarloGraphObserver);
+        this.monteCarlo.setListener(subject);
     }
 
 

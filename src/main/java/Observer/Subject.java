@@ -9,7 +9,7 @@ public class Subject implements ISubject {
     private IState currentState;
 
     public Subject() {
-
+        observers = new ArrayList<>();
     }
 
     @Override
