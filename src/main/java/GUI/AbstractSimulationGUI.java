@@ -1,5 +1,6 @@
 package GUI;
 
+import Observer.Subject;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
@@ -15,6 +16,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JTextField updateFrequencyInput;
     protected JButton startButton;
     protected JButton stopButton;
+    protected Subject subject;
     protected JPanel customPanel;
     protected JPanel inputPanel;
     protected JPanel statsPanel;

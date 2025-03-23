@@ -17,7 +17,7 @@ public abstract class Event implements Comparable<Event> {
         this.time = time;
     }
 
-    public abstract Event execute();
+    public abstract void Execute();
 
     public double getTime() {
         return time;
@@ -25,6 +25,15 @@ public abstract class Event implements Comparable<Event> {
     public int getPriority() {
         return priority;
     }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
+
     public SimulationCore getSimulationCore() {
         return simulationCore;
     }

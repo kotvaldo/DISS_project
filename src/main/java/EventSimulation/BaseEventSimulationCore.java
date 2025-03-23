@@ -9,13 +9,21 @@ public abstract class BaseEventSimulationCore extends SimulationCore {
     protected double simulationTime;
     protected double endTime;
 
+    protected boolean isSlowDown;
+    protected double slowDownSpeed;
+
     protected BaseEventSimulationCore() {
         events = new PriorityQueue<>();
     }
 
 
     @Override
-    protected abstract void experiment();
+    protected void experiment() {
+        while (!events.isEmpty() && !this.isCancelled) {
+
+
+        }
+    }
 
     @Override
     protected abstract void beforeRunSimulation();
@@ -29,6 +37,18 @@ public abstract class BaseEventSimulationCore extends SimulationCore {
     @Override
     protected abstract void afterSimulation();
 
+    public double getSimulationTime() {
+        return simulationTime;
+    }
+    public double getEndTime() {
+        return endTime;
+    }
 
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+    }
 
+    public void setSimulationTime(double simulationTime) {
+        this.simulationTime = simulationTime;
+    }
 }

@@ -2,6 +2,7 @@ package MonteCarlo;
 
 import Parameters.StrategyParameters;
 import SimulationCore.*;
+import State.MonteCarloState;
 import Strategy.IStrategy;
 import Utility.Utility;
 
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 public class MonteCarlo extends SimulationCore {
     private IStrategy strategy;
     private double totalCost = 0;
-    private UpdateListener listener;
     private int burnCount = 0;
     private int updateFrequency = 0;
     private final ArrayList<Double> dailyCosts;
@@ -21,6 +21,7 @@ public class MonteCarlo extends SimulationCore {
     private final ArrayList<Integer> breakPlatesDemand;
     private final ArrayList<Integer> headlightsDemand;
     StrategyParameters params;
+    MonteCarloState monteCarloState;
 
     public MonteCarlo() {
         dailyCosts = new ArrayList<>();
@@ -29,6 +30,7 @@ public class MonteCarlo extends SimulationCore {
         breakPlatesDemand = new ArrayList<>();
         headlightsDemand = new ArrayList<>();
         params = new StrategyParameters();
+        monteCarloState = new MonteCarloState();
 
     }
 
@@ -84,8 +86,11 @@ public class MonteCarlo extends SimulationCore {
     protected void afterSimulation() {
         if (this.actualRepCount > 0) {
             double averageCost = this.totalCost / this.actualRepCount;
+            this.monteCarloState.setAverage(averageCost);
+            this.monteCarloState.setRepCount(actualRepCount);
             if (actualRepCount % updateFrequency == 0 && actualRepCount >= burnCount) {
-                this.listener.onUpdate(averageCost);
+                this.listener.setState(monteCarloState);
+                this.listener.notifyObservers();
             }
         }
 
@@ -105,9 +110,6 @@ public class MonteCarlo extends SimulationCore {
         return this.actualRepCount;
     }
 
-    public void setListener(UpdateListener listener) {
-        this.listener = listener;
-    }
 
     public void cancel() {
         this.isCancelled = true;

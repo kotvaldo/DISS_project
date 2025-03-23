@@ -2,6 +2,7 @@ package GUI;
 
 import FlyWeightFactory.FlyWeightStrategyFactory;
 import MonteCarlo.MonteCarlo;
+import Observer.MonteCarloGraphObserver;
 import Strategy.CustomStrategy;
 import Strategy.IStrategy;
 import org.apache.commons.math3.distribution.TDistribution;
@@ -53,12 +54,11 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         super("Monte Carlo Simulation");
         monteCarlo = new MonteCarlo();
         flyWeightStrategyFactory = new FlyWeightStrategyFactory();
-        monteCarlo.setListener(value ->
-                SwingUtilities.invokeLater(() -> {
-                    series.add(monteCarlo.getRepCount(), value);
-                    updateChartRange();
-                })
-        );
+        MonteCarloGraphObserver monteCarloGraphObserver = new MonteCarloGraphObserver(this.series, this.chart);
+        this.subject.attachObserver(monteCarloGraphObserver);
+        this.monteCarlo.setListener(subject);
+
+
         barChartDataset = new DefaultCategoryDataset();
         meanLabel = new JLabel("Mean: N/A");
         medianLabel = new JLabel("Median: N/A");
@@ -328,16 +328,6 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
     }
 
 
-
-    private void updateChartRange() {
-        XYPlot plot = chart.getXYPlot();
-        ValueAxis rangeAxis = plot.getRangeAxis();
-
-        double minY = series.getMinY();
-        double maxY = series.getMaxY();
-
-        rangeAxis.setRange(minY - 1 , maxY + 1);
-    }
 
     @Override
     protected void clearStatistics() {
