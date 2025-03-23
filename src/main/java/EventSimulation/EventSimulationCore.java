@@ -1,7 +1,6 @@
 package EventSimulation;
 
 import SimulationCore.SimulationCore;
-import State.IState;
 
 import java.util.PriorityQueue;
 

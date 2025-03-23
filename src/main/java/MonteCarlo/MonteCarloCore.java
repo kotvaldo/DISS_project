@@ -106,11 +106,6 @@ public class MonteCarloCore extends SimulationCore {
     }
 
 
-    public int getRepCount() {
-        return this.actualRepCount;
-    }
-
-
     public void cancel() {
         this.isCancelled = true;
     }

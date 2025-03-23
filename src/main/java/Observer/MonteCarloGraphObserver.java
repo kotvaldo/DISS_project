@@ -10,8 +10,8 @@ import org.jfree.data.xy.XYSeries;
 import javax.swing.*;
 
 public class MonteCarloGraphObserver implements IObserver {
-    private XYSeries dataset;
-    private JFreeChart chart;
+    private final XYSeries dataset;
+    private final JFreeChart chart;
 
 
     public MonteCarloGraphObserver(XYSeries series, JFreeChart chart) {

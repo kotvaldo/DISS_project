@@ -78,8 +78,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
         startButton = new JButton("Start Simulation");
         stopButton = new JButton("Stop Simulation");
         stopButton.setEnabled(false);
-        startButton.addActionListener(e -> startSimulation());
-        stopButton.addActionListener(e -> stopSimulation());
+        startButton.addActionListener(_ -> startSimulation());
+        stopButton.addActionListener(_ -> stopSimulation());
     }
 
     protected abstract void setupCustomChart();

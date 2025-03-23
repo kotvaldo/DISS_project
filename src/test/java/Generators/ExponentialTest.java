@@ -6,9 +6,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExponentialTest {
     @Test

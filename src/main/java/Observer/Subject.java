@@ -5,7 +5,7 @@ import State.IState;
 import java.util.ArrayList;
 
 public class Subject implements ISubject {
-    private ArrayList<IObserver> observers;
+    private final ArrayList<IObserver> observers;
     private IState currentState;
 
     public Subject() {

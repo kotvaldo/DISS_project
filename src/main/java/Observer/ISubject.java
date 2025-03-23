@@ -3,8 +3,8 @@ package Observer;
 import State.IState;
 
 public interface ISubject {
-    public void notifyObservers();
-    public void attachObserver(IObserver observer);
-    public void detachObserver(IObserver observer);
-    public void setState(IState state);
+    void notifyObservers();
+    void attachObserver(IObserver observer);
+    void detachObserver(IObserver observer);
+    void setState(IState state);
 }
