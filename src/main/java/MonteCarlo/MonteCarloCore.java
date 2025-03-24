@@ -2,7 +2,6 @@ package MonteCarlo;
 
 import Parameters.StrategyParameters;
 import SimulationCore.*;
-import State.MonteCarloState;
 import Strategy.IStrategy;
 import Utility.Utility;
 

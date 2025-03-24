@@ -1,4 +1,6 @@
-package State;
+package MonteCarlo;
+
+import State.IState;
 
 public class MonteCarloState implements IState {
     private double average = 0.0;

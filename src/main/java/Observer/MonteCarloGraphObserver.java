@@ -1,7 +1,7 @@
 package Observer;
 
 import State.IState;
-import State.MonteCarloState;
+import MonteCarlo.MonteCarloState;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;

@@ -1,10 +1,15 @@
 package PredajListkov;
 
 import EventSimulation.EventSimulationCore;
+import Generators.Exponential;
 
-public class Core extends EventSimulationCore {
-    @Override
-    protected void experiment() {
+public class StanokCore extends EventSimulationCore {
+
+    private Exponential prichod;
+    private Exponential casObsluhy;
+
+
+    public StanokCore() {
 
     }
 
