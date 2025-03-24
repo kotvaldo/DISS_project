@@ -9,11 +9,13 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected double simulationTime;
     protected double endTime;
 
-    protected boolean isFastMode;
-    protected double slowDownSpeed;
-    private boolean generateSystemEvent;
+    protected boolean isSlowMode;
+    protected double slowDownSpeed = 1;
+    protected boolean isGeneratedFirstSystemEvent;
+
 
     protected boolean paused;
+    protected int frequency = 5;
 
 
     protected EventSimulationCore() {
@@ -24,21 +26,27 @@ public abstract class EventSimulationCore extends SimulationCore {
 
     @Override
     protected void experiment() {
-        while (!events.isEmpty() && !this.isCancelled) {
+        while (!events.isEmpty() && !this.isCancelled && simulationTime <= endTime) {
+
             Event event = events.poll();
             if(event.getTime() < simulationTime) {
                 throw new RuntimeException("This cannot happen!");
             }
             this.simulationTime = event.getTime();
 
-            if(isFastMode) {
+            if(isSlowMode) {
                 dataHandling();
             }
-            if(!isFastMode && generateSystemEvent) {
-                generateSystemEvent = false;
-            } else if(isFastMode && !generateSystemEvent) {
-                generateSystemEvent = true;
+            if(!isSlowMode && isGeneratedFirstSystemEvent) {
+                isGeneratedFirstSystemEvent = false;
+            } else if(isSlowMode && !isGeneratedFirstSystemEvent) {
+                isGeneratedFirstSystemEvent = true;
+                double timeNew = (slowDownSpeed / frequency) + this.simulationTime;
+                Event systemEvent = new SystemEvent(timeNew, 3, this);
+                this.events.add(systemEvent);
             }
+
+
 
             if(paused) {
                 dataHandling();
@@ -55,8 +63,9 @@ public abstract class EventSimulationCore extends SimulationCore {
             }
 
         }
-        generateSystemEvent = false;
+        isGeneratedFirstSystemEvent = false;
     }
+
 
     @Override
     protected abstract void beforeRunSimulation();
@@ -95,12 +104,12 @@ public abstract class EventSimulationCore extends SimulationCore {
         this.slowDownSpeed = slowDownSpeed;
     }
 
-    public boolean isFastMode() {
-        return isFastMode;
+    public boolean isSlowMode() {
+        return isSlowMode;
     }
 
-    public void setFastMode(boolean fastMode) {
-        isFastMode = fastMode;
+    public void setSlowMode(boolean slowMode) {
+        isSlowMode = slowMode;
     }
 
     public boolean isPaused() {
@@ -109,5 +118,18 @@ public abstract class EventSimulationCore extends SimulationCore {
 
     public void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+    public int getFrequency() {
+        return frequency;
+    }
+    public void setEndTime(int endTime) {
+        this.endTime = endTime;
+    }
+    public void getEndTime(int endTime) {
+        this.endTime = endTime;
     }
 }

@@ -34,5 +34,10 @@ public abstract class SimulationCore {
     public void setListener(ISubject listener) {
         this.listener = listener;
     }
-
+    public ISubject getListener() {
+         return listener;
+    }
+    public IState getState() {
+        return state;
+    }
 }
