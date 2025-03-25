@@ -42,7 +42,7 @@ public abstract class EventSimulationCore extends SimulationCore {
             } else if(isSlowMode && !isGeneratedFirstSystemEvent) {
                 isGeneratedFirstSystemEvent = true;
                 double timeNew = (slowDownSpeed / frequency) + this.simulationTime;
-                Event systemEvent = new SystemEvent(timeNew, 3, this);
+                Event systemEvent = new SystemEvent(timeNew, 5, this);
                 this.events.add(systemEvent);
             }
 
