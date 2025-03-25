@@ -9,6 +9,7 @@ import Furniture.Enums.PriorityValues;
 import Furniture.Enums.WorkerStateValues;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
+import Utility.Utility;
 
 import java.util.LinkedList;
 
@@ -40,7 +41,7 @@ public class OrderArrivalEvent extends Event {
             queueOne.addLast(order);
         } else {
             if(queueOne.isEmpty()) {
-                newTime = calculateTime(order, core);
+                newTime = time + Utility.calculateFirstTime(order, core);
                 targetWorker.setCurrentState(WorkerStateValues.BUSSY_WORKER.getValue());
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
             } else {

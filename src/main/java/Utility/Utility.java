@@ -1,5 +1,8 @@
 package Utility;
 
+import Furniture.Entity.Order;
+import Furniture.FurnitureEventCore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,6 +24,55 @@ public class Utility {
         ArrayList<Integer> trimmedList = new ArrayList<>(sortedList.subList(trimCount, sortedList.size() - trimCount));
 
         return (int) trimmedList.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+
+    public static double calculateFirstTime(Order order, FurnitureEventCore core) {
+        double totalTime = 0.0;
+        totalTime += core.getTimeInStorageDist().sample();
+        totalTime += core.getTimeInStorageDist().sample();
+        if(order.getType() == 1) {
+            totalTime += core.getCuttingTypeOneDist().sample();
+        } else if(order.getType() == 2) {
+            totalTime += core.getCuttingTypeTwoDist().sample();
+        } else if(order.getType() == 3) {
+            totalTime += core.getCuttingTypeThreeDist().sample();
+        }
+        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+        return totalTime;
+
+    }
+
+    public static double calculateSecondTime(Order order, FurnitureEventCore core) {
+        double totalTime = 0.0;
+        if(order.getType() == 1) {
+            totalTime += core.getColoringTypeOneDist().sample();
+        } else if(order.getType() == 2) {
+            totalTime += core.getColoringTypeTwoDist().sample();
+        } else if(order.getType() == 3) {
+            totalTime += core.getColoringTypeThreeDist().sample();
+        }
+        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+        return totalTime;
+
+    }
+
+    public static double calculateThird(Order order, FurnitureEventCore core) {
+        double totalTime = 0.0;
+        if(order.getType() == 1) {
+            totalTime += core.getComputingTypeOneDist().sample();
+        } else if(order.getType() == 2) {
+            totalTime += core.getComputingTypeTwoDist().sample();
+        } else if(order.getType() == 3) {
+            totalTime += core.getComputingTypeThreeDist().sample();
+        }
+        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+        return totalTime;
+    }
+    public static double calculateFourth(Order order, FurnitureEventCore core) {
+        double totalTime = 0.0;
+        totalTime += core.getFittingTypeThreeDist().sample();
+        return totalTime;
+
     }
 
 

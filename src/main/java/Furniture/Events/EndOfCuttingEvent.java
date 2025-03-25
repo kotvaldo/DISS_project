@@ -8,6 +8,7 @@ import Furniture.Enums.PriorityValues;
 import Furniture.Enums.WorkerStateValues;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
+import Utility.Utility;
 
 public class EndOfCuttingEvent extends Event {
     private Order order;
@@ -26,8 +27,9 @@ public class EndOfCuttingEvent extends Event {
         if(workPlace.getQueueOne().isEmpty()) {
             worker.setCurrentState(WorkerStateValues.NON_BUSSY_WORKER.getValue());
         } else {
-            double newTime = ;
-            core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT,workPlace.getQueueOne().removeFirst(), worker));
+            Order order = workPlace.getQueueOne().removeFirst();
+            double newTime = this.time + Utility.calculateFirstTime(order, core);
+            core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue() ,this.simulationCore, order, worker));
         }
 
         Worker targetWorkerForTwo = null;
@@ -37,20 +39,20 @@ public class EndOfCuttingEvent extends Event {
             }
         }
 
-
-    }
-
-    private double calculateTime(Order order, FurnitureEventCore core) {
-        double totalTime = 0.0;
-        if(order.getType() == 1) {
-            totalTime += core.getColoringTypeOneDist().sample();
-        } else if(order.getType() == 2) {
-            totalTime += core.getColoringTypeTwoDist().sample();
-        } else if(order.getType() == 3) {
-            totalTime += core.getColoringTypeThreeDist().sample();
+        if(targetWorkerForTwo == null) {
+            workPlace.getQueuesTwo().addLast(order);
+        } else {
+            if(workPlace.getQueuesTwo().isEmpty()) {
+                double newTime = Utility.calculateSecondTime(order, core);
+                targetWorkerForTwo.setCurrentState(WorkerStateValues.BUSSY_WORKER.getValue());
+                core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorkerForTwo));
+            } else {
+                workPlace.getQueuesTwo().addLast(order);
+            }
         }
-        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
-        return totalTime;
+
 
     }
+
+
 }
