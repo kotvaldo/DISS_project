@@ -4,6 +4,7 @@ import EventSimulation.EventSimulationCore;
 import Generators.*;
 import Nabytok.Entity.WorkPlace;
 import Nabytok.Enums.PresetSimulationValues;
+import Nabytok.Enums.PriorityValues;
 import Nabytok.Events.OrderArrivalEvent;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     protected void beforeSimulation() {
         workPlace.clearOrderQueues();
         double time = this.simulationTime + orderArrivalDist.sample();
-        events.add(new OrderArrivalEvent(time, 1, this));
+        events.add(new OrderArrivalEvent(time, PriorityValues.BASIC_EVENT.getValue(), this));
     }
 
     @Override
@@ -96,7 +97,13 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     @Override
     protected void dataHandling() {
+        if(this.isSlowMode) {
+            FurnitureEventState state = (FurnitureEventState) this.state;
 
+
+        } else {
+
+        }
     }
 
 

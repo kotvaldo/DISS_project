@@ -1,7 +1,13 @@
 package PredajListkov.Entity;
 
+import IDGenerator.IDGenerator;
+
 public class Person {
     private int id;
-    private double timeOfArrival;
-    private int state;
+    private boolean bussy = false;
+
+    Person() {
+        this.id = IDGenerator.getInstance().getNextPersonId();
+
+    }
 }

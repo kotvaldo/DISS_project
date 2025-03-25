@@ -33,10 +33,11 @@ public abstract class EventSimulationCore extends SimulationCore {
                 throw new RuntimeException("This cannot happen!");
             }
             this.simulationTime = event.getTime();
+            event.Execute();
 
-            if(isSlowMode) {
-                dataHandling();
-            }
+
+            dataHandling();
+
             if(!isSlowMode && isGeneratedFirstSystemEvent) {
                 isGeneratedFirstSystemEvent = false;
             } else if(isSlowMode && !isGeneratedFirstSystemEvent) {
@@ -131,5 +132,8 @@ public abstract class EventSimulationCore extends SimulationCore {
     }
     public void getEndTime(int endTime) {
         this.endTime = endTime;
+    }
+    public void addEvent(Event event) {
+        events.add(event);
     }
 }

@@ -1,20 +1,17 @@
 package Nabytok.Entity;
 
-import IDGenerator.IDGenerator;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class WorkPlace {
-    private Queue<Order> queueOne;
+    private LinkedList<Order> queueOne;
     private ArrayList<Worker> workersOne;
 
     private ArrayList<Worker> workersTwo;
-    private Queue<Order> queueTwo;
+    private LinkedList<Order> queueTwo;
 
     private ArrayList<Worker> workersThree;
-    private Queue<Order> queueThree;
+    private LinkedList<Order> queueThree;
 
     public WorkPlace() {
         queueOne = new LinkedList<>();
@@ -30,13 +27,13 @@ public class WorkPlace {
         workersTwo.clear();
         workersThree.clear();
         for (int i = 0; i < countA; i++) {
-            workersOne.add(new Worker(IDGenerator.getInstance().getNextPersonId(), 1));
+            workersOne.add(new Worker(1));
         }
         for (int i = 0; i < countB; i++) {
-            workersTwo.add(new Worker(IDGenerator.getInstance().getNextPersonId(), 2));
+            workersTwo.add(new Worker(2));
         }
         for (int i = 0; i < countC; i++) {
-            workersTwo.add(new Worker(IDGenerator.getInstance().getNextPersonId(), 2));
+            workersTwo.add(new Worker(2));
         }
 
     }
@@ -47,15 +44,24 @@ public class WorkPlace {
         queueThree.clear();
     }
 
-    public Queue<Order> getQueuesOne() {
-        return this.queueOne;
+    public LinkedList<Order> getQueueOne() {
+        return queueOne;
     }
 
-    public Queue<Order> getQueuesTwo() {
+    public LinkedList<Order> getQueuesTwo() {
         return this.queueTwo;
     }
-    public Queue<Order> getQueuesThree() {
+    public LinkedList<Order> getQueuesThree() {
         return queueThree;
+    }
+    public ArrayList<Worker> getWorkersOne() {
+        return this.workersOne;
+    }
+    public ArrayList<Worker> getWorkersTwo() {
+        return this.workersTwo;
+    }
+    public ArrayList<Worker> getWorkersThree() {
+        return workersThree;
     }
 
 }
