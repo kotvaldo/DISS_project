@@ -1,20 +1,20 @@
-package Nabytok;
+package Furniture;
 
 import EventSimulation.EventSimulationCore;
 import Generators.*;
-import Nabytok.Entity.WorkPlace;
-import Nabytok.Enums.PresetSimulationValues;
-import Nabytok.Enums.PriorityValues;
-import Nabytok.Events.OrderArrivalEvent;
+import Furniture.Entity.WorkPlace;
+import Furniture.Enums.PresetSimulationValues;
+import Furniture.Enums.PriorityValues;
+import Furniture.Events.OrderArrivalEvent;
 
 import java.util.ArrayList;
 
 public class FurnitureEventCore extends EventSimulationCore {
     private final Exponential orderArrivalDist;
     private final EmpiricDiscrete typeOfOrderDist;
-    private final EmpiricContinuous preparingTypeOneDist;
-    private final UniformContinuous preparingTypeTwoDist;
-    private final UniformContinuous preparingTypeThreeDist;
+    private final EmpiricContinuous cuttingTypeOneDist;
+    private final UniformContinuous cuttingTypeTwoDist;
+    private final UniformContinuous cuttingTypeThreeDist;
     private final UniformContinuous coloringTypeOneDist;
     private final UniformContinuous coloringTypeTwoDist;
     private final UniformContinuous coloringTypeThreeDist;
@@ -40,21 +40,21 @@ public class FurnitureEventCore extends EventSimulationCore {
         typeList.add(new EmpiricData<>(2, 3, 0.2));
         typeList.add(new EmpiricData<>(3, 4, 0.3));
         typeOfOrderDist = new EmpiricDiscrete(typeList);
-        ArrayList<EmpiricData<Double>> preparingList = new ArrayList<>();
-        preparingList.add(new EmpiricData<>(10.0, 25.0, 0.6));
-        preparingList.add(new EmpiricData<>(25.0, 50.0, 0.4));
+        ArrayList<EmpiricData<Double>> list = new ArrayList<>();
+        list.add(new EmpiricData<>(10.0, 25.0, 0.6));
+        list.add(new EmpiricData<>(25.0, 50.0, 0.4));
         //first
-        preparingTypeOneDist = new EmpiricContinuous(preparingList);
+        cuttingTypeOneDist = new EmpiricContinuous(list);
         coloringTypeOneDist = new UniformContinuous(12000.0, 36600.0);
         computingTypeOneDist = new UniformContinuous(1800.0, 3600.0);
 
         // second
-        preparingTypeTwoDist = new UniformContinuous(720.0, 960.0);
+        cuttingTypeTwoDist = new UniformContinuous(720.0, 960.0);
         coloringTypeTwoDist = new UniformContinuous(12600.0, 32400.0);
         computingTypeTwoDist = new UniformContinuous(840.0, 1440.0);
 
         // third
-        preparingTypeThreeDist = new UniformContinuous(900.0, 4800.0);
+        cuttingTypeThreeDist = new UniformContinuous(900.0, 4800.0);
         coloringTypeThreeDist = new UniformContinuous(36000.0, 42000.0);
         computingTypeThreeDist = new UniformContinuous(2100.0, 4500.0);
         fittingTypeThreeDist = new UniformContinuous(900.0, 1500.0);
@@ -117,18 +117,18 @@ public class FurnitureEventCore extends EventSimulationCore {
     }
 
 
-    public EmpiricContinuous getPreparingTypeOneDist() {
-        return preparingTypeOneDist;
+    public EmpiricContinuous getCuttingTypeOneDist() {
+        return cuttingTypeOneDist;
     }
 
 
-    public UniformContinuous getPreparingTypeTwoDist() {
-        return preparingTypeTwoDist;
+    public UniformContinuous getCuttingTypeTwoDist() {
+        return cuttingTypeTwoDist;
     }
 
 
-    public UniformContinuous getPreparingTypeThreeDist() {
-        return preparingTypeThreeDist;
+    public UniformContinuous getCuttingTypeThreeDist() {
+        return cuttingTypeThreeDist;
     }
 
 

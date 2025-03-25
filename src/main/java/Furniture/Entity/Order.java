@@ -1,4 +1,4 @@
-package Nabytok.Entity;
+package Furniture.Entity;
 
 public class Order {
     private final int id;

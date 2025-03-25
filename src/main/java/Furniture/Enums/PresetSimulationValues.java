@@ -1,4 +1,4 @@
-package Nabytok.Enums;
+package Furniture.Enums;
 
 public enum PresetSimulationValues {
     END_OF_SIMULATION(10000.0),

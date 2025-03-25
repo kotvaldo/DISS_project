@@ -1,4 +1,4 @@
-package Nabytok.Enums;
+package Furniture.Enums;
 
 public enum OrderStateValues {
     WAITING_IN_QUEUE_1(1),

@@ -1,7 +1,7 @@
-package Nabytok.Entity;
+package Furniture.Entity;
 
 import IDGenerator.IDGenerator;
-import Nabytok.Enums.WorkerStateValues;
+import Furniture.Enums.WorkerStateValues;
 
 public class Worker {
     private final int id;

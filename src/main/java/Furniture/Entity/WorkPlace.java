@@ -1,4 +1,4 @@
-package Nabytok.Entity;
+package Furniture.Entity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

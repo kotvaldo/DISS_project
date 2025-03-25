@@ -1,10 +1,10 @@
-package Nabytok.Events;
+package Furniture.Events;
 
 import EventSimulation.Event;
 import SimulationCore.SimulationCore;
 
-public class EndOfColoringEvent extends Event {
-    protected EndOfColoringEvent(double time, int priority, SimulationCore simulationCore) {
+public class EndOfComputingEvent extends Event {
+    protected EndOfComputingEvent(double time, int priority, SimulationCore simulationCore) {
         super(time, priority, simulationCore);
     }
 

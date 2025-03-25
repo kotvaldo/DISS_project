@@ -1,4 +1,4 @@
-package Nabytok.Enums;
+package Furniture.Enums;
 
 public enum PriorityValues {
     SYSTEM_EVENT(1),
