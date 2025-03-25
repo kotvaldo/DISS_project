@@ -36,9 +36,9 @@ public abstract class Event implements Comparable<Event> {
 
     @Override
     public int compareTo(Event other) {
-        if (this.time != other.time) {
-            return Double.compare(this.time, other.time);
+        if (this.priority != other.priority) {
+            return Integer.compare(this.priority, other.priority);
         }
-        return Integer.compare(this.priority, other.priority);
+        return Double.compare(this.time, other.time);
     }
 }

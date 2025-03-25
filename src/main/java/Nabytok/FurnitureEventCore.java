@@ -2,15 +2,13 @@ package Nabytok;
 
 import EventSimulation.EventSimulationCore;
 import Generators.*;
-import Nabytok.Entity.Order;
 import Nabytok.Entity.WorkPlace;
+import Nabytok.Enums.PresetSimulationValues;
+import Nabytok.Events.OrderArrivalEvent;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class FurnitureEventCore extends EventSimulationCore {
-    private final Queue<Order> orders;
     private final Exponential orderArrivalDist;
     private final EmpiricDiscrete typeOfOrderDist;
     private final EmpiricContinuous preparingTypeOneDist;
@@ -34,7 +32,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     public FurnitureEventCore() {
         super();
         state = new FurnitureEventState();
-        orders = new LinkedList<Order>();
+
         orderArrivalDist = new Exponential(1800.0);
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
         typeList.add(new EmpiricData<>(1, 2, 0.5));
@@ -71,8 +69,18 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     @Override
     protected void beforeRunSimulation() {
-        workPlace.setWorkers(countWorkerA, countWorkerB, countWorkerC);
+        this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
+        this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
+        events.clear();
+        workPlace.initWorkers(countWorkerA, countWorkerB, countWorkerC);
         workPlace.clearOrderQueues();
+
+    }
+    @Override
+    protected void beforeSimulation() {
+        workPlace.clearOrderQueues();
+        double time = this.simulationTime + orderArrivalDist.sample();
+        events.add(new OrderArrivalEvent(time, 1, this));
     }
 
     @Override
@@ -80,11 +88,6 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     }
 
-    @Override
-    protected void beforeSimulation() {
-        orders.clear();
-
-    }
 
     @Override
     protected void afterSimulation() {
@@ -96,9 +99,6 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     }
 
-    public Queue<Order> getOrders() {
-        return orders;
-    }
 
 
     public Exponential getOrderArrivalDist() {
@@ -194,4 +194,8 @@ public class FurnitureEventCore extends EventSimulationCore {
     public void setCountWorkerC(int countWorkerC) {
         this.countWorkerC = countWorkerC;
     }
+    public WorkPlace getWorkPlace() {
+        return workPlace;
+    }
+
 }

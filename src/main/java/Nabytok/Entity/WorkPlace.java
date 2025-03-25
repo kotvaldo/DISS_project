@@ -25,7 +25,7 @@ public class WorkPlace {
         queueTwo = new LinkedList<>();
     }
 
-    public void setWorkers(int countA, int countB, int countC) {
+    public void initWorkers(int countA, int countB, int countC) {
         workersOne.clear();
         workersTwo.clear();
         workersThree.clear();
@@ -33,6 +33,9 @@ public class WorkPlace {
             workersOne.add(new Worker(IDGenerator.getInstance().getNextPersonId(), 1));
         }
         for (int i = 0; i < countB; i++) {
+            workersTwo.add(new Worker(IDGenerator.getInstance().getNextPersonId(), 2));
+        }
+        for (int i = 0; i < countC; i++) {
             workersTwo.add(new Worker(IDGenerator.getInstance().getNextPersonId(), 2));
         }
 
