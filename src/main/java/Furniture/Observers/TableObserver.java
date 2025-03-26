@@ -42,19 +42,14 @@ public class TableObserver implements IObserver {
             workersModel.setRowCount(0);
 
             for (Worker worker : furnitureState.getWorkersA()) {
-                String skupina = "A";
-                String stav = WorkerBussyState.getNameByValue(worker.getCurrentState());
                 workersModel.addRow(new Object[]{worker.getId(), worker.getType(), worker.getCurrentState()});
             }
 
             for (Worker worker : furnitureState.getWorkersB()) {
-                String skupina = "B";
-                String stav = WorkerBussyState.getNameByValue(worker.getCurrentState());
                 workersModel.addRow(new Object[]{worker.getId(), worker.getType(), worker.getCurrentState()});
             }
 
             for (Worker worker : furnitureState.getWorkersC()) {
-
                 workersModel.addRow(new Object[]{worker.getId(), worker.getType(), worker.getCurrentState()});
             }
         });

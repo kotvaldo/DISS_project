@@ -44,6 +44,7 @@ public class EndOfAssemblyEvent extends Event {
 
             if (targetWorkerForMontage == null || !workPlace.getQueueFour().isEmpty()) {
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                core.dataHandling();
                 workPlace.getQueueFour().addLast(order);
               //  System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " pridaná do fronty kovania (queueFour).");
             } else {
@@ -51,6 +52,7 @@ public class EndOfAssemblyEvent extends Event {
                 if (newTime < core.getEndTime()) {
                     order.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                     targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                    core.dataHandling();
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
               /*      System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() +
                             " ide rovno na montáž kovania (worker ID: " + targetWorkerForMontage.getId() + ", čas: " + newTime + ")");
