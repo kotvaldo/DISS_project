@@ -2,6 +2,10 @@ package Furniture;
 
 import EventSimulation.EventSimulationCore;
 import EventSimulation.SystemEvent;
+import Furniture.Entity.Order;
+import Furniture.Entity.Worker;
+import Furniture.Enums.OrderStateValues;
+import Furniture.Events.OrderArrivalEvent;
 import Generators.*;
 import Furniture.Entity.WorkPlace;
 import Furniture.Enums.PresetSimulationValues;
@@ -25,15 +29,15 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Triangular timeInStorageDist;
     private final Triangular timeMovingToStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
-    private int countWorkerA;
-    private int countWorkerB;
-    private int countWorkerC;
+    private int countWorkerA = 5;
+    private int countWorkerB = 6;
+    private int countWorkerC = 3;
     private WorkPlace workPlace;
+    public ArrayList<Order> ordersArrayList = new ArrayList<>();
 
     public FurnitureEventCore() {
         super();
         state = new FurnitureEventState();
-        setEndTime(PresetSimulationValues.END_OF_SIMULATION.getValue());
         orderArrivalDist = new Exponential(1800.0);
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
         typeList.add(new EmpiricData<>(1, 2, 0.5));
@@ -81,8 +85,11 @@ public class FurnitureEventCore extends EventSimulationCore {
     @Override
     protected void beforeSimulation() {
         workPlace.clearOrderQueues();
+        this.workPlace.initWorkers(countWorkerA, countWorkerB, countWorkerC);
         isSlowMode = true;
-        //events.add(new OrderArrivalEvent(time, PriorityValues.BASIC_EVENT.getValue(), this));
+        double newTime = orderArrivalDist.sample();
+        events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
+
         events.add(new SystemEvent(PresetSimulationValues.START_SIMULATION_TIME.getValue() + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
         this.isGeneratedFirstSystemEvent = true;
     }
@@ -106,6 +113,22 @@ public class FurnitureEventCore extends EventSimulationCore {
         //System.out.println(state.getSimulationTime());
         this.listener.setState(state);
         this.listener.notifyObservers();
+        /*if(!ordersArrayList.isEmpty()) {
+            System.out.println(OrderStateValues.getNameByValue(ordersArrayList.getFirst().getState()));
+        }
+        for(Worker worker : workPlace.getWorkersOne()) {
+            System.out.print("" + worker.getId() + worker.getCurrentState() + " | ");
+
+        }
+        System.out.println();*/
+        /*for(Worker worker : workPlace.getWorkersTwo()) {
+            System.out.print("" + worker.getId() + worker.getCurrentState() + " | ");
+            System.out.println();
+        }
+        for(Worker worker : workPlace.getWorkersThree()) {
+            System.out.print("" + worker.getId() + worker.getCurrentState() + " | ");
+            System.out.println();
+        }*/
     }
 
 

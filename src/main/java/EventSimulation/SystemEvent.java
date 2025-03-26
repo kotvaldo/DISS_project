@@ -21,9 +21,9 @@ public class SystemEvent extends Event {
         }
 
         if (simCore.isSlowMode) {
-            this.time = 1 + simCore.simulationTime;
+            double newTime = 1 + simCore.simulationTime;
             if(this.time <= simCore.endTime) {
-                simCore.events.add(this);
+                simCore.events.add(new SystemEvent(newTime, this.priority, simulationCore));
             }
 
         }

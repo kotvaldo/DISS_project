@@ -1,7 +1,7 @@
 package Furniture.Entity;
 
 import IDGenerator.IDGenerator;
-import Furniture.Enums.WorkerStateValues;
+import Furniture.Enums.WorkerBussyState;
 
 public class Worker {
     private final int id;
@@ -11,7 +11,7 @@ public class Worker {
     public Worker(int type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
-        currentState = WorkerStateValues.NON_BUSSY_WORKER.getValue();
+        currentState = false;
     }
 
     public boolean getCurrentState() {

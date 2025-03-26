@@ -1,5 +1,6 @@
 package EventSimulation;
 
+import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 import SimulationCore.SimulationCore;
 
@@ -8,7 +9,7 @@ import java.util.PriorityQueue;
 public abstract class EventSimulationCore extends SimulationCore {
     protected PriorityQueue<Event> events;
     protected double simulationTime;
-    protected double endTime;
+    protected double endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
 
     protected boolean isSlowMode;
     protected double slowDownSpeed;
@@ -28,11 +29,12 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected void experiment() {
         //System.out.println("Spúšťam experiment...");
         while (!events.isEmpty() && !this.isCancelled && simulationTime <= endTime) {
+            //System.out.println(events.size() + " events arrived");
             Event event = events.poll();
 
-            if (event.getTime() < simulationTime) {
+            /*if (event.getTime() < simulationTime) {
                 throw new RuntimeException("Toto by sa nemalo stať!");
-            }
+            }*/
 
             this.simulationTime = event.getTime();
             /*System.out.println("Spracovaný event: " + event.getClass().getSimpleName() +
@@ -56,10 +58,6 @@ public abstract class EventSimulationCore extends SimulationCore {
             if (paused) {
                 //System.out.println("Simulácia pozastavená.");
                 dataHandling();
-                if (this.state != null) {
-                    this.listener.setState(this.state);
-                    this.listener.notifyObservers();
-                }
 
                 while (paused) {
                     try {
@@ -95,6 +93,9 @@ public abstract class EventSimulationCore extends SimulationCore {
     }
     public double getEndTime() {
         return endTime;
+    }
+    public PriorityQueue<Event> getEvents() {
+        return events;
     }
 
     public void setEndTime(double endTime) {

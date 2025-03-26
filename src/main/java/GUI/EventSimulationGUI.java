@@ -90,14 +90,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     protected void startSimulation() {
         if (worker == null || worker.isDone()) {
             try {
-                int replications = Integer.parseInt(replicationsInput.getText());
-                core.setReplicationCount(replications);
-                if(replications > 1) {
-                    core.setSlowMode(false);
-                } else if(replications == 1) {
-                    core.setSlowMode(true);
-                }
-
+                core.setReplicationCount(1);
+                core.setSlowDownSpeed(1.0);
+                core.setSlowMode(true);
                 worker = new EventSimulationWorker();
                 worker.execute();
 

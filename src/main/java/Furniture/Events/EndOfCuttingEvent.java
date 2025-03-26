@@ -6,7 +6,7 @@ import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
-import Furniture.Enums.WorkerStateValues;
+import Furniture.Enums.WorkerBussyState;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
 import Utility.Utility;
@@ -15,52 +15,66 @@ public class EndOfCuttingEvent extends Event {
     private Order order;
     private Worker worker;
 
-    protected EndOfCuttingEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
+    public EndOfCuttingEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
+        this.worker.setCurrentState(false);
+        System.out.println("[EndOfCuttingEvent - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
+                ", čas: " + time + ", pracovník ID: " + worker.getId());
     }
+
 
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
         WorkPlace workPlace = core.getWorkPlace();
+        System.out.println("[EndOfCuttingEvent - EXECUTE] Objednávka ID " + order.getId() +
+                " dokončila rezanie. Čas: " + this.time);
 
-        if (workPlace.getQueueOne().isEmpty()) {
-            worker.setCurrentState(WorkerStateValues.NON_BUSSY_WORKER.getValue());
-        } else {
-            Order order = workPlace.getQueueOne().removeFirst();
-            double newTime = this.time + Utility.calculateFirstTime(order, core);
-            if(newTime < core.getEndTime()) {
-                order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, worker));
-            }
-        }
-
+        // Presun do fázy 2 (lakovanie)
         Worker targetWorkerForTwo = null;
         for (Worker w : core.getWorkPlace().getWorkersTwo()) {
-            if (w.getCurrentState() == WorkerStateValues.NON_BUSSY_WORKER.getValue()) {
+            if (w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
                 targetWorkerForTwo = w;
+                break;
             }
         }
 
         if (targetWorkerForTwo == null) {
-            workPlace.getQueuesTwo().addLast(order);
-            order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+            System.out.println("No WorkerForTwo found");
+            workPlace.getQueuesTwo().addLast(this.order);
+            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+            System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo).");
         } else {
             if (workPlace.getQueuesTwo().isEmpty()) {
-                double newTime = Utility.calculateSecondTime(order, core);
-                if (newTime <= core.getEndTime()) {
-
-                    order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
-                    targetWorkerForTwo.setCurrentState(WorkerStateValues.BUSSY_WORKER.getValue());
-                    core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorkerForTwo));
+                double newTime = this.time + Utility.calculateSecondTime(this.order, core);
+                if (newTime < core.getEndTime()) {
+                    this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
+                    targetWorkerForTwo.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                    core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerForTwo));
+                    System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() +
+                            " ide rovno na lakovanie (worker ID: " + targetWorkerForTwo.getId() + ", čas: " + newTime + ")");
                 }
-
             } else {
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+                workPlace.getQueuesTwo().addLast(this.order);
+                System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo) – fronta nie je prázdna.");
+            }
+        }
 
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
-                workPlace.getQueuesTwo().addLast(order);
+        // Pokus o ďalšiu objednávku na rezanie
+
+        if (workPlace.getQueueOne().isEmpty()) {
+            worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            System.out.println("[EndOfCuttingEvent] Žiadna ďalšia objednávka na rezanie – worker ID " + worker.getId() + " je voľný.");
+        } else {
+            Order nextOrder = workPlace.getQueueOne().removeFirst();
+            double newTime = this.time + Utility.calculateFirstTime(nextOrder, core);
+            if (newTime < core.getEndTime()) {
+                nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
+                core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
+                System.out.println("[EndOfCuttingEvent] Ďalšia objednávka ID " + nextOrder.getId() + " ide na rezanie (čas: " + newTime + ")");
             }
         }
         core.dataHandling();

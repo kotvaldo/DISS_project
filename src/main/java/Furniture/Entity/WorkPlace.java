@@ -19,7 +19,6 @@ public class WorkPlace {
     private int stateThree;
     private int activityThree;
 
-
     private final LinkedList<Order> queueFour;
 
     public WorkPlace() {
