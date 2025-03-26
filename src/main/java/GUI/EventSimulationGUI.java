@@ -89,11 +89,24 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     @Override
     protected void startSimulation() {
         if (worker == null || worker.isDone()) {
-            worker = new EventSimulationWorker();
-            worker.execute();
+            try {
+                int replications = Integer.parseInt(replicationsInput.getText());
+                core.setReplicationCount(replications);
+                if(replications > 1) {
+                    core.setSlowMode(false);
+                } else if(replications == 1) {
+                    core.setSlowMode(true);
+                }
 
-            startButton.setEnabled(false);
-            stopButton.setEnabled(true);
+                worker = new EventSimulationWorker();
+                worker.execute();
+
+                startButton.setEnabled(false);
+                stopButton.setEnabled(true);
+
+            } catch(Exception e) {
+
+            }
         }
     }
 

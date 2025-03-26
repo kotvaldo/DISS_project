@@ -99,7 +99,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     }
 
     @Override
-    protected void dataHandling() {
+    public void dataHandling() {
         //System.out.println("It was updated )");
         FurnitureEventState state = (FurnitureEventState) this.state;
         state.setSimulationTime(this.simulationTime);

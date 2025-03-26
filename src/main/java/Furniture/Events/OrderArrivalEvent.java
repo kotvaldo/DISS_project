@@ -1,6 +1,7 @@
 package Furniture.Events;
 
 import EventSimulation.Event;
+import Furniture.Enums.OrderStateValues;
 import IDGenerator.IDGenerator;
 import Furniture.Entity.Order;
 import Furniture.Entity.WorkPlace;
@@ -32,40 +33,27 @@ public class OrderArrivalEvent extends Event {
             if(w.getCurrentState() == WorkerStateValues.NON_BUSSY_WORKER.getValue()) {
                 targetWorker = w;
             }
-
         }
         int orderType = core.getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType);
-
+        order.setState(OrderStateValues.ORDER_NEW.getValue());
         if(targetWorker == null) {
             queueOne.addLast(order);
+            order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         } else {
             if(queueOne.isEmpty()) {
                 newTime = time + Utility.calculateFirstTime(order, core);
-                targetWorker.setCurrentState(WorkerStateValues.BUSSY_WORKER.getValue());
-                core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
+                if(newTime <= core.getEndTime()) {
+                    targetWorker.setCurrentState(WorkerStateValues.BUSSY_WORKER.getValue());
+                    core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
+                    order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
+                }
+
             } else {
                 queueOne.addLast(order);
+                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
             }
         }
-
-
-
-
-    }
-    private double calculateTime(Order order, FurnitureEventCore core) {
-        double totalTime = 0.0;
-        totalTime += core.getTimeInStorageDist().sample();
-        totalTime += core.getTimeInStorageDist().sample();
-        if(order.getType() == 1) {
-            totalTime += core.getCuttingTypeOneDist().sample();
-        } else if(order.getType() == 2) {
-            totalTime += core.getCuttingTypeTwoDist().sample();
-        } else if(order.getType() == 3) {
-            totalTime += core.getCuttingTypeThreeDist().sample();
-        }
-        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
-        return totalTime;
-
+        core.dataHandling();
     }
 }
