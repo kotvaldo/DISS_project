@@ -20,8 +20,8 @@ public class EndOfMontageEvent extends Event {
         this.order = order;
         this.worker = worker;
 
-        System.out.println("[EndOfFittings - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
-                ", čas: " + time + ", pracovník ID: " + worker.getId());
+       /* System.out.println("[EndOfFittings - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
+                ", čas: " + time + ", pracovník ID: " + worker.getId());*/
     }
 
     @Override
@@ -29,12 +29,12 @@ public class EndOfMontageEvent extends Event {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
         WorkPlace workPlace = core.getWorkPlace();
 
-        System.out.println("[EndOfFittings - EXECUTE] Objednávka ID " + order.getId() +
-                " dokončila montáž kovania. Čas: " + this.time);
+       /* System.out.println("[EndOfFittings - EXECUTE] Objednávka ID " + order.getId() +
+                " dokončila montáž kovania. Čas: " + this.time);*/
 
         // Objednávka je hotová
         order.setState(OrderStateValues.ORDER_DONE.getValue());
-        System.out.println("[EndOfFittings] Objednávka ID " + order.getId() + " je ukončená.");
+      //  System.out.println("[EndOfFittings] Objednávka ID " + order.getId() + " je ukončená.");
 
         // Priraď ďalšiu objednávku z fronty kovania
         if (!workPlace.getQueueFour().isEmpty()) {
@@ -43,12 +43,12 @@ public class EndOfMontageEvent extends Event {
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
-                System.out.println("[EndOfFittings] Worker ID " + worker.getId() +
-                        " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž kovania. Čas: " + newTime);
+               /* System.out.println("[EndOfFittings] Worker ID " + worker.getId() +
+                        " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž kovania. Čas: " + newTime);*/
             }
         } else {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
-            System.out.println("[EndOfFittings] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
+            //System.out.println("[EndOfFittings] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
 
         core.dataHandling();

@@ -20,8 +20,8 @@ public class EndOfAssemblyEvent extends Event {
         this.order = order;
         this.worker = worker;
 
-        System.out.println("[EndOfMontagingEvent - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
-                ", čas: " + time + ", pracovník ID: " + worker.getId());
+        /*System.out.println("[EndOfMontagingEvent - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
+                ", čas: " + time + ", pracovník ID: " + worker.getId());*/
     }
 
     @Override
@@ -29,9 +29,9 @@ public class EndOfAssemblyEvent extends Event {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
         WorkPlace workPlace = core.getWorkPlace();
 
-        System.out.println("[EndOfMontagingEvent - EXECUTE] Objednávka ID " + order.getId() +
+        /*System.out.println("[EndOfMontagingEvent - EXECUTE] Objednávka ID " + order.getId() +
                 " dokončila montáž. Čas: " + this.time);
-
+*/
         // 1. Ukončenie alebo presun do kovania
         if (order.getType() == 3) {
             Worker targetWorkerForMontage = null;
@@ -45,20 +45,20 @@ public class EndOfAssemblyEvent extends Event {
             if (targetWorkerForMontage == null || !workPlace.getQueueFour().isEmpty()) {
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
                 workPlace.getQueueFour().addLast(order);
-                System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " pridaná do fronty kovania (queueFour).");
+              //  System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " pridaná do fronty kovania (queueFour).");
             } else {
                 double newTime = Utility.calculateFourth(order, core);
                 if (newTime < core.getEndTime()) {
                     order.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                     targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
-                    System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() +
+              /*      System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() +
                             " ide rovno na montáž kovania (worker ID: " + targetWorkerForMontage.getId() + ", čas: " + newTime + ")");
-                }
+              */  }
             }
         } else {
             order.setState(OrderStateValues.ORDER_DONE.getValue());
-            System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " je dokončená.");
+            //System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " je dokončená.");
         }
 
 
@@ -69,12 +69,12 @@ public class EndOfAssemblyEvent extends Event {
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, worker));
-                System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() +
-                        " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž (čas: " + newTime + ")");
+               /* System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() +
+                        " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž (čas: " + newTime + ")");*/
             }
         } else {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
-            System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
+            //System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
 
         core.dataHandling();

@@ -7,6 +7,7 @@ public class Worker {
     private final int id;
     private boolean currentState;
     private final int type;
+    private int orderId;
 
     public Worker(int type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
@@ -29,4 +30,13 @@ public class Worker {
     public int getType() {
         return type;
     }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 }
+

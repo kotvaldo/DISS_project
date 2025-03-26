@@ -20,8 +20,8 @@ public class EndOfCuttingEvent extends Event {
         this.order = order;
         this.worker = worker;
         this.worker.setCurrentState(false);
-        System.out.println("[EndOfCuttingEvent - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
-                ", čas: " + time + ", pracovník ID: " + worker.getId());
+       /* System.out.println("[EndOfCuttingEvent - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
+                ", čas: " + time + ", pracovník ID: " + worker.getId());*/
     }
 
 
@@ -29,9 +29,9 @@ public class EndOfCuttingEvent extends Event {
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
         WorkPlace workPlace = core.getWorkPlace();
-        System.out.println("[EndOfCuttingEvent - EXECUTE] Objednávka ID " + order.getId() +
+       /* System.out.println("[EndOfCuttingEvent - EXECUTE] Objednávka ID " + order.getId() +
                 " dokončila rezanie. Čas: " + this.time);
-
+*/
         // Presun do fázy 2 (lakovanie)
         Worker targetWorkerForTwo = null;
         for (Worker w : core.getWorkPlace().getWorkersTwo()) {
@@ -42,10 +42,10 @@ public class EndOfCuttingEvent extends Event {
         }
 
         if (targetWorkerForTwo == null) {
-            System.out.println("No WorkerForTwo found");
+            //          System.out.println("No WorkerForTwo found");
             workPlace.getQueuesTwo().addLast(this.order);
             this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
-            System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo).");
+            //        System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo).");
         } else {
             if (workPlace.getQueuesTwo().isEmpty()) {
                 double newTime = this.time + Utility.calculateSecondTime(this.order, core);
@@ -53,13 +53,13 @@ public class EndOfCuttingEvent extends Event {
                     this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                     targetWorkerForTwo.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                     core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerForTwo));
-                    System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() +
-                            " ide rovno na lakovanie (worker ID: " + targetWorkerForTwo.getId() + ", čas: " + newTime + ")");
+      /*              System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() +
+                            " ide rovno na lakovanie (worker ID: " + targetWorkerForTwo.getId() + ", čas: " + newTime + ")");*/
                 }
             } else {
                 this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
                 workPlace.getQueuesTwo().addLast(this.order);
-                System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo) – fronta nie je prázdna.");
+               // System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo) – fronta nie je prázdna.");
             }
         }
 
@@ -67,14 +67,14 @@ public class EndOfCuttingEvent extends Event {
 
         if (workPlace.getQueueOne().isEmpty()) {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
-            System.out.println("[EndOfCuttingEvent] Žiadna ďalšia objednávka na rezanie – worker ID " + worker.getId() + " je voľný.");
+           // System.out.println("[EndOfCuttingEvent] Žiadna ďalšia objednávka na rezanie – worker ID " + worker.getId() + " je voľný.");
         } else {
             Order nextOrder = workPlace.getQueueOne().removeFirst();
             double newTime = this.time + Utility.calculateFirstTime(nextOrder, core);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
-                System.out.println("[EndOfCuttingEvent] Ďalšia objednávka ID " + nextOrder.getId() + " ide na rezanie (čas: " + newTime + ")");
+           //     System.out.println("[EndOfCuttingEvent] Ďalšia objednávka ID " + nextOrder.getId() + " ide na rezanie (čas: " + newTime + ")");
             }
         }
         core.dataHandling();
