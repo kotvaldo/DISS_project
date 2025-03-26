@@ -3,21 +3,29 @@ package GUI;
 import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
 import Furniture.Observers.SimulationTimeObserver;
+import Furniture.Observers.TableObserver;
 import Observer.Subject;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.Hashtable;
 
 public class EventSimulationGUI extends AbstractSimulationGUI {
     private final JComboBox comboBox;
     private JLabel label;
     private SimulationTimeObserver observer;
+    private TableObserver tableObserver;
     private FurnitureEventCore core;
     private EventSimulationWorker worker;
     private Subject subject;
     private JSlider speedSlider;
     private JButton pauseButton;
     private JButton unPauseButton;
+    private JTable ordersTable;
+    private JTable workersTable;
+    private DefaultTableModel ordersTableModel;
+    private DefaultTableModel workersTableModel;
 
     public EventSimulationGUI() {
         super("Event Simulation");
@@ -39,6 +47,24 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         unPauseButton.addActionListener(e -> {
             core.setPaused(false);
         });
+
+        String[] orderColumns = {"ID", "Typ", "Stav"};
+        ordersTableModel = new DefaultTableModel(orderColumns, 0); // prázdne dáta
+        ordersTable = new JTable(ordersTableModel);
+        JScrollPane ordersScroll = new JScrollPane(ordersTable);
+
+        String[] workerColumns = {"ID", "Skupina", "Stav"};
+        workersTableModel = new DefaultTableModel(workerColumns, 0); // prázdne dáta
+        workersTable = new JTable(workersTableModel);
+        JScrollPane workersScroll = new JScrollPane(workersTable);
+
+        JPanel tablePanel = new JPanel(new GridLayout(1, 2));
+        tablePanel.add(ordersScroll);
+        tablePanel.add(workersScroll);
+
+        this.centerPanel.add(tablePanel);
+        tableObserver = new TableObserver(ordersTable, workersTable);
+        subject.attachObserver(tableObserver);
 
     }
 
@@ -81,10 +107,11 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
     }
 
+
     @Override
     protected void setupCustomPanel() {
-
     }
+
 
     @Override
     protected void startSimulation() {
@@ -99,7 +126,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
 
-            } catch(Exception e) {
+            } catch (Exception e) {
 
             }
         }

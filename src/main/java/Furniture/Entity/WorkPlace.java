@@ -36,13 +36,13 @@ public class WorkPlace {
         workersTwo.clear();
         workersThree.clear();
         for (int i = 0; i < countA; i++) {
-            workersOne.add(new Worker(1));
+            workersOne.add(new Worker("A"));
         }
         for (int i = 0; i < countC; i++) {
-            workersTwo.add(new Worker(2));
+            workersTwo.add(new Worker("C"));
         }
         for (int i = 0; i < countB; i++) {
-            workersThree.add(new Worker(3));
+            workersThree.add(new Worker("B"));
         }
 
     }

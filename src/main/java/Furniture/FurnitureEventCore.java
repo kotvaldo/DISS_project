@@ -109,26 +109,17 @@ public class FurnitureEventCore extends EventSimulationCore {
     public void dataHandling() {
         //System.out.println("It was updated )");
         FurnitureEventState state = (FurnitureEventState) this.state;
+
         state.setSimulationTime(this.simulationTime);
         //System.out.println(state.getSimulationTime());
+        state.setAllOrders(ordersArrayList);
+        state.setWorkersA(workPlace.getWorkersOne());
+        state.setWorkersB(workPlace.getWorkersThree());
+        state.setWorkersC(workPlace.getWorkersTwo());
+
         this.listener.setState(state);
         this.listener.notifyObservers();
-        /*if(!ordersArrayList.isEmpty()) {
-            System.out.println(OrderStateValues.getNameByValue(ordersArrayList.getFirst().getState()));
-        }
-        for(Worker worker : workPlace.getWorkersOne()) {
-            System.out.print("" + worker.getId() + worker.getCurrentState() + " | ");
 
-        }
-        System.out.println();*/
-        /*for(Worker worker : workPlace.getWorkersTwo()) {
-            System.out.print("" + worker.getId() + worker.getCurrentState() + " | ");
-            System.out.println();
-        }
-        for(Worker worker : workPlace.getWorkersThree()) {
-            System.out.print("" + worker.getId() + worker.getCurrentState() + " | ");
-            System.out.println();
-        }*/
     }
 
 

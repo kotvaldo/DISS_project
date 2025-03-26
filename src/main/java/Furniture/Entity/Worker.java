@@ -6,10 +6,10 @@ import Furniture.Enums.WorkerBussyState;
 public class Worker {
     private final int id;
     private boolean currentState;
-    private final int type;
+    private final String type;
     private int orderId;
 
-    public Worker(int type) {
+    public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
         currentState = false;
@@ -27,7 +27,7 @@ public class Worker {
         return id;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 

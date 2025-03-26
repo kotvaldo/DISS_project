@@ -9,7 +9,18 @@ public enum WorkerBussyState {
     WorkerBussyState(boolean isBussyWorker) {
         this.isBussy = isBussyWorker;
     }
+
     public boolean getValue() {
         return isBussy;
     }
+
+    public static String getNameByValue(boolean value) {
+        for (WorkerBussyState state : WorkerBussyState.values()) {
+            if (state.getValue() == value) {
+                return state.name();
+            }
+        }
+        return "UNKNOWN";
+    }
 }
+

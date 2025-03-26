@@ -34,7 +34,7 @@ public class OrderArrivalEvent extends Event {
 
         int orderType = core.getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType);
-
+        core.ordersArrayList.add(order);
 
         order.setState(OrderStateValues.ORDER_NEW.getValue());
         if(targetWorker == null) {

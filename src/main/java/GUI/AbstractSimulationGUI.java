@@ -21,6 +21,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JPanel inputPanel;
     protected JPanel statsPanel;
     protected JPanel controlPanel;
+    protected JPanel centerPanel;
+
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
         setSize(1200, 700);
@@ -37,7 +39,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
         this.setupCustomInput();
 
         this.subject = new Subject();
-
+        this.centerPanel = new JPanel();
         controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
@@ -56,8 +58,9 @@ public abstract class AbstractSimulationGUI extends JFrame {
         this.customPanel.setVisible(false);
         setupCustomPanel();
 
-        getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
+        //getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
         getContentPane().add(topPanel, BorderLayout.NORTH);
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
         getContentPane().add(controlPanel, BorderLayout.SOUTH);
         getContentPane().add(this.customPanel, BorderLayout.EAST);
     }
