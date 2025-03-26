@@ -1,11 +1,11 @@
 package Furniture;
 
 import EventSimulation.EventSimulationCore;
+import EventSimulation.SystemEvent;
 import Generators.*;
 import Furniture.Entity.WorkPlace;
 import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
-import Furniture.Events.OrderArrivalEvent;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     public FurnitureEventCore() {
         super();
         state = new FurnitureEventState();
-
+        setEndTime(PresetSimulationValues.END_OF_SIMULATION.getValue());
         orderArrivalDist = new Exponential(1800.0);
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
         typeList.add(new EmpiricData<>(1, 2, 0.5));
@@ -75,13 +75,16 @@ public class FurnitureEventCore extends EventSimulationCore {
         events.clear();
         workPlace.initWorkers(countWorkerA, countWorkerB, countWorkerC);
         workPlace.clearOrderQueues();
+        this.state = new FurnitureEventState();
 
     }
     @Override
     protected void beforeSimulation() {
         workPlace.clearOrderQueues();
-        double time = this.simulationTime + orderArrivalDist.sample();
-        events.add(new OrderArrivalEvent(time, PriorityValues.BASIC_EVENT.getValue(), this));
+        isSlowMode = true;
+        //events.add(new OrderArrivalEvent(time, PriorityValues.BASIC_EVENT.getValue(), this));
+        events.add(new SystemEvent(PresetSimulationValues.START_SIMULATION_TIME.getValue() + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
+        this.isGeneratedFirstSystemEvent = true;
     }
 
     @Override
@@ -97,13 +100,12 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     @Override
     protected void dataHandling() {
-        if(this.isSlowMode) {
-            FurnitureEventState state = (FurnitureEventState) this.state;
-
-
-        } else {
-
-        }
+        //System.out.println("It was updated )");
+        FurnitureEventState state = (FurnitureEventState) this.state;
+        state.setSimulationTime(this.simulationTime);
+        //System.out.println(state.getSimulationTime());
+        this.listener.setState(state);
+        this.listener.notifyObservers();
     }
 
 
@@ -126,6 +128,9 @@ public class FurnitureEventCore extends EventSimulationCore {
         return cuttingTypeTwoDist;
     }
 
+    public void setReplicationCount(int replicationCount) {
+        this.repCount = replicationCount;
+    }
 
     public UniformContinuous getCuttingTypeThreeDist() {
         return cuttingTypeThreeDist;

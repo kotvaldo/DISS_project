@@ -2,7 +2,7 @@ package GUI;
 
 import FlyWeightFactory.FlyWeightStrategyFactory;
 import MonteCarlo.MonteCarloCore;
-import Observer.MonteCarloGraphObserver;
+import MonteCarlo.MonteCarloGraphObserver;
 import Strategy.CustomStrategy;
 import Strategy.IStrategy;
 import org.apache.commons.math3.distribution.TDistribution;
@@ -72,6 +72,10 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         MonteCarloGraphObserver monteCarloGraphObserver = new MonteCarloGraphObserver(this.series, this.chart);
         this.subject.attachObserver(monteCarloGraphObserver);
         this.monteCarloCore.setListener(subject);
+        inputPanel.add(new JLabel("Burn-in:"));
+        inputPanel.add(burnInInput);
+        inputPanel.add(new JLabel("Update-Frequency:"));
+        inputPanel.add(updateFrequencyInput);
     }
 
 

@@ -7,4 +7,5 @@ public interface ISubject {
     void attachObserver(IObserver observer);
     void detachObserver(IObserver observer);
     void setState(IState state);
+    IState getState();
 }

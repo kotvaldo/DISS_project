@@ -20,6 +20,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JPanel customPanel;
     protected JPanel inputPanel;
     protected JPanel statsPanel;
+    protected JPanel controlPanel;
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
         setSize(1200, 700);
@@ -33,15 +34,11 @@ public abstract class AbstractSimulationGUI extends JFrame {
         this.inputPanel = new JPanel();
         inputPanel.add(new JLabel("Replications:"));
         inputPanel.add(replicationsInput);
-        inputPanel.add(new JLabel("Burn-in:"));
-        inputPanel.add(burnInInput);
-        inputPanel.add(new JLabel("Update-Frequency:"));
-        inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
 
         this.subject = new Subject();
 
-        JPanel controlPanel = new JPanel();
+        controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
 
@@ -69,7 +66,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected abstract void initializeChart();
 
     private void initializeInputFields() {
-        replicationsInput = new JTextField("1000000", 10);
+        replicationsInput = new JTextField("1", 10);
         burnInInput = new JTextField("1000", 10);
         updateFrequencyInput = new JTextField("1000", 10);
     }

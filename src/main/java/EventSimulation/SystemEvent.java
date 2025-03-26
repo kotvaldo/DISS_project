@@ -11,20 +11,24 @@ public class SystemEvent extends Event {
     @Override
     public void Execute() {
         EventSimulationCore simCore = (EventSimulationCore) simulationCore;
-        long sleepTime = (long) 997 / simCore.frequency;
+        if (simCore.slowDownSpeed != 0.0) {
+            long sleepTime = (long) (1000 / simCore.slowDownSpeed);
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException _) {
 
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException _) {
+            }
+        }
+
+        if (simCore.isSlowMode) {
+            this.time = 1 + simCore.simulationTime;
+            if(this.time <= simCore.endTime) {
+                simCore.events.add(this);
+            }
 
         }
 
-        if(simCore.isSlowMode) {
-            this.time = (simCore.slowDownSpeed / simCore.frequency) + simCore.simulationTime;
-            simCore.events.add(this);
-        }
-
-        if(simCore.getState() != null) {
+        if (simCore.getState() != null) {
             simCore.dataHandling();
         }
 

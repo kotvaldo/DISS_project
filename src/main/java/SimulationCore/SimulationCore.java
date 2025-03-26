@@ -14,6 +14,7 @@ public abstract class SimulationCore {
 
 
     public void runSimulation() {
+        isCancelled = false;
         beforeRunSimulation();
         for(int i = 0; i < repCount; i++) {
             if(isCancelled) {
@@ -39,5 +40,8 @@ public abstract class SimulationCore {
     }
     public IState getState() {
         return state;
+    }
+    public void cancel() {
+        isCancelled = true;
     }
 }

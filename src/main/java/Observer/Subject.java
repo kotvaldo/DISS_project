@@ -34,5 +34,12 @@ public class Subject implements ISubject {
         this.currentState = state;
     }
 
+    @Override
+    public IState getState() {
+        return currentState;
+    }
+
+
+
 
 }

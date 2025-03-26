@@ -1,5 +1,6 @@
 package EventSimulation;
 
+import Furniture.Enums.PriorityValues;
 import SimulationCore.SimulationCore;
 
 import java.util.PriorityQueue;
@@ -10,60 +11,67 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected double endTime;
 
     protected boolean isSlowMode;
-    protected double slowDownSpeed = 1;
+    protected double slowDownSpeed;
     protected boolean isGeneratedFirstSystemEvent;
 
 
     protected boolean paused;
-    protected int frequency = 5;
 
 
     protected EventSimulationCore() {
         events = new PriorityQueue<>();
         state = null;
+        //System.out.println("Simulácia inicializovaná.");
     }
-
 
     @Override
     protected void experiment() {
+        //System.out.println("Spúšťam experiment...");
         while (!events.isEmpty() && !this.isCancelled && simulationTime <= endTime) {
-
             Event event = events.poll();
-            if(event.getTime() < simulationTime) {
-                throw new RuntimeException("This cannot happen!");
+
+            if (event.getTime() < simulationTime) {
+                throw new RuntimeException("Toto by sa nemalo stať!");
             }
+
             this.simulationTime = event.getTime();
+            /*System.out.println("Spracovaný event: " + event.getClass().getSimpleName() +
+                    " | Čas: " + simulationTime);*/
+
             event.Execute();
 
-
-            dataHandling();
-
-            if(!isSlowMode && isGeneratedFirstSystemEvent) {
+            //dataHandling();
+            //System.out.println(slowDownSpeed);
+            if (!isSlowMode && isGeneratedFirstSystemEvent) {
+                //System.out.println("Prechádzam z pomalého režimu do rýchleho.");
                 isGeneratedFirstSystemEvent = false;
-            } else if(isSlowMode && !isGeneratedFirstSystemEvent) {
+            } else if (isSlowMode && !isGeneratedFirstSystemEvent) {
+                //System.out.println("Generujem systémový event pre pomalý režim.");
                 isGeneratedFirstSystemEvent = true;
-                double timeNew = (slowDownSpeed / frequency) + this.simulationTime;
-                Event systemEvent = new SystemEvent(timeNew, 5, this);
+                double timeNew = 1 + this.simulationTime;
+                Event systemEvent = new SystemEvent(timeNew, PriorityValues.SYSTEM_EVENT.getValue(), this);
                 this.events.add(systemEvent);
             }
 
-
-
-            if(paused) {
+            if (paused) {
+                //System.out.println("Simulácia pozastavená.");
                 dataHandling();
-                if(this.state != null) {
+                if (this.state != null) {
                     this.listener.setState(this.state);
                     this.listener.notifyObservers();
                 }
-                while(paused) {
+
+                while (paused) {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
+                       //System.out.println("Simulácia bola prerušená počas pauzy.");
                     }
                 }
+               // System.out.println("Simulácia obnovená.");
             }
-
         }
+       // System.out.println("Experiment skončil.");
         isGeneratedFirstSystemEvent = false;
     }
 
@@ -121,12 +129,7 @@ public abstract class EventSimulationCore extends SimulationCore {
         this.paused = paused;
     }
 
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-    public int getFrequency() {
-        return frequency;
-    }
+
     public void setEndTime(int endTime) {
         this.endTime = endTime;
     }
