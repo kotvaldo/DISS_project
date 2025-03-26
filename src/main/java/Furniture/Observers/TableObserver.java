@@ -15,6 +15,7 @@ import Observer.IObserver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
 public class TableObserver implements IObserver {
     private final JTable ordersTable;
@@ -32,28 +33,36 @@ public class TableObserver implements IObserver {
     @Override
     public void update(IState state) {
         FurnitureEventState furnitureState = (FurnitureEventState) state;
+
         SwingUtilities.invokeLater(() -> {
+            ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
+
             ordersModel.setRowCount(0);
-            for (Order order : furnitureState.getAllOrders()) {
+            for (Order order : ordersSnapshot) {
                 String stav = OrderStateValues.getNameByValue(order.getState());
-                ordersModel.addRow(new Object[]{order.getId(), order.getType(), stav});
+                ordersModel.addRow(new Object[]{
+                        order.getId(),
+                        order.getType(),
+                        stav
+                });
             }
+
+            ArrayList<Worker> workersSnapshot = new ArrayList<>();
+            workersSnapshot.addAll(furnitureState.getWorkersA());
+            workersSnapshot.addAll(furnitureState.getWorkersB());
+            workersSnapshot.addAll(furnitureState.getWorkersC());
 
             workersModel.setRowCount(0);
-
-            for (Worker worker : furnitureState.getWorkersA()) {
-                workersModel.addRow(new Object[]{worker.getId(), worker.getType(), worker.getCurrentState()});
-            }
-
-            for (Worker worker : furnitureState.getWorkersB()) {
-                workersModel.addRow(new Object[]{worker.getId(), worker.getType(), worker.getCurrentState()});
-            }
-
-            for (Worker worker : furnitureState.getWorkersC()) {
-                workersModel.addRow(new Object[]{worker.getId(), worker.getType(), worker.getCurrentState()});
+            for (Worker worker : workersSnapshot) {
+                String skupina = worker.getType();
+                String stav = WorkerBussyState.getNameByValue(worker.getCurrentState());
+                workersModel.addRow(new Object[]{
+                        worker.getId(),
+                        skupina,
+                        stav
+                });
             }
         });
-
-
     }
+
 }
