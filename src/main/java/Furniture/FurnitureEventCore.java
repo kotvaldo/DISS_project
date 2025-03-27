@@ -32,7 +32,6 @@ public class FurnitureEventCore extends EventSimulationCore {
     private int countWorkerC = 10;
     private WorkPlace workPlace;
     public ArrayList<Order> ordersArrayList = new ArrayList<>();
-    public ArrayList<Order> copyOfArrayList = new ArrayList<>();
 
     public FurnitureEventCore() {
         super();
@@ -116,6 +115,10 @@ public class FurnitureEventCore extends EventSimulationCore {
         state.setWorkersA(new ArrayList<>(workPlace.getWorkersA()));
         state.setWorkersB(new ArrayList<>(workPlace.getWorkersB()));
         state.setWorkersC(new ArrayList<>(workPlace.getWorkersC()));
+        int newDay = (int)(simulationTime / (8.0 * 3600.0));
+        if (newDay > state.getCurrentDay()) {
+            state.setCurrentDay(newDay);
+        }
 
         this.listener.setState(state);
         this.listener.notifyObservers();

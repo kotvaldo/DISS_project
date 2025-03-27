@@ -76,6 +76,22 @@ public class Utility {
 
     }
 
+    public static String fromSecondsToTime(double seconds) {
+        int secondsInWorkday = 8 * 3600; // 8 hodín
+        int startHourSeconds = 6 * 3600; // začiatok dňa o 6:00
+
+        int secondsInCurrentDay = (int) seconds % secondsInWorkday;
+        int shiftedSeconds = secondsInCurrentDay + startHourSeconds;
+
+        int hours = shiftedSeconds / 3600;
+        int minutes = (shiftedSeconds % 3600) / 60;
+        int secs = shiftedSeconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
+    }
+
+
+
 
 
 }

@@ -12,6 +12,9 @@ public class FurnitureEventState implements IState {
     private ArrayList<Worker> workersA;
     private ArrayList<Worker> workersC;
     private ArrayList<Worker> workersB;
+
+    private int currentDay = 0;
+
     public FurnitureEventState() {
 
 
@@ -57,4 +60,13 @@ public class FurnitureEventState implements IState {
     public void setWorkersB(ArrayList<Worker> workersB) {
         this.workersB = workersB;
     }
+
+    public int getCurrentDay() {
+        return currentDay;
+    }
+
+    public void setCurrentDay(int currentDay) {
+        this.currentDay = currentDay;
+    }
+
 }
