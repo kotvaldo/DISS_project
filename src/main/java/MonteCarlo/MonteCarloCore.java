@@ -7,10 +7,9 @@ import Utility.Utility;
 
 import java.util.ArrayList;
 
-public class MonteCarlo extends SimulationCore {
+public class MonteCarloCore extends SimulationCore {
     private IStrategy strategy;
     private double totalCost = 0;
-    private UpdateListener listener;
     private int burnCount = 0;
     private int updateFrequency = 0;
     private final ArrayList<Double> dailyCosts;
@@ -22,13 +21,14 @@ public class MonteCarlo extends SimulationCore {
     private final ArrayList<Integer> headlightsDemand;
     StrategyParameters params;
 
-    public MonteCarlo() {
+    public MonteCarloCore() {
         dailyCosts = new ArrayList<>();
         dailyFineCosts = new ArrayList<>();
         suppressorsDemand = new ArrayList<>();
         breakPlatesDemand = new ArrayList<>();
         headlightsDemand = new ArrayList<>();
         params = new StrategyParameters();
+        state = new MonteCarloState();
 
     }
 
@@ -45,7 +45,7 @@ public class MonteCarlo extends SimulationCore {
             params.setHeadlightsDemand(headlightsDemand);
             params.setSuppressorsDemand(suppressorsDemand);
             params.setBreakPlatesDemand(breakPlatesDemand);
-            params.setTargetRepCount((int) (this.repCount * 0.7));
+            params.setTargetRepCount((int) (this.repCount * 0.5));
             params.setDailyFineCosts(dailyFineCosts);
             params.setTargetAVGRepCount((int) (this.repCount > 1000 ? 1000 : 0.5 * this.repCount));
             totalCost = strategy.algorithm(params);
@@ -72,7 +72,7 @@ public class MonteCarlo extends SimulationCore {
         this.actualRepCount++;
         dailyCostsCopy = new ArrayList<>(dailyCosts);
         dailyFineCostsCopy = new ArrayList<>(dailyFineCosts);
-        if(actualRepCount < (int) (this.repCount * 0.7)) {
+        if(actualRepCount < (int) (this.repCount * 0.5)) {
             this.dailyCosts.clear();
             this.dailyFineCosts.clear();
         }
@@ -84,8 +84,12 @@ public class MonteCarlo extends SimulationCore {
     protected void afterSimulation() {
         if (this.actualRepCount > 0) {
             double averageCost = this.totalCost / this.actualRepCount;
+            MonteCarloState monteCarloState = (MonteCarloState) state;
+            monteCarloState.setAverage(averageCost);
+            monteCarloState.setRepCount(actualRepCount);
             if (actualRepCount % updateFrequency == 0 && actualRepCount >= burnCount) {
-                this.listener.onUpdate(averageCost);
+                this.listener.setState(monteCarloState);
+                this.listener.notifyObservers();
             }
         }
 
@@ -100,14 +104,6 @@ public class MonteCarlo extends SimulationCore {
         this.repCount = replicationCount;
     }
 
-
-    public int getRepCount() {
-        return this.actualRepCount;
-    }
-
-    public void setListener(UpdateListener listener) {
-        this.listener = listener;
-    }
 
     public void cancel() {
         this.isCancelled = true;
