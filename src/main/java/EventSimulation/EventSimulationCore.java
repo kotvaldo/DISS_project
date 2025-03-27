@@ -32,9 +32,9 @@ public abstract class EventSimulationCore extends SimulationCore {
             //System.out.println(events.size() + " events arrived");
             Event event = events.poll();
 
-            /*if (event.getTime() < simulationTime) {
+            if (event.getTime() < simulationTime) {
                 throw new RuntimeException("Toto by sa nemalo stať!");
-            }*/
+            }
 
             this.simulationTime = event.getTime();
             /*System.out.println("Spracovaný event: " + event.getClass().getSimpleName() +
