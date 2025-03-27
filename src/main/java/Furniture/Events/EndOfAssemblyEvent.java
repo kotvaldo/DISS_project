@@ -81,6 +81,5 @@ public class EndOfAssemblyEvent extends Event {
             //System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
 
-        core.dataHandling();
     }
 }

@@ -13,7 +13,6 @@ public class Main {
             gui.setVisible(true);
             System.out.println("GUI executed");
         });
-
     }
 }
 

@@ -59,7 +59,6 @@ public class OrderArrivalEvent extends Event {
 
         double newTime = this.time + core.getOrderArrivalDist().sample();
         core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
-        core.dataHandling();
 
 
     }

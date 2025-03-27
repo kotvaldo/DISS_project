@@ -12,50 +12,36 @@ import java.awt.*;
 import java.util.Hashtable;
 
 public class EventSimulationGUI extends AbstractSimulationGUI {
-    private final JComboBox comboBox;
     private JLabel label;
-    private SimulationTimeObserver observer;
-    private TableObserver tableObserver;
-    private FurnitureEventCore core;
+    private final FurnitureEventCore core;
     private EventSimulationWorker worker;
-    private Subject subject;
     private JSlider speedSlider;
-    private JButton pauseButton;
-    private JButton unPauseButton;
-    private JTable ordersTable;
-    private JTable workersTable;
     private DefaultTableModel ordersTableModel;
     private DefaultTableModel workersTableModel;
 
 
     public EventSimulationGUI() {
         super("Event Simulation");
-        subject = new Subject();
+        Subject subject = new Subject();
         core = new FurnitureEventCore();
-        observer = new SimulationTimeObserver(label);
+        SimulationTimeObserver observer = new SimulationTimeObserver(label);
         subject.attachObserver(observer);
         core.setListener(subject);
-        core.setSlowDownSpeed(1.0);
         core.setReplicationCount(1);
-        comboBox = new JComboBox();
-        pauseButton = new JButton("Pause Simulation");
+        JButton pauseButton = new JButton("Pause Simulation");
         this.controlPanel.add(pauseButton);
         pauseButton.addActionListener(e -> {
-            core.setPaused(true);
-        });
-        unPauseButton = new JButton("Unpause Simulation");
-        this.controlPanel.add(unPauseButton);
-        unPauseButton.addActionListener(e -> {
-            core.setPaused(false);
+            core.setPaused(!core.isPaused());
         });
 
+
         String[] orderColumns = {"ID", "Type", "State"};
-        ordersTableModel = new DefaultTableModel(orderColumns, 0); // prázdne dáta
-        ordersTable = new JTable(ordersTableModel);
+        ordersTableModel = new DefaultTableModel(orderColumns, 0);
+        JTable ordersTable = new JTable(ordersTableModel);
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
         String[] workerColumns = {"ID", "Group", "State", "Order_ID"};
         workersTableModel = new DefaultTableModel(workerColumns, 0); // prázdne dáta
-        workersTable = new JTable(workersTableModel);
+        JTable workersTable = new JTable(workersTableModel);
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
         JPanel tablePanel = new JPanel(new GridLayout(1, 2));
@@ -63,7 +49,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(workersScroll);
 
         this.centerPanel.add(tablePanel);
-        tableObserver = new TableObserver(ordersTable, workersTable);
+        TableObserver tableObserver = new TableObserver(ordersTable, workersTable);
         subject.attachObserver(tableObserver);
 
     }
@@ -83,9 +69,13 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         label = new JLabel("Simulation Time : 0");
         this.inputPanel.add(label);
 
-        speedSlider = new JSlider(1, 6, 1);
+        speedSlider = new JSlider(1, 8, 1);
         speedSlider.setPaintTicks(true);
         speedSlider.setPaintLabels(true);
+        speedSlider.setMajorTickSpacing(1);
+        speedSlider.setMinorTickSpacing(1);
+        speedSlider.setPreferredSize(new Dimension(600, 50));
+
 
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
         labelTable.put(1, new JLabel("1"));
@@ -93,7 +83,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         labelTable.put(3, new JLabel("100"));
         labelTable.put(4, new JLabel("500"));
         labelTable.put(5, new JLabel("1000"));
-        labelTable.put(6, new JLabel("Virtual"));
+        labelTable.put(6, new JLabel("10000"));
+        labelTable.put(7, new JLabel("36000"));
+        labelTable.put(8, new JLabel("100000"));
         speedSlider.setLabelTable(labelTable);
 
         speedSlider.addChangeListener(e -> {
@@ -117,9 +109,19 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     protected void startSimulation() {
         if (worker == null || worker.isDone()) {
             try {
-                core.setReplicationCount(1);
-                core.setSlowDownSpeed(1.0);
-                core.setSlowMode(true);
+                SwingUtilities.invokeLater(() -> {
+                    label.setText("Simulation Time : 0");
+                    ordersTableModel.setRowCount(0);
+                    ordersTableModel.fireTableDataChanged();
+
+                    workersTableModel.setRowCount(0);
+                    workersTableModel.fireTableDataChanged();
+                });
+                int replicationCount = Integer.parseInt(replicationsInput.getText());
+                core.setReplicationCount(replicationCount);
+                core.setSlowMode(replicationCount == 1);
+                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
+                core.setSlowDownSpeed(speed.getValue());
                 worker = new EventSimulationWorker();
                 worker.execute();
 
@@ -138,6 +140,11 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         worker.cancel(true);
         SwingUtilities.invokeLater(() -> {
             label.setText("Simulation Time : 0");
+            ordersTableModel.setRowCount(0);
+            ordersTableModel.fireTableDataChanged();
+
+            workersTableModel.setRowCount(0);
+            workersTableModel.fireTableDataChanged();
         });
 
     }

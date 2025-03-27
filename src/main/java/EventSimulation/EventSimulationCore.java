@@ -15,6 +15,7 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected double slowDownSpeed;
     protected boolean isGeneratedFirstSystemEvent;
 
+    protected int frequencyOfUpdate = 21;
 
     protected boolean paused;
 

@@ -77,12 +77,11 @@ public class EndOfCuttingEvent extends Event {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                 worker.setOrderId(nextOrder.getId());
-                System.out.println(worker.getCurrentState());
+                //System.out.println(worker.getCurrentState());
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
            //     System.out.println("[EndOfCuttingEvent] Ďalšia objednávka ID " + nextOrder.getId() + " ide na rezanie (čas: " + newTime + ")");
             }
         }
-        core.dataHandling();
     }
 
 

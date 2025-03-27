@@ -79,6 +79,5 @@ public class EndOfColoringEvent extends Event {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
             //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu.");
         }
-        core.dataHandling();
     }
 }
