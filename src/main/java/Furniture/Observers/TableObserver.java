@@ -44,13 +44,11 @@ public class TableObserver implements IObserver {
 
             for (Order order : ordersSnapshot) {
                 String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
-                if (order.getState() != OrderStateValues.ORDER_DONE.getValue()) {
-                    ordersModel.addRow(new Object[]{
+                   ordersModel.addRow(new Object[]{
                             order.getId(),
                             order.getType(),
                             stateOfOrder
                     });
-                }
             }
 
             // Vymazanie všetkých riadkov z workers tabuľky

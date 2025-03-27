@@ -47,7 +47,7 @@ public class EndOfAssemblyEvent extends Event {
                 workPlace.getQueueFour().addLast(order);
               //  System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " pridaná do fronty kovania (queueFour).");
             } else {
-                double newTime = Utility.calculateFourth(order, core);
+                double newTime = this.time + Utility.calculateFourth(order, core);
                 if (newTime < core.getEndTime()) {
                     order.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                     targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
