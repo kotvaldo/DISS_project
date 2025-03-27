@@ -26,7 +26,7 @@ public class OrderArrivalEvent extends Event {
         LinkedList<Order> queueOne = workPlace.getQueueOne();
 
         Worker targetWorker = null;
-        for(Worker w : workPlace.getWorkersOne()) {
+        for(Worker w : workPlace.getWorkersA()) {
             if(w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
                 targetWorker = w;
             }
@@ -37,30 +37,30 @@ public class OrderArrivalEvent extends Event {
         core.ordersArrayList.add(order);
 
         order.setState(OrderStateValues.ORDER_NEW.getValue());
-        core.dataHandling();
         if(targetWorker == null) {
             queueOne.addLast(order);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
-            core.dataHandling();
         } else {
             if(queueOne.isEmpty()) {
                 double newTime = time + Utility.calculateFirstTime(order, core);
                 if(newTime < core.getEndTime()) {
                     targetWorker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                    core.dataHandling();
+                    targetWorker.setOrderId(order.getId());
                     core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
                 }
-
             } else {
                 queueOne.addLast(order);
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
                 core.dataHandling();
             }
+           // System.out.println(targetWorker.getId() + " | " + targetWorker.getCurrentState());
         }
 
         double newTime = this.time + core.getOrderArrivalDist().sample();
         core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
         core.dataHandling();
+
+
     }
 }

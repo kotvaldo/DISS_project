@@ -3,8 +3,6 @@ package Furniture;
 import EventSimulation.EventSimulationCore;
 import EventSimulation.SystemEvent;
 import Furniture.Entity.Order;
-import Furniture.Entity.Worker;
-import Furniture.Enums.OrderStateValues;
 import Furniture.Events.OrderArrivalEvent;
 import Generators.*;
 import Furniture.Entity.WorkPlace;
@@ -31,9 +29,10 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Triangular timeMovingToAnotherWorkshopDist;
     private int countWorkerA = 5;
     private int countWorkerB = 6;
-    private int countWorkerC = 3;
+    private int countWorkerC = 10;
     private WorkPlace workPlace;
     public ArrayList<Order> ordersArrayList = new ArrayList<>();
+    public ArrayList<Order> copyOfArrayList = new ArrayList<>();
 
     public FurnitureEventCore() {
         super();
@@ -112,10 +111,11 @@ public class FurnitureEventCore extends EventSimulationCore {
 
         state.setSimulationTime(this.simulationTime);
         //System.out.println(state.getSimulationTime());
-        state.setAllOrders(ordersArrayList);
-        state.setWorkersA(workPlace.getWorkersOne());
-        state.setWorkersB(workPlace.getWorkersThree());
-        state.setWorkersC(workPlace.getWorkersTwo());
+
+        state.setAllOrders(new ArrayList<>(ordersArrayList));
+        state.setWorkersA(new ArrayList<>(workPlace.getWorkersA()));
+        state.setWorkersB(new ArrayList<>(workPlace.getWorkersB()));
+        state.setWorkersC(new ArrayList<>(workPlace.getWorkersC()));
 
         this.listener.setState(state);
         this.listener.notifyObservers();

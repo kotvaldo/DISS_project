@@ -37,29 +37,41 @@ public class TableObserver implements IObserver {
         SwingUtilities.invokeLater(() -> {
             ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
 
-            ordersModel.setRowCount(0);
-            for (Order order : ordersSnapshot) {
-                String stav = OrderStateValues.getNameByValue(order.getState());
-                ordersModel.addRow(new Object[]{
-                        order.getId(),
-                        order.getType(),
-                        stav
-                });
+            // Vymazanie všetkých riadkov z orders tabuľky
+            while (ordersModel.getRowCount() > 0) {
+                ordersModel.removeRow(0);
             }
 
-            ArrayList<Worker> workersSnapshot = new ArrayList<>();
-            workersSnapshot.addAll(furnitureState.getWorkersA());
-            workersSnapshot.addAll(furnitureState.getWorkersB());
-            workersSnapshot.addAll(furnitureState.getWorkersC());
+            for (Order order : ordersSnapshot) {
+                String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
+                if (order.getState() != OrderStateValues.ORDER_DONE.getValue()) {
+                    ordersModel.addRow(new Object[]{
+                            order.getId(),
+                            order.getType(),
+                            stateOfOrder
+                    });
+                }
+            }
 
-            workersModel.setRowCount(0);
-            for (Worker worker : workersSnapshot) {
-                String skupina = worker.getType();
-                String stav = WorkerBussyState.getNameByValue(worker.getCurrentState());
+            // Vymazanie všetkých riadkov z workers tabuľky
+            while (workersModel.getRowCount() > 0) {
+                workersModel.removeRow(0);
+            }
+
+            ArrayList<Worker> snapshot = new ArrayList<>();
+            snapshot.addAll(furnitureState.getWorkersA());
+            snapshot.addAll(furnitureState.getWorkersB());
+            snapshot.addAll(furnitureState.getWorkersC());
+
+            for (Worker worker : snapshot) {
+                String group = worker.getType();
+                String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
+                String orderID = worker.getOrderId() != -1 ? "Order : " + worker.getOrderId() : "No Order";
                 workersModel.addRow(new Object[]{
                         worker.getId(),
-                        skupina,
-                        stav
+                        group,
+                        stateOfWorker,
+                        orderID
                 });
             }
         });

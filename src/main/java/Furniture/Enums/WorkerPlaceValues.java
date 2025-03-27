@@ -2,9 +2,9 @@ package Furniture.Enums;
 
 public enum WorkerPlaceValues {
     STORAGE("Storage"),
-    WORKPLACE_A("A"),
-    WORKPLACE_B("B"),
-    WORKPLACE_C("C");
+    WORKPLACE_A("Workplace_A"),
+    WORKPLACE_B("Workplace_B"),
+    WORKPLACE_C("Workplace_C");
 
     private final String name;
 
@@ -12,7 +12,7 @@ public enum WorkerPlaceValues {
         this.name = name;
     }
 
-    public String getName() {
+    public String getValue() {
         return name;
     }
 

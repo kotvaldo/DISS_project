@@ -34,6 +34,7 @@ public class EndOfMontageEvent extends Event {
 
         // Objednávka je hotová
         order.setState(OrderStateValues.ORDER_DONE.getValue());
+        //core.ordersArrayList.remove(order);
       //  System.out.println("[EndOfFittings] Objednávka ID " + order.getId() + " je ukončená.");
 
         // Priraď ďalšiu objednávku z fronty kovania
@@ -42,6 +43,8 @@ public class EndOfMontageEvent extends Event {
             double newTime = this.time + Utility.calculateFourth(nextOrder, core);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
+                worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                worker.setOrderId(nextOrder.getId());
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
                /* System.out.println("[EndOfFittings] Worker ID " + worker.getId() +
                         " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž kovania. Čas: " + newTime);*/

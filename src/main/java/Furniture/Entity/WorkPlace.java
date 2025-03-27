@@ -5,16 +5,16 @@ import java.util.LinkedList;
 
 public class WorkPlace {
     private final LinkedList<Order> queueOne;
-    private final ArrayList<Worker> workersOne;
+    private final ArrayList<Worker> workersA;
     private int stateOne;
     private int activityOne;
 
-    private final ArrayList<Worker> workersTwo;
+    private final ArrayList<Worker> workersC;
     private final LinkedList<Order> queueTwo;
     private int stateTwo;
     private int activityTwo;
 
-    private final ArrayList<Worker> workersThree;
+    private final ArrayList<Worker> workersB;
     private final LinkedList<Order> queueThree;
     private int stateThree;
     private int activityThree;
@@ -23,26 +23,26 @@ public class WorkPlace {
 
     public WorkPlace() {
         queueOne = new LinkedList<>();
-        workersOne = new ArrayList<>();
-        workersTwo = new ArrayList<>();
+        workersA = new ArrayList<>();
+        workersC = new ArrayList<>();
         queueThree = new LinkedList<>();
-        workersThree = new ArrayList<>();
+        workersB = new ArrayList<>();
         queueTwo = new LinkedList<>();
         queueFour = new LinkedList<>();
     }
 
     public void initWorkers(int countA, int countB, int countC) {
-        workersOne.clear();
-        workersTwo.clear();
-        workersThree.clear();
+        workersA.clear();
+        workersC.clear();
+        workersB.clear();
         for (int i = 0; i < countA; i++) {
-            workersOne.add(new Worker("A"));
+            workersA.add(new Worker("A"));
         }
         for (int i = 0; i < countC; i++) {
-            workersTwo.add(new Worker("C"));
+            workersC.add(new Worker("C"));
         }
         for (int i = 0; i < countB; i++) {
-            workersThree.add(new Worker("B"));
+            workersB.add(new Worker("B"));
         }
 
     }
@@ -63,14 +63,14 @@ public class WorkPlace {
     public LinkedList<Order> getQueuesThree() {
         return queueThree;
     }
-    public ArrayList<Worker> getWorkersOne() {
-        return this.workersOne;
+    public ArrayList<Worker> getWorkersA() {
+        return this.workersA;
     }
-    public ArrayList<Worker> getWorkersTwo() {
-        return this.workersTwo;
+    public ArrayList<Worker> getWorkersC() {
+        return this.workersC;
     }
-    public ArrayList<Worker> getWorkersThree() {
-        return workersThree;
+    public ArrayList<Worker> getWorkersB() {
+        return workersB;
     }
 
     public int getStateOne() {

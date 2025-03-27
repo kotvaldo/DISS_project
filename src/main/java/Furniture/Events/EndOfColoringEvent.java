@@ -19,7 +19,6 @@ public class EndOfColoringEvent extends Event {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
-        worker.setCurrentState(false);
 
         /*System.out.println("[EndOfColoringEvent - KONŠTRUKTOR] Vytvorený pre objednávku ID " + order.getId() +
                 ", čas: " + time + ", pracovník ID: " + worker.getId());*/
@@ -34,7 +33,7 @@ public class EndOfColoringEvent extends Event {
 
         // 1. Pokus o posun objednávky na montáž
         Worker targetWorkerForMontaging = null;
-        for (Worker w : workPlace.getWorkersThree()) {
+        for (Worker w : workPlace.getWorkersB()) {
             if (w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
                 targetWorkerForMontaging = w;
                 break;
@@ -50,6 +49,7 @@ public class EndOfColoringEvent extends Event {
             if (newTime < core.getEndTime()) {
                 order.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
                 targetWorkerForMontaging.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                targetWorkerForMontaging.setOrderId(order.getId());
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, order, targetWorkerForMontaging));
                 //System.out.println("[EndOfColoringEvent] Objednávka ID " + order.getId() + " ide rovno na montáž (worker ID: " + targetWorkerForMontaging.getId() + ", čas: " + newTime + ")");
             }
@@ -68,7 +68,9 @@ public class EndOfColoringEvent extends Event {
             Order nextColoringOrder = workPlace.getQueuesTwo().removeFirst();
             double newTime = this.time + Utility.calculateSecondTime(nextColoringOrder, core);
             if (newTime < core.getEndTime()) {
+                worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
+                worker.setOrderId(nextColoringOrder.getId());
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, worker));
                 //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " pokračuje ďalšou objednávkou ID " + nextColoringOrder.getId() + " na lakovanie.");
             }

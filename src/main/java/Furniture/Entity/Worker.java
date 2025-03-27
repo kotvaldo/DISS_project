@@ -1,5 +1,6 @@
 package Furniture.Entity;
 
+import Furniture.Enums.WorkerPlaceValues;
 import IDGenerator.IDGenerator;
 import Furniture.Enums.WorkerBussyState;
 
@@ -8,11 +9,18 @@ public class Worker {
     private boolean currentState;
     private final String type;
     private int orderId;
+    private String currentWorkPlace;
 
     public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
         currentState = false;
+        orderId = -1;
+        switch (type) {
+            case "A" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_A.getValue();
+            case "B" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_B.getValue();
+            case "C" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_C.getValue();
+        }
     }
 
     public boolean getCurrentState() {
@@ -21,6 +29,9 @@ public class Worker {
 
     public void setCurrentState(boolean bussy) {
         this.currentState = bussy;
+        if(!bussy) {
+            orderId = -1;
+        }
     }
 
     public int getId() {
@@ -36,7 +47,21 @@ public class Worker {
     }
 
     public void setOrderId(int orderId) {
-        this.orderId = orderId;
+        if(orderId < 0) {
+            setCurrentState(false);
+        } else {
+            this.orderId = orderId;
+            this.setCurrentState(true);
+        }
+
+    }
+
+    public String getCurrentWorkPlace() {
+        return currentWorkPlace;
+    }
+
+    public void setCurrentWorkPlace(String currentWorkPlace) {
+        this.currentWorkPlace = currentWorkPlace;
     }
 }
 

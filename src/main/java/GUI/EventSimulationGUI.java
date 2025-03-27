@@ -27,6 +27,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private DefaultTableModel ordersTableModel;
     private DefaultTableModel workersTableModel;
 
+
     public EventSimulationGUI() {
         super("Event Simulation");
         subject = new Subject();
@@ -48,12 +49,11 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             core.setPaused(false);
         });
 
-        String[] orderColumns = {"ID", "Typ", "Stav"};
+        String[] orderColumns = {"ID", "Type", "State"};
         ordersTableModel = new DefaultTableModel(orderColumns, 0); // prázdne dáta
         ordersTable = new JTable(ordersTableModel);
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
-
-        String[] workerColumns = {"ID", "Skupina", "Stav"};
+        String[] workerColumns = {"ID", "Group", "State", "Order_ID"};
         workersTableModel = new DefaultTableModel(workerColumns, 0); // prázdne dáta
         workersTable = new JTable(workersTableModel);
         JScrollPane workersScroll = new JScrollPane(workersTable);
