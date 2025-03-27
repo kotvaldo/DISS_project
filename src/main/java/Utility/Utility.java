@@ -59,18 +59,19 @@ public class Utility {
     public static double calculateThird(Order order, FurnitureEventCore core) {
         double totalTime = 0.0;
         if(order.getType() == 1) {
-            totalTime += core.getComputingTypeOneDist().sample();
+            totalTime += core.getAssemblyTypeOneDist().sample();
         } else if(order.getType() == 2) {
-            totalTime += core.getComputingTypeTwoDist().sample();
+            totalTime += core.getAssemblyTypeTwoDist().sample();
         } else if(order.getType() == 3) {
-            totalTime += core.getComputingTypeThreeDist().sample();
+            totalTime += core.getAssemblyTypeThreeDist().sample();
         }
         totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
         return totalTime;
     }
     public static double calculateFourth(Order order, FurnitureEventCore core) {
         double totalTime = 0.0;
-        totalTime += core.getFittingTypeThreeDist().sample();
+        totalTime += core.getMontageDist().sample();
+        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
         return totalTime;
 
     }

@@ -20,10 +20,10 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final UniformContinuous coloringTypeOneDist;
     private final UniformContinuous coloringTypeTwoDist;
     private final UniformContinuous coloringTypeThreeDist;
-    private final UniformContinuous computingTypeOneDist;
-    private final UniformContinuous computingTypeTwoDist;
-    private final UniformContinuous computingTypeThreeDist;
-    private final UniformContinuous fittingTypeThreeDist;
+    private final UniformContinuous assemblyTypeOneDist;
+    private final UniformContinuous assemblyTypeTwoDist;
+    private final UniformContinuous assemblyTypeThreeDist;
+    private final UniformContinuous montageDist;
     private final Triangular timeInStorageDist;
     private final Triangular timeMovingToStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
@@ -49,18 +49,18 @@ public class FurnitureEventCore extends EventSimulationCore {
         //first
         cuttingTypeOneDist = new EmpiricContinuous(list);
         coloringTypeOneDist = new UniformContinuous(12000.0, 36600.0);
-        computingTypeOneDist = new UniformContinuous(1800.0, 3600.0);
+        assemblyTypeOneDist = new UniformContinuous(1800.0, 3600.0);
 
         // second
         cuttingTypeTwoDist = new UniformContinuous(720.0, 960.0);
         coloringTypeTwoDist = new UniformContinuous(12600.0, 32400.0);
-        computingTypeTwoDist = new UniformContinuous(840.0, 1440.0);
+        assemblyTypeTwoDist = new UniformContinuous(840.0, 1440.0);
 
         // third
         cuttingTypeThreeDist = new UniformContinuous(900.0, 4800.0);
         coloringTypeThreeDist = new UniformContinuous(36000.0, 42000.0);
-        computingTypeThreeDist = new UniformContinuous(2100.0, 4500.0);
-        fittingTypeThreeDist = new UniformContinuous(900.0, 1500.0);
+        assemblyTypeThreeDist = new UniformContinuous(2100.0, 4500.0);
+        montageDist = new UniformContinuous(900.0, 1500.0);
 
         //moving Dist
         timeMovingToStorageDist = new Triangular(60.0, 480.0, 120.0);
@@ -166,22 +166,22 @@ public class FurnitureEventCore extends EventSimulationCore {
     }
 
 
-    public UniformContinuous getComputingTypeOneDist() {
-        return computingTypeOneDist;
+    public UniformContinuous getAssemblyTypeOneDist() {
+        return assemblyTypeOneDist;
     }
 
-    public UniformContinuous getComputingTypeTwoDist() {
-        return computingTypeTwoDist;
-    }
-
-
-    public UniformContinuous getComputingTypeThreeDist() {
-        return computingTypeThreeDist;
+    public UniformContinuous getAssemblyTypeTwoDist() {
+        return assemblyTypeTwoDist;
     }
 
 
-    public UniformContinuous getFittingTypeThreeDist() {
-        return fittingTypeThreeDist;
+    public UniformContinuous getAssemblyTypeThreeDist() {
+        return assemblyTypeThreeDist;
+    }
+
+
+    public UniformContinuous getMontageDist() {
+        return montageDist;
     }
 
 

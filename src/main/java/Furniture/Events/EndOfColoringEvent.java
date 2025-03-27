@@ -45,7 +45,7 @@ public class EndOfColoringEvent extends Event {
             workPlace.getQueuesThree().addLast(order);
             //System.out.println("[EndOfColoringEvent] Objednávka ID " + order.getId() + " pridaná do fronty montáže (queueThree).");
         } else {
-            double newTime = Utility.calculateThird(order, core);
+            double newTime = this.time + Utility.calculateThird(order, core);
             if (newTime < core.getEndTime()) {
                 order.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
                 targetWorkerForMontaging.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
@@ -61,6 +61,7 @@ public class EndOfColoringEvent extends Event {
             double newTime = this.time + Utility.calculateFourth(fittingsOrder, core);
             if (newTime < core.getEndTime()) {
                 fittingsOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
+                worker.setOrderId(fittingsOrder.getId());
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, fittingsOrder, worker));
                 //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " ide na montáž kovania pre objednávku ID " + fittingsOrder.getId());
             }
