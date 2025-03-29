@@ -36,7 +36,7 @@ public class Worker {
         return type;
     }
 
-    public Order getOrderId() {
+    public Order getOrder() {
         return order;
     }
 
@@ -48,6 +48,14 @@ public class Worker {
             this.setCurrentState(true);
         }
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Worker worker = (Worker) obj;
+        return id == worker.id;
     }
 
     public WorkPlace getCurrentWorkPlace() {

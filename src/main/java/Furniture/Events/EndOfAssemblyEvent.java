@@ -44,7 +44,7 @@ public class EndOfAssemblyEvent extends Event {
                 core.getQueueMontage().addLast(order);
               //  System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " pridaná do fronty kovania (queueFour).");
             } else {
-                double newTime = this.time + Utility.calculateFourth(order, core);
+                double newTime = this.time + Utility.calculateFourth(order, core, targetWorkerForMontage);
                 if (newTime < core.getEndTime()) {
                     order.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                     targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
@@ -56,6 +56,13 @@ public class EndOfAssemblyEvent extends Event {
             }
         } else {
             order.setState(OrderStateValues.ORDER_DONE.getValue());
+            order.getWorkPlace().setOrder(null);
+            //neviem ci toto moze byt
+            order.setWorkPlace(null);
+            worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setOrder(null);
+
+
             //core.ordersArrayList.remove(order);
             //System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() + " je dokončená.");
         }
@@ -64,7 +71,7 @@ public class EndOfAssemblyEvent extends Event {
         // 2. Priradenie ďalšej objednávky tomuto workerovi
         if (!core.getQueueAssembly().isEmpty()) {
             Order nextOrder = core.getQueueAssembly().removeFirst();
-            double newTime = this.time + Utility.calculateThird(nextOrder, core);
+            double newTime = this.time + Utility.calculateThird(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
@@ -75,6 +82,7 @@ public class EndOfAssemblyEvent extends Event {
             }
         } else {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setOrder(null);
             //System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
 

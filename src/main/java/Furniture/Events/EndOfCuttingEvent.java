@@ -2,6 +2,7 @@ package Furniture.Events;
 
 import EventSimulation.Event;
 import Furniture.Entity.Order;
+import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
@@ -31,6 +32,8 @@ public class EndOfCuttingEvent extends Event {
                 " dokončila rezanie. Čas: " + this.time);
 */
         // Presun do fázy 2 (lakovanie)
+
+
         Worker targetWorkerForTwo = null;
         for (Worker w : core.getWorkersC()) {
             if (w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
@@ -39,6 +42,9 @@ public class EndOfCuttingEvent extends Event {
             }
         }
 
+
+
+
         if (targetWorkerForTwo == null) {
             //          System.out.println("No WorkerForTwo found");
             core.getQueueColoring().addLast(this.order);
@@ -46,7 +52,7 @@ public class EndOfCuttingEvent extends Event {
             //        System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() + " pridaná do fronty lakovania (queueTwo).");
         } else {
             if (core.getQueueColoring().isEmpty()) {
-                double newTime = this.time + Utility.calculateSecondTime(this.order, core);
+                double newTime = this.time + Utility.calculateSecondTime(this.order, core, targetWorkerForTwo);
                 if (newTime < core.getEndTime()) {
                     this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                     targetWorkerForTwo.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
@@ -71,7 +77,7 @@ public class EndOfCuttingEvent extends Event {
            // System.out.println("[EndOfCuttingEvent] Žiadna ďalšia objednávka na rezanie – worker ID " + worker.getId() + " je voľný.");
         } else {
             Order nextOrder = core.getQueueCutting().removeFirst();
-            double newTime = this.time + Utility.calculateFirstTime(nextOrder, core);
+            double newTime = this.time + Utility.calculateFirstTime(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());

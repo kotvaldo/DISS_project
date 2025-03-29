@@ -1,6 +1,9 @@
 package Utility;
 
 import Furniture.Entity.Order;
+import Furniture.Entity.WorkPlace;
+import Furniture.Entity.Worker;
+import Furniture.Enums.WorkerBussyState;
 import Furniture.FurnitureEventCore;
 
 import java.util.ArrayList;
@@ -26,9 +29,26 @@ public class Utility {
         return (int) trimmedList.stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
-    public static double calculateFirstTime(Order order, FurnitureEventCore core) {
+    public static double calculateFirstTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
-        totalTime += core.getTimeInStorageDist().sample();
+
+        WorkPlace current = worker.getCurrentWorkPlace();
+        WorkPlace target = order.getWorkPlace();
+
+        if (current == null) {
+            totalTime += core.getTimeInStorageDist().sample();
+
+        } else if (!current.equals(target)) {
+            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getTimeInStorageDist().sample();
+
+        } else {
+            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getTimeInStorageDist().sample();
+        }
+        worker.setCurrentWorkPlace(target);
+
         totalTime += core.getTimeInStorageDist().sample();
         if(order.getType() == 1) {
             totalTime += core.getCuttingTypeOneDist().sample();
@@ -37,13 +57,28 @@ public class Utility {
         } else if(order.getType() == 3) {
             totalTime += core.getCuttingTypeThreeDist().sample();
         }
-        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
         return totalTime;
 
     }
 
-    public static double calculateSecondTime(Order order, FurnitureEventCore core) {
+    public static double calculateSecondTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
+
+        WorkPlace current = worker.getCurrentWorkPlace();
+        WorkPlace target = order.getWorkPlace();
+
+        if (current == null) {
+            totalTime += core.getTimeInStorageDist().sample();
+
+        } else if (!current.equals(target)) {
+            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+
+
+        }
+
+        worker.setCurrentWorkPlace(target);
+
+
         if(order.getType() == 1) {
             totalTime += core.getColoringTypeOneDist().sample();
         } else if(order.getType() == 2) {
@@ -56,8 +91,22 @@ public class Utility {
 
     }
 
-    public static double calculateThird(Order order, FurnitureEventCore core) {
+    public static double calculateThird(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
+
+        WorkPlace current = worker.getCurrentWorkPlace();
+        WorkPlace target = order.getWorkPlace();
+
+        if (current == null) {
+            totalTime += core.getTimeInStorageDist().sample();
+
+        } else if (!current.equals(target)) {
+            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+
+
+        }
+
+        worker.setCurrentWorkPlace(target);
         if(order.getType() == 1) {
             totalTime += core.getAssemblyTypeOneDist().sample();
         } else if(order.getType() == 2) {
@@ -68,17 +117,27 @@ public class Utility {
         totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
         return totalTime;
     }
-    public static double calculateFourth(Order order, FurnitureEventCore core) {
+    public static double calculateFourth(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
-        totalTime += core.getMontageDist().sample();
-        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+
+        WorkPlace current = worker.getCurrentWorkPlace();
+        WorkPlace target = order.getWorkPlace();
+
+        if (current == null) {
+            totalTime += core.getTimeInStorageDist().sample();
+
+        } else if (!current.equals(target)) {
+            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+        }
+
+        worker.setCurrentWorkPlace(target);
         return totalTime;
 
     }
 
     public static String fromSecondsToTime(double seconds) {
-        int secondsInWorkday = 8 * 3600; // 8 hodín
-        int startHourSeconds = 6 * 3600; // začiatok dňa o 6:00
+        int secondsInWorkday = 8 * 3600;
+        int startHourSeconds = 6 * 3600;
 
         int secondsInCurrentDay = (int) seconds % secondsInWorkday;
         int shiftedSeconds = secondsInCurrentDay + startHourSeconds;

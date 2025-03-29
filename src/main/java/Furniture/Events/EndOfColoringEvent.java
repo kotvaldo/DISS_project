@@ -42,7 +42,7 @@ public class EndOfColoringEvent extends Event {
             core.getQueueAssembly().addLast(order);
             //System.out.println("[EndOfColoringEvent] Objednávka ID " + order.getId() + " pridaná do fronty montáže (queueThree).");
         } else {
-            double newTime = this.time + Utility.calculateThird(order, core);
+            double newTime = this.time + Utility.calculateThird(order, core, targetWorkerForMontaging);
             if (newTime < core.getEndTime()) {
                 order.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
                 targetWorkerForMontaging.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
@@ -55,16 +55,16 @@ public class EndOfColoringEvent extends Event {
         // 2. Tento worker pokračuje buď montážou kovania alebo ďalším lakovaním
         if (!core.getQueueMontage().isEmpty()) {
             Order fittingsOrder = core.getQueueMontage().removeFirst();
-            double newTime = this.time + Utility.calculateFourth(fittingsOrder, core);
+            double newTime = this.time + Utility.calculateFourth(fittingsOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 fittingsOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                 worker.setOrder(fittingsOrder);
-                core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, fittingsOrder, worker));
+                core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, fittingsOrder, worker));
                 //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " ide na montáž kovania pre objednávku ID " + fittingsOrder.getId());
             }
         } else if (!core.getQueueColoring().isEmpty()) {
             Order nextColoringOrder = core.getQueueColoring().removeFirst();
-            double newTime = this.time + Utility.calculateSecondTime(nextColoringOrder, core);
+            double newTime = this.time + Utility.calculateSecondTime(nextColoringOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
@@ -74,6 +74,7 @@ public class EndOfColoringEvent extends Event {
             }
         } else {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setOrder(null);
             //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu.");
         }
     }

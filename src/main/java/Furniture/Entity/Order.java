@@ -33,6 +33,15 @@ public class Order {
         return type;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Order order = (Order) obj;
+        return id == order.id;
+    }
+
+
     public WorkPlace getWorkPlace() {
         return WorkPlace;
     }

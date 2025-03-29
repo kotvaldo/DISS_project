@@ -35,6 +35,14 @@ public class WorkPlace {
         return isBussy;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        WorkPlace workplace = (WorkPlace) obj;
+        return id == workplace.id;
+    }
+
     public void setBussy(boolean bussy) {
         if(!bussy) {
             this.order = null;

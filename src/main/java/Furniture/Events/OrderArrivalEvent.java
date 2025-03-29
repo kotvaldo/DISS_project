@@ -24,6 +24,36 @@ public class OrderArrivalEvent extends Event {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
         LinkedList<Order> queueOne = core.getQueueCutting();
 
+
+        int orderType = core.getTypeOfOrderDist().sample();
+        Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType);
+        core.ordersArrayList.add(order);
+
+        WorkPlace workPlace = null;
+
+        if(core.getWorkplaces().isEmpty()) {
+            workPlace = new WorkPlace();
+            core.getWorkplaces().add(workPlace);
+            order.setWorkPlace(workPlace);
+            workPlace.setOrder(order);
+        } else {
+            for (WorkPlace wp : core.getWorkplaces()) {
+                if(!wp.isBussy()) {
+                    workPlace = wp;
+                    break;
+                }
+            }
+            if(workPlace == null) {
+                workPlace = new WorkPlace();
+                core.getWorkplaces().add(workPlace);
+                order.setWorkPlace(workPlace);
+                workPlace.setOrder(order);
+            } else {
+                order.setWorkPlace(workPlace);
+                workPlace.setOrder(order);
+            }
+        }
+
         Worker targetWorker = null;
         for(Worker w : core.getWorkersA()) {
             if(w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
@@ -31,24 +61,13 @@ public class OrderArrivalEvent extends Event {
             }
         }
 
-        int orderType = core.getTypeOfOrderDist().sample();
-        Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType);
-        core.ordersArrayList.add(order);
-
-        if(core.getWorkplaces().isEmpty()) {
-            WorkPlace workPlace = new WorkPlace();
-            core.getWorkplaces().add(workPlace);
-            order.setWorkPlace(workPlace);
-        }
-
-
         order.setState(OrderStateValues.ORDER_NEW.getValue());
         if(targetWorker == null) {
             queueOne.addLast(order);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         } else {
             if(queueOne.isEmpty()) {
-                double newTime = time + Utility.calculateFirstTime(order, core);
+                double newTime = time + Utility.calculateFirstTime(order, core, targetWorker);
                 if(newTime < core.getEndTime()) {
                     targetWorker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
@@ -58,7 +77,6 @@ public class OrderArrivalEvent extends Event {
             } else {
                 queueOne.addLast(order);
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
-                core.dataHandling();
             }
            // System.out.println(targetWorker.getId() + " | " + targetWorker.getCurrentState());
         }

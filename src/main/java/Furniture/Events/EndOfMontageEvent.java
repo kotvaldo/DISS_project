@@ -32,13 +32,15 @@ public class EndOfMontageEvent extends Event {
 
         // Objednávka je hotová
         order.setState(OrderStateValues.ORDER_DONE.getValue());
+        order.getWorkPlace().setOrder(null);
+        order.setWorkPlace(null);
         //core.ordersArrayList.remove(order);
       //  System.out.println("[EndOfFittings] Objednávka ID " + order.getId() + " je ukončená.");
 
         // Priraď ďalšiu objednávku z fronty kovania
         if (!core.getQueueMontage().isEmpty()) {
             Order nextOrder = core.getQueueMontage().removeFirst();
-            double newTime = this.time + Utility.calculateFourth(nextOrder, core);
+            double newTime = this.time + Utility.calculateFourth(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
@@ -49,6 +51,7 @@ public class EndOfMontageEvent extends Event {
             }
         } else {
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setOrder(null);
             //System.out.println("[EndOfFittings] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
 

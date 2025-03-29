@@ -1,6 +1,5 @@
 package Furniture.Observers;
 
-import Furniture.FurnitureEventCore;
 import Furniture.FurnitureEventState;
 import Observer.IObserver;
 import State.IState;
@@ -10,10 +9,7 @@ import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.WorkerBussyState;
-import Furniture.FurnitureEventState;
-import Observer.IObserver;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
@@ -64,7 +60,7 @@ public class TableObserver implements IObserver {
             for (Worker worker : snapshot) {
                 String group = worker.getType();
                 String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
-                String orderID = worker.getOrderId() != -1 ? "Order : " + worker.getOrderId() : "No Order";
+                String orderID = worker.getOrder() != null ? "Order : " + worker.getOrder().getId() : "No Order";
                 workersModel.addRow(new Object[]{
                         worker.getId(),
                         group,
