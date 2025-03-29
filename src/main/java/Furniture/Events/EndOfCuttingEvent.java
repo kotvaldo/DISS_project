@@ -87,6 +87,7 @@ public class EndOfCuttingEvent extends Event {
            //     System.out.println("[EndOfCuttingEvent] Ďalšia objednávka ID " + nextOrder.getId() + " ide na rezanie (čas: " + newTime + ")");
             }
         }
+
     }
 
 

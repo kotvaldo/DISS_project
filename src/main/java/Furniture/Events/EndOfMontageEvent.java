@@ -55,5 +55,6 @@ public class EndOfMontageEvent extends Event {
             //System.out.println("[EndOfFittings] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
 
+
     }
 }

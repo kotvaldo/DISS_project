@@ -36,70 +36,72 @@ public class TableObserver implements IObserver {
     public void update(IState state) {
         FurnitureEventState furnitureState = (FurnitureEventState) state;
 
-        SwingUtilities.invokeLater(() -> {
+        if(furnitureState.isSlowDown()) {
+            SwingUtilities.invokeLater(() -> {
+                ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
 
-            ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
+                ordersModel.setRowCount(0);
 
-            ordersModel.setRowCount(0);
+                workersModel.setRowCount(0);
 
-            workersModel.setRowCount(0);
-
-            workPlaceModel.setRowCount(0);
+                workPlaceModel.setRowCount(0);
 
 
-            for (Order order : ordersSnapshot) {
-                String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
-                   ordersModel.addRow(new Object[]{
+                for (Order order : ordersSnapshot) {
+                    String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
+                    ordersModel.addRow(new Object[]{
                             order.getId(),
                             order.getType(),
                             stateOfOrder
                     });
-            }
-
-
-
-            ArrayList<Worker> snapshot = new ArrayList<>();
-            snapshot.addAll(furnitureState.getWorkersA());
-            snapshot.addAll(furnitureState.getWorkersB());
-            snapshot.addAll(furnitureState.getWorkersC());
-
-            for (Worker worker : snapshot) {
-                String group = worker.getType();
-                String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
-                String orderID = worker.getOrder() != null ? "Order : " + worker.getOrder().getId() : "No Order";
-                String workPlaceID;
-                if(worker.getCurrentWorkPlace() != null) {
-                    workPlaceID = "WorkPlace ID : " + worker.getCurrentWorkPlace().getId();
-                } else {
-                    workPlaceID = "Storage";
                 }
-                workersModel.addRow(new Object[]{
-                        worker.getId(),
-                        group,
-                        stateOfWorker,
-                        orderID,
-                        workPlaceID
-                });
-            }
-
-            ArrayList<WorkPlace> snapShotWorkPlaces = new ArrayList<>(furnitureState.getWorkPlaces());
 
 
-            for (WorkPlace workPlace : snapShotWorkPlaces) {
-                String id = String.valueOf(workPlace.getId());
-                String bussyState = String.valueOf(workPlace.isBussy());
-                String orderId;
-                if(workPlace.getOrder() != null){
-                    orderId = "Order ID : " + workPlace.getOrder().getId();
 
-                } else {
-                    orderId = "No Order";
+                ArrayList<Worker> snapshot = new ArrayList<>();
+                snapshot.addAll(furnitureState.getWorkersA());
+                snapshot.addAll(furnitureState.getWorkersB());
+                snapshot.addAll(furnitureState.getWorkersC());
+
+                for (Worker worker : snapshot) {
+                    String group = worker.getType();
+                    String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
+                    String orderID = worker.getOrder() != null ? "Order : " + worker.getOrder().getId() : "No Order";
+                    String workPlaceID;
+                    if(worker.getCurrentWorkPlace() != null) {
+                        workPlaceID = "WorkPlace ID : " + worker.getCurrentWorkPlace().getId();
+                    } else {
+                        workPlaceID = "Storage";
+                    }
+                    workersModel.addRow(new Object[]{
+                            worker.getId(),
+                            group,
+                            stateOfWorker,
+                            orderID,
+                            workPlaceID
+                    });
                 }
-                workPlaceModel.addRow(new Object[]{
-                        id, bussyState, orderId
-                });
-            }
-        });
+
+                ArrayList<WorkPlace> snapShotWorkPlaces = new ArrayList<>(furnitureState.getWorkPlaces());
+
+
+                for (WorkPlace workPlace : snapShotWorkPlaces) {
+                    String id = String.valueOf(workPlace.getId());
+                    String bussyState = String.valueOf(workPlace.isBussy());
+                    String orderId;
+                    if(workPlace.getOrder() != null){
+                        orderId = "Order ID : " + workPlace.getOrder().getId();
+
+                    } else {
+                        orderId = "No Order";
+                    }
+                    workPlaceModel.addRow(new Object[]{
+                            id, bussyState, orderId
+                    });
+                }
+            });
+        }
+
     }
 
 }

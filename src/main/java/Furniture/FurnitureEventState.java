@@ -14,6 +14,10 @@ public class FurnitureEventState implements IState {
     private ArrayList<Worker> workersC;
     private ArrayList<Worker> workersB;
     private ArrayList<WorkPlace> workPlaces;
+    private boolean slowDown;
+    private int repCount;
+
+
 
     private int currentDay = 0;
 
@@ -77,5 +81,21 @@ public class FurnitureEventState implements IState {
 
     public void setWorkPlaces(ArrayList<WorkPlace> workPlaces) {
         this.workPlaces = workPlaces;
+    }
+
+    public boolean isSlowDown() {
+        return slowDown;
+    }
+
+    public void setSlowDown(boolean slowDown) {
+        this.slowDown = slowDown;
+    }
+
+    public int getRepCount() {
+        return repCount;
+    }
+
+    public void setRepCount(int repCount) {
+        this.repCount = repCount;
     }
 }

@@ -29,6 +29,7 @@ public abstract class EventSimulationCore extends SimulationCore {
     @Override
     protected void experiment() {
         //System.out.println("Spúšťam experiment...");
+        //System.out.println("Start Size: " + events.size());
         while (!events.isEmpty() && !this.isCancelled && simulationTime <= endTime) {
             //System.out.println(events.size() + " events arrived");
             Event event = events.poll();
@@ -42,6 +43,9 @@ public abstract class EventSimulationCore extends SimulationCore {
                     " | Čas: " + simulationTime);*/
 
             event.Execute();
+            if(!isSlowMode) {
+                dataHandling();
+            }
 
             //dataHandling();
             //System.out.println(slowDownSpeed);
@@ -72,6 +76,10 @@ public abstract class EventSimulationCore extends SimulationCore {
         }
        // System.out.println("Experiment skončil.");
         isGeneratedFirstSystemEvent = false;
+        this.actualRepCount++;
+        /*System.out.println("RepCount " + actualRepCount);
+        System.out.println("Event Size: " + events.size());
+        System.out.println("SlowMode : " + isSlowMode);*/
     }
 
 

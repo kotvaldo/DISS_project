@@ -29,9 +29,9 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Triangular timeInStorageDist;
     private final Triangular timeMovingToStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
-    private int countWorkerA = 5;
-    private int countWorkerB = 6;
-    private int countWorkerC = 10;
+    private int countWorkerA = 50;
+    private int countWorkerB = 30;
+    private int countWorkerC = 100;
     public ArrayList<Order> ordersArrayList = new ArrayList<>();
     private final LinkedList<Order> queueCutting;
     private final ArrayList<Worker> workersA;
@@ -105,28 +105,37 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.ordersArrayList.clear();
         this.workplaces.clear();
         this.state = new FurnitureEventState();
+        this.actualRepCount = 0;
 
     }
     @Override
     protected void beforeSimulation() {
-        events.clear();
-        initWorkers();
-        this.ordersArrayList.clear();
-        queueCutting.clear();
-        queueAssembly.clear();
-        queueMontage.clear();
-        this.workplaces.clear();
-        queueColoring.clear();
+        this.state = new FurnitureEventState();
         this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
         this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
+
+        this.ordersArrayList.clear();
+        this.queueCutting.clear();
+        this.queueAssembly.clear();
+        this.queueMontage.clear();
+        this.queueColoring.clear();
+        this.workplaces.clear();
+        this.events.clear();
+
+        initWorkers();
+
+        FurnitureEventState currentState = (FurnitureEventState) state;
+        currentState.setSlowDown(this.isSlowMode);
+
         double newTime = orderArrivalDist.sample();
         events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
-        if(isSlowMode) {
-            events.add(new SystemEvent(PresetSimulationValues.START_SIMULATION_TIME.getValue() + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
+
+        if (isSlowMode) {
+            events.add(new SystemEvent(simulationTime + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
             this.isGeneratedFirstSystemEvent = true;
         }
-
     }
+
 
     @Override
     protected void afterRunSimulation() {
@@ -136,25 +145,31 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     @Override
     protected void afterSimulation() {
-
+        /*System.out.println(workplaces.size());
+        System.out.println(ordersArrayList.size());*/
     }
 
     @Override
     public void dataHandling() {
         //System.out.println("It was updated )");
         FurnitureEventState state = (FurnitureEventState) this.state;
-        state.setSimulationTime(this.simulationTime);
         //System.out.println(state.getSimulationTime());
+        if(isSlowMode) {
+            state.setSimulationTime(this.simulationTime);
+            state.setAllOrders(new ArrayList<>(ordersArrayList));
+            state.setWorkersA(new ArrayList<>(this.getWorkersA()));
+            state.setWorkersB(new ArrayList<>(this.getWorkersB()));
+            state.setWorkersC(new ArrayList<>(this.getWorkersC()));
+            int newDay = (int)(simulationTime / (8.0 * 3600.0));
+            if (newDay > state.getCurrentDay()) {
+                state.setCurrentDay(newDay);
+            }
+            state.setWorkPlaces(new ArrayList<>(workplaces));
+        } else {
+            state.setRepCount(this.actualRepCount);
 
-        state.setAllOrders(new ArrayList<>(ordersArrayList));
-        state.setWorkersA(new ArrayList<>(this.getWorkersA()));
-        state.setWorkersB(new ArrayList<>(this.getWorkersB()));
-        state.setWorkersC(new ArrayList<>(this.getWorkersC()));
-        int newDay = (int)(simulationTime / (8.0 * 3600.0));
-        if (newDay > state.getCurrentDay()) {
-            state.setCurrentDay(newDay);
         }
-        state.setWorkPlaces(new ArrayList<>(workplaces));
+
         this.listener.setState(state);
         this.listener.notifyObservers();
 

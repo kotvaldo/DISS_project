@@ -23,12 +23,8 @@ public class WorkPlace {
     }
 
     public void setOrder(Order order) {
-        if(order == null) {
-            isBussy = false;
-        } else {
-            isBussy = true;
-        }
         this.order = order;
+        this.isBussy = order != null;
     }
 
     public boolean isBussy() {

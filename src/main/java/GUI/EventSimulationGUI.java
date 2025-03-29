@@ -156,7 +156,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                     replicationCount = 1;
 
                 } else {
-                    Integer.parseInt(replicationsInput.getText());
+                    replicationCount = Integer.parseInt(replicationsInput.getText());
+
                 }
                 core.setReplicationCount(replicationCount);
                 if(slowDownCheckBox.isSelected()) {
