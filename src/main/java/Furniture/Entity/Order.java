@@ -6,6 +6,8 @@ public class Order {
     private final int id;
     private final int type;
     private int state;
+    private WorkPlace WorkPlace;
+
 
 
     public Order(int id, int type) {
@@ -29,5 +31,13 @@ public class Order {
 
     public int getType() {
         return type;
+    }
+
+    public WorkPlace getWorkPlace() {
+        return WorkPlace;
+    }
+
+    public void setWorkPlace(WorkPlace workPlace) {
+        WorkPlace = workPlace;
     }
 }

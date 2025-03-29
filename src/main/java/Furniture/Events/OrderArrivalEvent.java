@@ -22,11 +22,10 @@ public class OrderArrivalEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        WorkPlace workPlace = core.getWorkPlace();
-        LinkedList<Order> queueOne = workPlace.getQueueOne();
+        LinkedList<Order> queueOne = core.getQueueCutting();
 
         Worker targetWorker = null;
-        for(Worker w : workPlace.getWorkersA()) {
+        for(Worker w : core.getWorkersA()) {
             if(w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
                 targetWorker = w;
             }
@@ -35,6 +34,13 @@ public class OrderArrivalEvent extends Event {
         int orderType = core.getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType);
         core.ordersArrayList.add(order);
+
+        if(core.getWorkplaces().isEmpty()) {
+            WorkPlace workPlace = new WorkPlace();
+            core.getWorkplaces().add(workPlace);
+            order.setWorkPlace(workPlace);
+        }
+
 
         order.setState(OrderStateValues.ORDER_NEW.getValue());
         if(targetWorker == null) {
@@ -46,7 +52,7 @@ public class OrderArrivalEvent extends Event {
                 if(newTime < core.getEndTime()) {
                     targetWorker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                    targetWorker.setOrderId(order.getId());
+                    targetWorker.setOrder(order);
                     core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
                 }
             } else {

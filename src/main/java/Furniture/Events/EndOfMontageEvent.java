@@ -2,7 +2,6 @@ package Furniture.Events;
 
 import EventSimulation.Event;
 import Furniture.Entity.Order;
-import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
@@ -27,7 +26,6 @@ public class EndOfMontageEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        WorkPlace workPlace = core.getWorkPlace();
 
        /* System.out.println("[EndOfFittings - EXECUTE] Objednávka ID " + order.getId() +
                 " dokončila montáž kovania. Čas: " + this.time);*/
@@ -38,13 +36,13 @@ public class EndOfMontageEvent extends Event {
       //  System.out.println("[EndOfFittings] Objednávka ID " + order.getId() + " je ukončená.");
 
         // Priraď ďalšiu objednávku z fronty kovania
-        if (!workPlace.getQueueFour().isEmpty()) {
-            Order nextOrder = workPlace.getQueueFour().removeFirst();
+        if (!core.getQueueMontage().isEmpty()) {
+            Order nextOrder = core.getQueueMontage().removeFirst();
             double newTime = this.time + Utility.calculateFourth(nextOrder, core);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
-                worker.setOrderId(nextOrder.getId());
+                worker.setOrder(nextOrder);
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
                /* System.out.println("[EndOfFittings] Worker ID " + worker.getId() +
                         " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž kovania. Čas: " + newTime);*/

@@ -1,26 +1,20 @@
 package Furniture.Entity;
 
-import Furniture.Enums.WorkerPlaceValues;
 import IDGenerator.IDGenerator;
-import Furniture.Enums.WorkerBussyState;
 
 public class Worker {
     private final int id;
     private boolean currentState;
     private final String type;
-    private int orderId;
-    private String currentWorkPlace;
+    private Order order;
+    private WorkPlace currentWorkPlace;
 
     public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
         currentState = false;
-        orderId = -1;
-        switch (type) {
-            case "A" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_A.getValue();
-            case "B" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_B.getValue();
-            case "C" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_C.getValue();
-        }
+        order = null;
+        currentWorkPlace = null;
     }
 
     public boolean getCurrentState() {
@@ -30,7 +24,7 @@ public class Worker {
     public void setCurrentState(boolean bussy) {
         this.currentState = bussy;
         if(!bussy) {
-            orderId = -1;
+           order = null;
         }
     }
 
@@ -42,25 +36,25 @@ public class Worker {
         return type;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public Order getOrderId() {
+        return order;
     }
 
-    public void setOrderId(int orderId) {
-        if(orderId < 0) {
+    public void setOrder(Order orderId) {
+        if(orderId == null) {
             setCurrentState(false);
         } else {
-            this.orderId = orderId;
+            this.order = orderId;
             this.setCurrentState(true);
         }
 
     }
 
-    public String getCurrentWorkPlace() {
+    public WorkPlace getCurrentWorkPlace() {
         return currentWorkPlace;
     }
 
-    public void setCurrentWorkPlace(String currentWorkPlace) {
+    public void setCurrentWorkPlace(WorkPlace currentWorkPlace) {
         this.currentWorkPlace = currentWorkPlace;
     }
 }

@@ -76,7 +76,7 @@ public abstract class EventSimulationCore extends SimulationCore {
 
 
     @Override
-    protected abstract void beforeRunSimulation();
+    protected abstract void beforeAllReplications();
 
     @Override
     protected abstract void afterRunSimulation();

@@ -3,6 +3,7 @@ package Furniture;
 import EventSimulation.EventSimulationCore;
 import EventSimulation.SystemEvent;
 import Furniture.Entity.Order;
+import Furniture.Entity.Worker;
 import Furniture.Events.OrderArrivalEvent;
 import Generators.*;
 import Furniture.Entity.WorkPlace;
@@ -10,6 +11,7 @@ import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class FurnitureEventCore extends EventSimulationCore {
     private final Exponential orderArrivalDist;
@@ -30,8 +32,19 @@ public class FurnitureEventCore extends EventSimulationCore {
     private int countWorkerA = 5;
     private int countWorkerB = 6;
     private int countWorkerC = 10;
-    private WorkPlace workPlace;
     public ArrayList<Order> ordersArrayList = new ArrayList<>();
+    private final LinkedList<Order> queueCutting;
+    private final ArrayList<Worker> workersA;
+
+    private final ArrayList<Worker> workersC;
+    private final LinkedList<Order> queueColoring;
+
+    private final ArrayList<Worker> workersB;
+    private final LinkedList<Order> queueAssembly;
+
+    private final LinkedList<Order> queueMontage;
+
+    private final ArrayList<WorkPlace> workplaces;
 
     public FurnitureEventCore() {
         super();
@@ -55,6 +68,8 @@ public class FurnitureEventCore extends EventSimulationCore {
         coloringTypeTwoDist = new UniformContinuous(12600.0, 32400.0);
         assemblyTypeTwoDist = new UniformContinuous(840.0, 1440.0);
 
+        workplaces = new ArrayList<>();
+
         // third
         cuttingTypeThreeDist = new UniformContinuous(900.0, 4800.0);
         coloringTypeThreeDist = new UniformContinuous(36000.0, 42000.0);
@@ -66,30 +81,51 @@ public class FurnitureEventCore extends EventSimulationCore {
         timeInStorageDist = new Triangular(300.0, 900.0, 500.0);
         timeMovingToAnotherWorkshopDist = new Triangular(120.0, 500.0, 150.0);
 
-        workPlace = new WorkPlace();
+
+        workersA = new ArrayList<>();
+        workersB = new ArrayList<>();
+        workersC = new ArrayList<>();
+        queueColoring = new LinkedList<>();
+        queueAssembly = new LinkedList<>();
+        queueMontage = new LinkedList<>();
+        queueCutting = new LinkedList<>();
 
     }
 
     @Override
-    protected void beforeRunSimulation() {
+    protected void beforeAllReplications() {
         this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
         this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
         events.clear();
-        workPlace.initWorkers(countWorkerA, countWorkerB, countWorkerC);
-        workPlace.clearOrderQueues();
+        queueCutting.clear();
+        queueAssembly.clear();
+        queueMontage.clear();
+        queueColoring.clear();
+        initWorkers();
+        this.ordersArrayList.clear();
+        this.workplaces.clear();
         this.state = new FurnitureEventState();
 
     }
     @Override
     protected void beforeSimulation() {
-        workPlace.clearOrderQueues();
-        this.workPlace.initWorkers(countWorkerA, countWorkerB, countWorkerC);
-        isSlowMode = true;
+        events.clear();
+        initWorkers();
+        this.ordersArrayList.clear();
+        queueCutting.clear();
+        queueAssembly.clear();
+        queueMontage.clear();
+        this.workplaces.clear();
+        queueColoring.clear();
+        this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
+        this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
         double newTime = orderArrivalDist.sample();
         events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
+        if(isSlowMode) {
+            events.add(new SystemEvent(PresetSimulationValues.START_SIMULATION_TIME.getValue() + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
+            this.isGeneratedFirstSystemEvent = true;
+        }
 
-        events.add(new SystemEvent(PresetSimulationValues.START_SIMULATION_TIME.getValue() + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
-        this.isGeneratedFirstSystemEvent = true;
     }
 
     @Override
@@ -107,14 +143,13 @@ public class FurnitureEventCore extends EventSimulationCore {
     public void dataHandling() {
         //System.out.println("It was updated )");
         FurnitureEventState state = (FurnitureEventState) this.state;
-
         state.setSimulationTime(this.simulationTime);
         //System.out.println(state.getSimulationTime());
 
         state.setAllOrders(new ArrayList<>(ordersArrayList));
-        state.setWorkersA(new ArrayList<>(workPlace.getWorkersA()));
-        state.setWorkersB(new ArrayList<>(workPlace.getWorkersB()));
-        state.setWorkersC(new ArrayList<>(workPlace.getWorkersC()));
+        state.setWorkersA(new ArrayList<>(this.getWorkersA()));
+        state.setWorkersB(new ArrayList<>(this.getWorkersB()));
+        state.setWorkersC(new ArrayList<>(this.getWorkersC()));
         int newDay = (int)(simulationTime / (8.0 * 3600.0));
         if (newDay > state.getCurrentDay()) {
             state.setCurrentDay(newDay);
@@ -125,7 +160,28 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     }
 
+    private void initWorkers() {
+        workersA.clear();
+        workersC.clear();
+        workersB.clear();
+        for (int i = 0; i < this.countWorkerA; i++) {
+            workersA.add(new Worker("A"));
+        }
+        for (int i = 0; i < this.countWorkerC; i++) {
+            workersC.add(new Worker("C"));
+        }
+        for (int i = 0; i <  this.countWorkerB; i++) {
+            workersB.add(new Worker("B"));
+        }
 
+    }
+
+    private void resetWorkers() {
+        for(Worker worker : workersA) {
+            worker.setCurrentState(false);
+            worker.setOrder(null);
+        }
+    }
 
     public Exponential getOrderArrivalDist() {
         return orderArrivalDist;
@@ -200,31 +256,37 @@ public class FurnitureEventCore extends EventSimulationCore {
         return timeMovingToAnotherWorkshopDist;
     }
 
-    public int getCountWorkerA() {
-        return countWorkerA;
+
+
+    public LinkedList<Order> getQueueCutting() {
+        return queueCutting;
     }
 
-    public void setCountWorkerA(int countWorkerA) {
-        this.countWorkerA = countWorkerA;
+    public ArrayList<Worker> getWorkersA() {
+        return workersA;
     }
 
-    public int getCountWorkerB() {
-        return countWorkerB;
+    public ArrayList<Worker> getWorkersC() {
+        return workersC;
     }
 
-    public void setCountWorkerB(int countWorkerB) {
-        this.countWorkerB = countWorkerB;
+    public LinkedList<Order> getQueueColoring() {
+        return queueColoring;
     }
 
-    public int getCountWorkerC() {
-        return countWorkerC;
+    public ArrayList<Worker> getWorkersB() {
+        return workersB;
     }
 
-    public void setCountWorkerC(int countWorkerC) {
-        this.countWorkerC = countWorkerC;
-    }
-    public WorkPlace getWorkPlace() {
-        return workPlace;
+    public LinkedList<Order> getQueueAssembly() {
+        return queueAssembly;
     }
 
+    public LinkedList<Order> getQueueMontage() {
+        return queueMontage;
+    }
+
+    public ArrayList<WorkPlace> getWorkplaces() {
+        return workplaces;
+    }
 }
