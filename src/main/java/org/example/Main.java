@@ -2,7 +2,7 @@ package org.example;
 
 
 import GUI.EventSimulationGUI;
-import GUI.MonteCarloGUI;
+//import GUI.MonteCarloGUI;
 
 import javax.swing.*;
 
