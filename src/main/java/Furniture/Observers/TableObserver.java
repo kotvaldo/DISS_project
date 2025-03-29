@@ -1,5 +1,6 @@
 package Furniture.Observers;
 
+import Furniture.Entity.WorkPlace;
 import Furniture.FurnitureEventState;
 import Observer.IObserver;
 import State.IState;
@@ -16,14 +17,19 @@ import java.util.ArrayList;
 public class TableObserver implements IObserver {
     private final JTable ordersTable;
     private final JTable workersTable;
+    private final JTable workPlaceTable;
     private final DefaultTableModel ordersModel;
     private final DefaultTableModel workersModel;
+    private final DefaultTableModel workPlaceModel;
 
-    public TableObserver(JTable ordersTable, JTable workersTable) {
+    public TableObserver(JTable ordersTable, JTable workersTable, JTable workPlaceTable) {
         this.ordersTable = ordersTable;
         this.workersTable = workersTable;
         this.ordersModel = (DefaultTableModel) ordersTable.getModel();
         this.workersModel = (DefaultTableModel) workersTable.getModel();
+        this.workPlaceTable = workPlaceTable;
+        this.workPlaceModel = (DefaultTableModel) workPlaceTable.getModel();
+
     }
 
     @Override
@@ -31,12 +37,15 @@ public class TableObserver implements IObserver {
         FurnitureEventState furnitureState = (FurnitureEventState) state;
 
         SwingUtilities.invokeLater(() -> {
+
             ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
 
-            // Vymazanie všetkých riadkov z orders tabuľky
-            while (ordersModel.getRowCount() > 0) {
-                ordersModel.removeRow(0);
-            }
+            ordersModel.setRowCount(0);
+
+            workersModel.setRowCount(0);
+
+            workPlaceModel.setRowCount(0);
+
 
             for (Order order : ordersSnapshot) {
                 String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
@@ -47,10 +56,7 @@ public class TableObserver implements IObserver {
                     });
             }
 
-            // Vymazanie všetkých riadkov z workers tabuľky
-            while (workersModel.getRowCount() > 0) {
-                workersModel.removeRow(0);
-            }
+
 
             ArrayList<Worker> snapshot = new ArrayList<>();
             snapshot.addAll(furnitureState.getWorkersA());
@@ -61,11 +67,36 @@ public class TableObserver implements IObserver {
                 String group = worker.getType();
                 String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
                 String orderID = worker.getOrder() != null ? "Order : " + worker.getOrder().getId() : "No Order";
+                String workPlaceID;
+                if(worker.getCurrentWorkPlace() != null) {
+                    workPlaceID = "WorkPlace ID : " + worker.getCurrentWorkPlace().getId();
+                } else {
+                    workPlaceID = "Storage";
+                }
                 workersModel.addRow(new Object[]{
                         worker.getId(),
                         group,
                         stateOfWorker,
-                        orderID
+                        orderID,
+                        workPlaceID
+                });
+            }
+
+            ArrayList<WorkPlace> snapShotWorkPlaces = new ArrayList<>(furnitureState.getWorkPlaces());
+
+
+            for (WorkPlace workPlace : snapShotWorkPlaces) {
+                String id = String.valueOf(workPlace.getId());
+                String bussyState = String.valueOf(workPlace.isBussy());
+                String orderId;
+                if(workPlace.getOrder() != null){
+                    orderId = "Order ID : " + workPlace.getOrder().getId();
+
+                } else {
+                    orderId = "No Order";
+                }
+                workPlaceModel.addRow(new Object[]{
+                        id, bussyState, orderId
                 });
             }
         });

@@ -1,5 +1,6 @@
 package GUI;
 
+import Furniture.Entity.WorkPlace;
 import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
 import Furniture.Observers.LabelObserver;
@@ -19,6 +20,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JSlider speedSlider;
     private final DefaultTableModel ordersTableModel;
     private final DefaultTableModel workersTableModel;
+    private final DefaultTableModel workPlaceTableModel;
     private final JLabel dayCountLabel;
 
 
@@ -42,17 +44,23 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         ordersTableModel = new DefaultTableModel(orderColumns, 0);
         JTable ordersTable = new JTable(ordersTableModel);
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
-        String[] workerColumns = {"ID", "Group", "State", "Order_ID"};
+        String[] workerColumns = {"ID", "Group", "State", "Order_ID", "WorkPlace_ID"};
         workersTableModel = new DefaultTableModel(workerColumns, 0); // prázdne dáta
         JTable workersTable = new JTable(workersTableModel);
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
+        String[] workerPlaceColumns = {"ID", "State", "Order_ID"};
+        workPlaceTableModel = new DefaultTableModel(workerPlaceColumns, 0);
+        JTable workPlaceTable = new JTable(workPlaceTableModel);
+        JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
+
         JPanel tablePanel = new JPanel(new GridLayout(1, 2));
         tablePanel.add(ordersScroll);
         tablePanel.add(workersScroll);
+        tablePanel.add(workPlaceSroll);
 
         this.centerPanel.add(tablePanel);
-        TableObserver tableObserver = new TableObserver(ordersTable, workersTable);
+        TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
         subject.attachObserver(tableObserver);
         this.inputPanel.add(dayCountLabel);
     }

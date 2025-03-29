@@ -1,6 +1,7 @@
 package Furniture;
 
 import Furniture.Entity.Order;
+import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import State.IState;
 
@@ -12,6 +13,7 @@ public class FurnitureEventState implements IState {
     private ArrayList<Worker> workersA;
     private ArrayList<Worker> workersC;
     private ArrayList<Worker> workersB;
+    private ArrayList<WorkPlace> workPlaces;
 
     private int currentDay = 0;
 
@@ -69,4 +71,11 @@ public class FurnitureEventState implements IState {
         this.currentDay = currentDay;
     }
 
+    public ArrayList<WorkPlace> getWorkPlaces() {
+        return workPlaces;
+    }
+
+    public void setWorkPlaces(ArrayList<WorkPlace> workPlaces) {
+        this.workPlaces = workPlaces;
+    }
 }

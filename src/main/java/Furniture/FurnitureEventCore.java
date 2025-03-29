@@ -154,7 +154,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         if (newDay > state.getCurrentDay()) {
             state.setCurrentDay(newDay);
         }
-
+        state.setWorkPlaces(new ArrayList<>(workplaces));
         this.listener.setState(state);
         this.listener.notifyObservers();
 
