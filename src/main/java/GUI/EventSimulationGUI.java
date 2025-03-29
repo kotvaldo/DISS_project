@@ -17,35 +17,41 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JLabel label;
     private final FurnitureEventCore core;
     private EventSimulationWorker worker;
-    private JSlider speedSlider;
+    private final JSlider speedSlider; // ← teraz ako final atribút
     private final DefaultTableModel ordersTableModel;
     private final DefaultTableModel workersTableModel;
     private final DefaultTableModel workPlaceTableModel;
     private final JLabel dayCountLabel;
-
-
+    private final JLabel replicationCountLabel;
+    private final JCheckBox slowDownCheckBox;
+    private final JLabel simulationSpeedLabel;
     public EventSimulationGUI() {
         super("Event Simulation");
+        this.simulationSpeedLabel = new JLabel("Simulation Speed: ");
         Subject subject = new Subject();
+        label = new JLabel("Simulation Time : 0");
+        this.replicationCountLabel = new JLabel("Replication Count : 0");
+        replicationCountLabel.setVisible(false);
+        replicationsInput.setVisible(false);
+        replicationLabel.setVisible(false);
         core = new FurnitureEventCore();
         dayCountLabel = new JLabel("Day : 0");
-        LabelObserver observer = new LabelObserver(label, dayCountLabel);
+        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel);
         subject.attachObserver(observer);
         core.setListener(subject);
-        core.setReplicationCount(1);
+
         JButton pauseButton = new JButton("Pause Simulation");
         this.controlPanel.add(pauseButton);
-        pauseButton.addActionListener(e -> {
-            core.setPaused(!core.isPaused());
-        });
-
+        pauseButton.addActionListener(e -> core.setPaused(!core.isPaused()));
+        core.setSlowMode(true);
 
         String[] orderColumns = {"ID", "Type", "State"};
         ordersTableModel = new DefaultTableModel(orderColumns, 0);
         JTable ordersTable = new JTable(ordersTableModel);
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
+
         String[] workerColumns = {"ID", "Group", "State", "Order_ID", "WorkPlace_ID"};
-        workersTableModel = new DefaultTableModel(workerColumns, 0); // prázdne dáta
+        workersTableModel = new DefaultTableModel(workerColumns, 0);
         JTable workersTable = new JTable(workersTableModel);
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
@@ -54,32 +60,13 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         JTable workPlaceTable = new JTable(workPlaceTableModel);
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
-        JPanel tablePanel = new JPanel(new GridLayout(1, 2));
+
+
+        JPanel tablePanel = new JPanel(new GridLayout(1, 3));
         tablePanel.add(ordersScroll);
         tablePanel.add(workersScroll);
         tablePanel.add(workPlaceSroll);
 
-        this.centerPanel.add(tablePanel);
-        TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
-        subject.attachObserver(tableObserver);
-        this.inputPanel.add(dayCountLabel);
-    }
-
-    @Override
-    protected void initializeChart() {
-
-    }
-
-    @Override
-    protected void setupCustomChart() {
-
-    }
-
-    @Override
-    protected void setupCustomInput() {
-        label = new JLabel("Simulation Time : 0");
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        this.inputPanel.add(label);
 
         speedSlider = new JSlider(1, 8, 1);
         speedSlider.setPaintTicks(true);
@@ -87,7 +74,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         speedSlider.setMajorTickSpacing(1);
         speedSlider.setMinorTickSpacing(1);
         speedSlider.setPreferredSize(new Dimension(300, 50));
-
 
         Dictionary<Integer, JLabel> labelTable = new Hashtable<>();
         labelTable.put(1, new JLabel("1"));
@@ -103,12 +89,46 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         speedSlider.addChangeListener(e -> {
             SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
             core.setSlowDownSpeed(speed.getValue());
-
         });
 
-        this.inputPanel.add(new JLabel("Simulation speed:"));
 
+        TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
+        subject.attachObserver(tableObserver);
+
+        slowDownCheckBox = new JCheckBox("Slow Down", true);
+        slowDownCheckBox.addActionListener(e -> {
+            core.setSlowMode(slowDownCheckBox.isSelected());
+            ordersScroll.setVisible(slowDownCheckBox.isSelected());
+            workersScroll.setVisible(slowDownCheckBox.isSelected());
+            workPlaceSroll.setVisible(slowDownCheckBox.isSelected());
+            speedSlider.setVisible(slowDownCheckBox.isSelected());
+            simulationSpeedLabel.setVisible(slowDownCheckBox.isSelected());
+            replicationCountLabel.setVisible(!slowDownCheckBox.isSelected());
+            label.setVisible(slowDownCheckBox.isSelected());
+            dayCountLabel.setVisible(slowDownCheckBox.isSelected());
+            replicationsInput.setVisible(!slowDownCheckBox.isSelected());
+            replicationLabel.setVisible(!slowDownCheckBox.isSelected());
+
+        });
+        this.statsPanel.add(slowDownCheckBox);
+        this.statsPanel.add(label);
+        this.statsPanel.add(dayCountLabel);
+        this.inputPanel.add(simulationSpeedLabel);
         this.inputPanel.add(speedSlider);
+        this.inputPanel.add(replicationCountLabel);
+        this.centerPanel.add(tablePanel);
+
+    }
+
+    @Override
+    protected void initializeChart() {
+
+    }
+
+
+    @Override
+    protected void setupCustomInput() {
+
 
     }
 
@@ -131,9 +151,13 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                     workersTableModel.setRowCount(0);
                     workersTableModel.fireTableDataChanged();
                 });
-                int replicationCount = Integer.parseInt(replicationsInput.getText());
+                int replicationCount = 0;
+                if(slowDownCheckBox.isSelected()) {
+                    replicationCount = 1;
+                } else {
+                    Integer.parseInt(replicationsInput.getText());
+                }
                 core.setReplicationCount(replicationCount);
-                core.setSlowMode(replicationCount == 1);
                 SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
                 core.setSlowDownSpeed(speed.getValue());
                 worker = new EventSimulationWorker();
@@ -155,15 +179,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
     }
 
-    @Override
-    protected void updateStatisticsFromDataset() {
-
-    }
-
-    @Override
-    protected void clearStatistics() {
-
-    }
 
     private class EventSimulationWorker extends SwingWorker<Void, Void> {
         @Override

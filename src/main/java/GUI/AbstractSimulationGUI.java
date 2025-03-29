@@ -20,6 +20,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JPanel customPanel;
     protected JPanel inputPanel;
     protected JPanel statsPanel;
+    protected JLabel replicationLabel;
     protected JPanel controlPanel;
     protected JPanel centerPanel;
 
@@ -34,7 +35,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
         initializeButtons();
 
         this.inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Replications:"));
+        replicationLabel = new JLabel("Replication: ");
+        inputPanel.add(replicationLabel);
         inputPanel.add(replicationsInput);
         this.setupCustomInput();
 
@@ -45,7 +47,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
         controlPanel.add(stopButton);
 
         statsPanel = new JPanel();
-        statsPanel.setLayout(new GridLayout(1, 1));
+        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
 
 
 
@@ -82,13 +85,10 @@ public abstract class AbstractSimulationGUI extends JFrame {
         stopButton.addActionListener(_ -> stopSimulation());
     }
 
-    protected abstract void setupCustomChart();
     protected abstract void setupCustomInput();
     protected abstract void setupCustomPanel();
     protected abstract void startSimulation();
     protected abstract void stopSimulation();
-    protected abstract void updateStatisticsFromDataset();
-    protected abstract void clearStatistics();
 
 
 

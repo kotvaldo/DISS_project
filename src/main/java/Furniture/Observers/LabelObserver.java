@@ -10,7 +10,7 @@ import javax.swing.*;
 public class LabelObserver implements IObserver {
     private final JLabel label;
     private final JLabel dayCountLabel;
-    public LabelObserver(JLabel label, JLabel dayCountLabel) {
+    public LabelObserver(JLabel label, JLabel dayCountLabel, JLabel replicationCountLabel) {
         this.label = label;
         this.dayCountLabel = dayCountLabel;
 
