@@ -154,12 +154,19 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 int replicationCount = 0;
                 if(slowDownCheckBox.isSelected()) {
                     replicationCount = 1;
+
                 } else {
                     Integer.parseInt(replicationsInput.getText());
                 }
                 core.setReplicationCount(replicationCount);
-                SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
-                core.setSlowDownSpeed(speed.getValue());
+                if(slowDownCheckBox.isSelected()) {
+                    SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
+                    core.setSlowDownSpeed(speed.getValue());
+
+                }
+
+                slowDownCheckBox.setEnabled(false);
+
                 worker = new EventSimulationWorker();
                 worker.execute();
 
@@ -174,6 +181,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
     @Override
     protected void stopSimulation() {
+        slowDownCheckBox.setEnabled(true);
         core.cancel();
         worker.cancel(true);
 
