@@ -1,4 +1,4 @@
-package GUI;
+/*package GUI;
 
 import FlyWeightFactory.FlyWeightStrategyFactory;
 import MonteCarlo.MonteCarloCore;
@@ -412,3 +412,4 @@ public class MonteCarloGUI extends AbstractSimulationGUI {
         }
     }
 }
+*/
