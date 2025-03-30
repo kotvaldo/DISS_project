@@ -11,8 +11,8 @@ import SimulationCore.SimulationCore;
 import Utility.Utility;
 
 public class EndOfAssemblyEvent extends Event {
-    private Worker worker;
-    private Order order;
+    private final Worker worker;
+    private final Order order;
 
     public EndOfAssemblyEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
         super(time, priority, simulationCore);
@@ -61,6 +61,8 @@ public class EndOfAssemblyEvent extends Event {
             order.setWorkPlace(null);
             worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
             worker.setOrder(null);
+            order.setEndTime(core.getSimulationTime());
+            core.getAverageTimeOfWorking().add(order.getTimeOfWork());
 
 
             //core.ordersArrayList.remove(order);

@@ -9,6 +9,8 @@ import Generators.*;
 import Furniture.Entity.WorkPlace;
 import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
+import Statistics.AverageQueueLength;
+import Statistics.AverageTimeOfWorking;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -45,6 +47,13 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final LinkedList<Order> queueMontage;
 
     private final ArrayList<WorkPlace> workplaces;
+    private final AverageQueueLength queueCuttingStat;
+    private final AverageQueueLength queueColoringStat;
+    private final AverageQueueLength queueAssemblyStat;
+    private final AverageQueueLength queueMontageStat;
+    private final AverageTimeOfWorking averageTimeOfWorking;
+
+
 
     public FurnitureEventCore() {
         super();
@@ -90,6 +99,11 @@ public class FurnitureEventCore extends EventSimulationCore {
         queueMontage = new LinkedList<>();
         queueCutting = new LinkedList<>();
 
+        queueCuttingStat = new AverageQueueLength();
+        queueColoringStat = new AverageQueueLength();
+        queueAssemblyStat = new AverageQueueLength();
+        queueMontageStat = new AverageQueueLength();
+        averageTimeOfWorking = new AverageTimeOfWorking();
     }
 
     @Override
@@ -113,6 +127,10 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.state = new FurnitureEventState();
         this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
         this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
+        queueCuttingStat.clear();
+        queueColoringStat.clear();
+        queueAssemblyStat.clear();
+        queueMontageStat.clear();
 
         this.ordersArrayList.clear();
         this.queueCutting.clear();
@@ -169,6 +187,17 @@ public class FurnitureEventCore extends EventSimulationCore {
             state.setRepCount(this.actualRepCount);
 
         }
+
+        queueCuttingStat.add(queueCutting.size());
+        queueColoringStat.add(queueColoring.size());
+        queueAssemblyStat.add(queueAssembly.size());
+        queueMontageStat.add(queueMontage.size());
+
+        state.setAvgTimeOfWorking(averageTimeOfWorking.mean());
+        state.setAvgQueueCutting(queueCuttingStat.mean());
+        state.setAvgQueueColoring(queueColoringStat.mean());
+        state.setAvgQueueAssembly(queueAssemblyStat.mean());
+        state.setAvgQueueMontage(queueMontageStat.mean());
 
         this.listener.setState(state);
         this.listener.notifyObservers();
@@ -309,5 +338,9 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public void setCountWorkerC(int countWorkerC) {
         this.countWorkerC = countWorkerC;
+    }
+
+    public AverageTimeOfWorking getAverageTimeOfWorking() {
+        return averageTimeOfWorking;
     }
 }

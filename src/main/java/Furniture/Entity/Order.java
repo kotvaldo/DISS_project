@@ -7,12 +7,15 @@ public class Order {
     private final int type;
     private int state;
     private WorkPlace WorkPlace;
+    private final double arrivalTime;
+    private double endTime;
+    private double timeOfWork;
 
 
-
-    public Order(int id, int type) {
+    public Order(int id, int type, double arrivalTime) {
         this.id = id;
         this.type = type;
+        this.arrivalTime = arrivalTime;
         this.state = OrderStateValues.ORDER_NEW.getValue();
     }
 
@@ -49,4 +52,23 @@ public class Order {
     public void setWorkPlace(WorkPlace workPlace) {
         WorkPlace = workPlace;
     }
+
+    public double getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public double getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
+        timeOfWork = endTime - arrivalTime;
+    }
+
+    public double getTimeOfWork() {
+        return timeOfWork;
+    }
+
+
 }

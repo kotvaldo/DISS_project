@@ -34,6 +34,8 @@ public class EndOfMontageEvent extends Event {
         order.setState(OrderStateValues.ORDER_DONE.getValue());
         order.getWorkPlace().setOrder(null);
         order.setWorkPlace(null);
+        order.setEndTime(core.getSimulationTime());
+        core.getAverageTimeOfWorking().add(order.getTimeOfWork());
         //core.ordersArrayList.remove(order);
       //  System.out.println("[EndOfFittings] Objednávka ID " + order.getId() + " je ukončená.");
 

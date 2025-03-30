@@ -26,7 +26,7 @@ public class OrderArrivalEvent extends Event {
 
 
         int orderType = core.getTypeOfOrderDist().sample();
-        Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType);
+        Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
         if(core.isSlowMode()) {
             core.ordersArrayList.add(order);
         }

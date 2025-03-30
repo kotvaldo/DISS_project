@@ -16,6 +16,11 @@ public class FurnitureEventState implements IState {
     private ArrayList<WorkPlace> workPlaces;
     private boolean slowDown;
     private int repCount;
+    private double avgTimeOfWorking;
+    private double avgQueueCutting;
+    private double avgQueueColoring;
+    private double avgQueueAssembly;
+    private double avgQueueMontage;
 
 
 
@@ -97,5 +102,45 @@ public class FurnitureEventState implements IState {
 
     public void setRepCount(int repCount) {
         this.repCount = repCount;
+    }
+
+    public double getAvgTimeOfWorking() {
+        return avgTimeOfWorking;
+    }
+
+    public void setAvgTimeOfWorking(double avgTimeOfWorking) {
+        this.avgTimeOfWorking = avgTimeOfWorking;
+    }
+
+    public double getAvgQueueCutting() {
+        return avgQueueCutting;
+    }
+
+    public void setAvgQueueCutting(double avgQueueCutting) {
+        this.avgQueueCutting = avgQueueCutting;
+    }
+
+    public double getAvgQueueColoring() {
+        return avgQueueColoring;
+    }
+
+    public void setAvgQueueColoring(double avgQueueColoring) {
+        this.avgQueueColoring = avgQueueColoring;
+    }
+
+    public double getAvgQueueAssembly() {
+        return avgQueueAssembly;
+    }
+
+    public void setAvgQueueAssembly(double avgQueueAssembly) {
+        this.avgQueueAssembly = avgQueueAssembly;
+    }
+
+    public double getAvgQueueMontage() {
+        return avgQueueMontage;
+    }
+
+    public void setAvgQueueMontage(double avgQueueMontage) {
+        this.avgQueueMontage = avgQueueMontage;
     }
 }
