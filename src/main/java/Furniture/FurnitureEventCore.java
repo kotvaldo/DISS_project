@@ -103,6 +103,7 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     @Override
     protected void beforeAllReplications() {
+        this.state = new FurnitureEventState();
         this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
         this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
         events.clear();
@@ -121,7 +122,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     }
     @Override
     protected void beforeSimulation() {
-        this.state = new FurnitureEventState();
+
         this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
         this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
 
@@ -132,14 +133,18 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.queueColoring.clear();
         this.workplaces.clear();
         this.events.clear();
+        if(isSlowMode) {
+            this.state = new FurnitureEventState();
+        }
 
         initWorkers();
 
         FurnitureEventState currentState = (FurnitureEventState) state;
         currentState.setSlowDown(this.isSlowMode);
-
         double newTime = orderArrivalDist.sample();
-        events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
+        if(newTime < endTime) {
+            events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
+        }
 
         if (isSlowMode) {
             double timeFor = slowDownSpeed / frequencyOfUpdate;
@@ -161,11 +166,14 @@ public class FurnitureEventCore extends EventSimulationCore {
     @Override
     protected void afterSimulation() {
         FurnitureEventState state = (FurnitureEventState) this.state;
-        newOrdersAfterSimulation.add(queueCutting.size());
-      //  System.out.println(queueCutting.size());
-        state.setRepCount(this.actualRepCount);
-        state.setAverageTimeOfWorking(averageTimeOfWorking);
-        state.setNewOrderOnEnd(newOrdersAfterSimulation);
+        if(!state.isSlowDown()) {
+            newOrdersAfterSimulation.add(queueCutting.size());
+            //  System.out.println(queueCutting.size());
+            state.setRepCount(this.actualRepCount);
+            state.setAverageTimeOfWorking(averageTimeOfWorking);
+            state.setNewOrderOnEnd(newOrdersAfterSimulation);
+
+        }
         this.listener.setState(state);
         this.listener.notifyObservers();
     }

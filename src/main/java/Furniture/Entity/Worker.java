@@ -21,9 +21,9 @@ public class Worker {
         return currentState;
     }
 
-    public void setCurrentState(boolean bussy) {
-        this.currentState = bussy;
-        if(!bussy) {
+    public void setCurrentState(boolean busy) {
+        this.currentState = busy;
+        if(!busy) {
            order = null;
         }
     }
@@ -64,14 +64,6 @@ public class Worker {
 
     public void setCurrentWorkPlace(WorkPlace currentWorkPlace) {
         this.currentWorkPlace = currentWorkPlace;
-       /* if(currentWorkPlace != null) {
-            if(type.equals("A")) {
-                currentWorkPlace.setActivity("Cutting");
-            } else if (type.equals("B")) {
-                currentWorkPlace.setActivity("Assembly");
-            }
-        }
-*/
     }
 }
 

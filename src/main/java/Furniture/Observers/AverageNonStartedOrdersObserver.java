@@ -21,8 +21,10 @@ public class AverageNonStartedOrdersObserver implements IObserver {
         FurnitureEventState s = (FurnitureEventState) state;
 
         if(!s.isSlowDown()) {
-            nonStartedLabel.setText("Average Non-Started Orders: " + String.format("%.2f", s.getNewOrderOnEnd().mean()));
-            nonStartedIntervalLabel.setText("CI: [" + s.getNewOrderOnEnd().confidenceInterval());
+            SwingUtilities.invokeLater(() -> {
+                nonStartedLabel.setText("Average Non-Started Orders: " + String.format("%.2f", s.getNewOrderOnEnd().mean()));
+                nonStartedIntervalLabel.setText("CI: [" + s.getNewOrderOnEnd().confidenceInterval());
+            });
         }
 
     }

@@ -6,14 +6,12 @@ public class WorkPlace {
     private final int id;
     private Order order;
     private boolean isBusy;
-    private String activity;
 
 
     public WorkPlace() {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
         isBusy = false;
         order = null;
-        this.activity = "Nothing";
     }
 
 
@@ -25,9 +23,6 @@ public class WorkPlace {
     public void setOrder(Order order) {
         this.order = order;
         this.isBusy = order != null;
-        if(order == null){
-            this.activity = "Nothing";
-        }
     }
 
     public boolean isBusy() {
@@ -54,11 +49,4 @@ public class WorkPlace {
         return id;
     }
 
-    public String getActivity() {
-        return activity;
-    }
-
-    public void setActivity(String activity) {
-        this.activity = activity;
-    }
 }

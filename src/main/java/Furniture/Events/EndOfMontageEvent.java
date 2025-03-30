@@ -47,7 +47,6 @@ public class EndOfMontageEvent extends Event {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 worker.setOrder(nextOrder);
-                order.getWorkPlace().setActivity("Montage");
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
                /* System.out.println("[EndOfFittings] Worker ID " + worker.getId() +
                         " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž kovania. Čas: " + newTime);*/

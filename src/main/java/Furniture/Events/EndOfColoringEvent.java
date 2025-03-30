@@ -59,7 +59,6 @@ public class EndOfColoringEvent extends Event {
             if (newTime < core.getEndTime()) {
                 fittingsOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 worker.setOrder(fittingsOrder);
-                order.getWorkPlace().setActivity("Montage");
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, fittingsOrder, worker));
                 //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " ide na montáž kovania pre objednávku ID " + fittingsOrder.getId());
             }
@@ -70,7 +69,6 @@ public class EndOfColoringEvent extends Event {
                 worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                 worker.setOrder(nextColoringOrder);
-                order.getWorkPlace().setActivity("Coloring");
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, worker));
                 //System.out.println("[EndOfColoringEvent] Worker ID " + worker.getId() + " pokračuje ďalšou objednávkou ID " + nextColoringOrder.getId() + " na lakovanie.");
             }

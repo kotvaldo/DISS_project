@@ -95,9 +95,9 @@ public class TableObserver implements IObserver {
                     } else {
                         orderId = "No Order";
                     }
-                    String activity = workPlace.getActivity();
+
                     workPlaceModel.addRow(new Object[]{
-                            id, busyState, orderId,activity
+                            id, busyState, orderId
                     });
                 }
             });

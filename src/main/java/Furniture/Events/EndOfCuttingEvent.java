@@ -56,7 +56,6 @@ public class EndOfCuttingEvent extends Event {
                     this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                     targetWorkerForTwo.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     targetWorkerForTwo.setOrder(order);
-                    order.getWorkPlace().setActivity("Coloring");
                     //System.out.println(targetWorkerForTwo.getCurrentState());
                     core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerForTwo));
       /*              System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() +
