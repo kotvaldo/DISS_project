@@ -4,6 +4,7 @@ import Furniture.Entity.Order;
 import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import State.IState;
+import Statistics.Average;
 
 import java.util.ArrayList;
 
@@ -16,11 +17,11 @@ public class FurnitureEventState implements IState {
     private ArrayList<WorkPlace> workPlaces;
     private boolean slowDown;
     private int repCount;
-    private double avgTimeOfWorking;
-    private double avgQueueCutting;
-    private double avgQueueColoring;
-    private double avgQueueAssembly;
-    private double avgQueueMontage;
+    private Average average;
+    private int queueCutting;
+    private int queueColoring;
+    private int queueAssembly;
+    private int queueMontage;
 
 
 
@@ -104,43 +105,44 @@ public class FurnitureEventState implements IState {
         this.repCount = repCount;
     }
 
-    public double getAvgTimeOfWorking() {
-        return avgTimeOfWorking;
+
+    public int getQueueCutting() {
+        return queueCutting;
     }
 
-    public void setAvgTimeOfWorking(double avgTimeOfWorking) {
-        this.avgTimeOfWorking = avgTimeOfWorking;
+    public void setQueueCutting(int queueCutting) {
+        this.queueCutting = queueCutting;
     }
 
-    public double getAvgQueueCutting() {
-        return avgQueueCutting;
+    public int getQueueColoring() {
+        return queueColoring;
     }
 
-    public void setAvgQueueCutting(double avgQueueCutting) {
-        this.avgQueueCutting = avgQueueCutting;
+    public void setQueueColoring(int queueColoring) {
+        this.queueColoring = queueColoring;
     }
 
-    public double getAvgQueueColoring() {
-        return avgQueueColoring;
+    public int getQueueAssembly() {
+        return queueAssembly;
     }
 
-    public void setAvgQueueColoring(double avgQueueColoring) {
-        this.avgQueueColoring = avgQueueColoring;
+    public void setQueueAssembly(int queueAssembly) {
+        this.queueAssembly = queueAssembly;
     }
 
-    public double getAvgQueueAssembly() {
-        return avgQueueAssembly;
+    public int getQueueMontage() {
+        return queueMontage;
     }
 
-    public void setAvgQueueAssembly(double avgQueueAssembly) {
-        this.avgQueueAssembly = avgQueueAssembly;
+    public void setQueueMontage(int queueMontage) {
+        this.queueMontage = queueMontage;
     }
 
-    public double getAvgQueueMontage() {
-        return avgQueueMontage;
+    public Average getAverageTimeOfWorking() {
+        return average;
     }
 
-    public void setAvgQueueMontage(double avgQueueMontage) {
-        this.avgQueueMontage = avgQueueMontage;
+    public void setAverageTimeOfWorking(Average average) {
+        this.average = average;
     }
 }

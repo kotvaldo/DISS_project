@@ -43,10 +43,10 @@ public abstract class EventSimulationCore extends SimulationCore {
                     " | Čas: " + simulationTime);*/
 
             event.Execute();
-            if(!isSlowMode) {
+            if(isSlowMode) {
                 dataHandling();
             }
-            System.out.println(events.size() + " events arrived");
+            //System.out.println(events.size() + " events arrived");
             //dataHandling();
             //System.out.println(slowDownSpeed);
             if (!isSlowMode && isGeneratedFirstSystemEvent) {
