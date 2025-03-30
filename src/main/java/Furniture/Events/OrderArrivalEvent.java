@@ -39,7 +39,7 @@ public class OrderArrivalEvent extends Event {
             workPlace.setOrder(order);
         } else {
             for (WorkPlace wp : core.getWorkplaces()) {
-                if(!wp.isBussy()) {
+                if(!wp.isBusy()) {
                     workPlace = wp;
                     break;
                 }
@@ -57,7 +57,7 @@ public class OrderArrivalEvent extends Event {
 
         Worker targetWorker = null;
         for(Worker w : core.getWorkersA()) {
-            if(w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
+            if(w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
                 targetWorker = w;
                 break;
             }
@@ -71,7 +71,7 @@ public class OrderArrivalEvent extends Event {
             if(queueOne.isEmpty()) {
                 double newTime = time + Utility.calculateFirstTime(order, core, targetWorker);
                 if(newTime < core.getEndTime()) {
-                    targetWorker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                    targetWorker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                     targetWorker.setOrder(order);
                     core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));

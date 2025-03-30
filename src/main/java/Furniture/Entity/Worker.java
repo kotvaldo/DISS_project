@@ -64,6 +64,14 @@ public class Worker {
 
     public void setCurrentWorkPlace(WorkPlace currentWorkPlace) {
         this.currentWorkPlace = currentWorkPlace;
+        if(currentWorkPlace != null) {
+            if(type.equals("A")) {
+                currentWorkPlace.setActivity("Cutting");
+            } else if (type.equals("B")) {
+                currentWorkPlace.setActivity("Assembly");
+            }
+        }
+
     }
 }
 

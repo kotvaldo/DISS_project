@@ -1,17 +1,17 @@
 package Furniture.Enums;
 
 public enum WorkerBussyState {
-    BUSSY_WORKER(true),
-    NON_BUSSY_WORKER(false);
+    BUSY_WORKER(true),
+    NON_BUSY_WORKER(false);
 
-    private final boolean isBussy;
+    private final boolean isBusy;
 
-    WorkerBussyState(boolean isBussyWorker) {
-        this.isBussy = isBussyWorker;
+    WorkerBussyState(boolean isBusyWorker) {
+        this.isBusy = isBusyWorker;
     }
 
     public boolean getValue() {
-        return isBussy;
+        return isBusy;
     }
 
     public static String getNameByValue(boolean value) {

@@ -33,7 +33,7 @@ public class EndOfAssemblyEvent extends Event {
         if (order.getType() == 3) {
             Worker targetWorkerForMontage = null;
             for (Worker w : core.getWorkersC()) {
-                if (w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
+                if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
                     targetWorkerForMontage = w;
                     break;
                 }
@@ -47,7 +47,7 @@ public class EndOfAssemblyEvent extends Event {
                 double newTime = this.time + Utility.calculateFourth(order, core, targetWorkerForMontage);
                 if (newTime < core.getEndTime()) {
                     order.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
-                    targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                    targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     targetWorkerForMontage.setOrder(order);
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
               /*      System.out.println("[EndOfMontagingEvent] Objednávka ID " + order.getId() +
@@ -59,7 +59,7 @@ public class EndOfAssemblyEvent extends Event {
             order.getWorkPlace().setOrder(null);
             //neviem ci toto moze byt
             order.setWorkPlace(null);
-            worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
             worker.setOrder(null);
             order.setEndTime(core.getSimulationTime());
             core.getAverageTimeOfWorking().add(order.getTimeOfWork());
@@ -76,14 +76,14 @@ public class EndOfAssemblyEvent extends Event {
             double newTime = this.time + Utility.calculateThird(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
-                worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 worker.setOrder(nextOrder);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, worker));
                /* System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() +
                         " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž (čas: " + newTime + ")");*/
             }
         } else {
-            worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
             worker.setOrder(null);
             //System.out.println("[EndOfMontagingEvent] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }

@@ -52,9 +52,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.replicationCountLabel = new JLabel("Replication Count : 0");
         replicationCountLabel.setVisible(false);
         replicationsInput.setVisible(false);
-        workerASpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
-        workerBSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
-        workerCSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+        workerASpinner = new JSpinner(new SpinnerNumberModel(3, 0, 1000, 1));
+        workerBSpinner = new JSpinner(new SpinnerNumberModel(3, 0, 1000, 1));
+        workerCSpinner = new JSpinner(new SpinnerNumberModel(3, 0, 1000, 1));
 
 
         JPanel newOrdersPanel = new JPanel(new GridLayout(2,1));
@@ -97,8 +97,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         JTable workersTable = new JTable(workersTableModel);
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
-        String[] workerPlaceColumns = {"ID", "State", "Order_ID"};
-        workPlaceTableModel = new DefaultTableModel(workerPlaceColumns, 0);
+        String[] workPlaceColumns = {"ID", "State", "Order_ID", "Activity"};
+        workPlaceTableModel = new DefaultTableModel(workPlaceColumns, 0);
         JTable workPlaceTable = new JTable(workPlaceTableModel);
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 

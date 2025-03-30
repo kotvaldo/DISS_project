@@ -50,8 +50,8 @@ public class TableObserver implements IObserver {
                 for (Order order : ordersSnapshot) {
                     String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
                     ordersModel.addRow(new Object[]{
-                            order.getId(),
-                            order.getType(),
+                            "Order ID : " + order.getId(),
+                            "Type : " +order.getType(),
                             stateOfOrder
                     });
                 }
@@ -66,15 +66,15 @@ public class TableObserver implements IObserver {
                 for (Worker worker : snapshot) {
                     String group = worker.getType();
                     String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
-                    String orderID = worker.getOrder() != null ? "Order : " + worker.getOrder().getId() : "No Order";
+                    String orderID = worker.getOrder() != null ? "" + worker.getOrder().getId() : "No Order";
                     String workPlaceID;
                     if(worker.getCurrentWorkPlace() != null) {
-                        workPlaceID = "WorkPlace ID : " + worker.getCurrentWorkPlace().getId();
+                        workPlaceID = "" + worker.getCurrentWorkPlace().getId();
                     } else {
                         workPlaceID = "Storage";
                     }
                     workersModel.addRow(new Object[]{
-                            worker.getId(),
+                            "Worker ID: " + worker.getId(),
                             group,
                             stateOfWorker,
                             orderID,
@@ -86,8 +86,8 @@ public class TableObserver implements IObserver {
 
 
                 for (WorkPlace workPlace : snapShotWorkPlaces) {
-                    String id = String.valueOf(workPlace.getId());
-                    String bussyState = String.valueOf(workPlace.isBussy());
+                    String id = String.valueOf("WorkPlace ID: " + workPlace.getId());
+                    String busyState = (workPlace.isBusy() ? "Busy" : "Available");
                     String orderId;
                     if(workPlace.getOrder() != null){
                         orderId = "Order ID : " + workPlace.getOrder().getId();
@@ -95,8 +95,9 @@ public class TableObserver implements IObserver {
                     } else {
                         orderId = "No Order";
                     }
+                    String activity = workPlace.getActivity();
                     workPlaceModel.addRow(new Object[]{
-                            id, bussyState, orderId
+                            id, busyState, orderId,activity
                     });
                 }
             });

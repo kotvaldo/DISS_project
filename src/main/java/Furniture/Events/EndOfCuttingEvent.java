@@ -2,7 +2,6 @@ package Furniture.Events;
 
 import EventSimulation.Event;
 import Furniture.Entity.Order;
-import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
@@ -36,7 +35,7 @@ public class EndOfCuttingEvent extends Event {
 
         Worker targetWorkerForTwo = null;
         for (Worker w : core.getWorkersC()) {
-            if (w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
+            if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
                 targetWorkerForTwo = w;
                 break;
             }
@@ -55,8 +54,9 @@ public class EndOfCuttingEvent extends Event {
                 double newTime = this.time + Utility.calculateSecondTime(this.order, core, targetWorkerForTwo);
                 if (newTime < core.getEndTime()) {
                     this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
-                    targetWorkerForTwo.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                    targetWorkerForTwo.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     targetWorkerForTwo.setOrder(order);
+                    order.getWorkPlace().setActivity("Coloring");
                     //System.out.println(targetWorkerForTwo.getCurrentState());
                     core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerForTwo));
       /*              System.out.println("[EndOfCuttingEvent] Objednávka ID " + order.getId() +
@@ -72,7 +72,7 @@ public class EndOfCuttingEvent extends Event {
         // Pokus o ďalšiu objednávku na rezanie
 
         if (core.getQueueCutting().isEmpty()) {
-            worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
             worker.setOrder(null);
            // System.out.println("[EndOfCuttingEvent] Žiadna ďalšia objednávka na rezanie – worker ID " + worker.getId() + " je voľný.");
         } else {
@@ -80,7 +80,7 @@ public class EndOfCuttingEvent extends Event {
             double newTime = this.time + Utility.calculateFirstTime(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 worker.setOrder(nextOrder);
                 //System.out.println(worker.getCurrentState());
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));

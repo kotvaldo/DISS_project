@@ -2,20 +2,18 @@ package Furniture.Entity;
 
 import IDGenerator.IDGenerator;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 public class WorkPlace {
     private final int id;
     private Order order;
-    private boolean isBussy;
+    private boolean isBusy;
     private String activity;
 
 
     public WorkPlace() {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
-        isBussy = false;
+        isBusy = false;
         order = null;
+        this.activity = "Nothing";
     }
 
 
@@ -26,11 +24,14 @@ public class WorkPlace {
 
     public void setOrder(Order order) {
         this.order = order;
-        this.isBussy = order != null;
+        this.isBusy = order != null;
+        if(order == null){
+            this.activity = "Nothing";
+        }
     }
 
-    public boolean isBussy() {
-        return isBussy;
+    public boolean isBusy() {
+        return isBusy;
     }
 
     @Override
@@ -41,15 +42,23 @@ public class WorkPlace {
         return id == workplace.id;
     }
 
-    public void setBussy(boolean bussy) {
-        if(!bussy) {
+    public void setBusy(boolean busy) {
+        if(!busy) {
             this.order = null;
 
         }
-        isBussy = bussy;
+        isBusy = busy;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 }

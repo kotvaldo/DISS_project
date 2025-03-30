@@ -45,14 +45,15 @@ public class EndOfMontageEvent extends Event {
             double newTime = this.time + Utility.calculateFourth(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
-                worker.setCurrentState(WorkerBussyState.BUSSY_WORKER.getValue());
+                worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 worker.setOrder(nextOrder);
+                order.getWorkPlace().setActivity("Montage");
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, worker));
                /* System.out.println("[EndOfFittings] Worker ID " + worker.getId() +
                         " pokračuje ďalšou objednávkou ID " + nextOrder.getId() + " na montáž kovania. Čas: " + newTime);*/
             }
         } else {
-            worker.setCurrentState(WorkerBussyState.NON_BUSSY_WORKER.getValue());
+            worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
             worker.setOrder(null);
             //System.out.println("[EndOfFittings] Worker ID " + worker.getId() + " nemá ďalšiu prácu – je voľný.");
         }
