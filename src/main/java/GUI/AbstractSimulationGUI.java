@@ -26,7 +26,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
-        setSize(1500, 700);
+        setSize(1500, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 

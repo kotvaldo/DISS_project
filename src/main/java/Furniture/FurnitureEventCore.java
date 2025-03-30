@@ -162,7 +162,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     protected void afterSimulation() {
         FurnitureEventState state = (FurnitureEventState) this.state;
         newOrdersAfterSimulation.add(queueCutting.size());
-        System.out.println(queueCutting.size());
+      //  System.out.println(queueCutting.size());
         state.setRepCount(this.actualRepCount);
         state.setAverageTimeOfWorking(averageTimeOfWorking);
         state.setNewOrderOnEnd(newOrdersAfterSimulation);

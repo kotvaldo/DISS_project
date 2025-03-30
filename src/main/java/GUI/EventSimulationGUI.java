@@ -2,9 +2,7 @@ package GUI;
 
 import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
-import Furniture.Observers.GraphObserver;
-import Furniture.Observers.LabelObserver;
-import Furniture.Observers.TableObserver;
+import Furniture.Observers.*;
 import Observer.Subject;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -36,12 +34,14 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private final JLabel countALabel;
     private final JLabel countBLabel;
     private final JLabel countCLabel;
-    private final JLabel newOrdersAfterSimulation;
+    private final JLabel newOrdersAfterSimulationLabel;
     private final JLabel timeOfWorkLabel;
     private JFreeChart chart;
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
     XYSeries orderTimeSeries;
+    private final JLabel newOrdersIntervalLabel;
+    private final JLabel timeOfWorkIntervalLabel;
 
 
     public EventSimulationGUI() {
@@ -56,8 +56,20 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         workerBSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
         workerCSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
 
-        newOrdersAfterSimulation = new JLabel("Average Non Started Orders : ");
+
+        JPanel newOrdersPanel = new JPanel(new GridLayout(2,1));
+        newOrdersAfterSimulationLabel = new JLabel("Average Non Started Orders : ");
+        newOrdersIntervalLabel = new JLabel("CI: ");
+        newOrdersPanel.add(newOrdersAfterSimulationLabel);
+        newOrdersPanel.add(newOrdersIntervalLabel);
+        newOrdersPanel.setVisible(false);
+
+        JPanel timeOfWorkPanel = new JPanel(new GridLayout(2,1));
         timeOfWorkLabel = new JLabel("Average time of Work : ");
+        timeOfWorkIntervalLabel = new JLabel("CI: ");
+        timeOfWorkPanel.add(timeOfWorkLabel);
+        timeOfWorkPanel.add(timeOfWorkIntervalLabel);
+        timeOfWorkPanel.setVisible(false);
 
         countALabel = new JLabel("Count A: ");
         countBLabel = new JLabel("Count B: ");
@@ -66,6 +78,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         core = new FurnitureEventCore();
         dayCountLabel = new JLabel("Day : 0");
         core.setListener(subject);
+
+
 
 
         JButton pauseButton = new JButton("Pause Simulation");
@@ -137,14 +151,21 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             if(chartPanel != null) {
                 chartPanel.setVisible(!slowDownCheckBox.isSelected());
             }
+            newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
+            timeOfWorkPanel.setVisible(!slowDownCheckBox.isSelected());
 
         });
 
+        //stats
         this.statsPanel.add(slowDownCheckBox);
         this.statsPanel.add(label);
         this.statsPanel.add(dayCountLabel);
-        this.statsPanel.add(newOrdersAfterSimulation);
-        this.statsPanel.add(timeOfWorkLabel);
+        this.statsPanel.add(Box.createHorizontalStrut(5));
+        this.statsPanel.add(newOrdersPanel);
+        this.statsPanel.add(timeOfWorkPanel);
+
+
+        //input
         this.inputPanel.add(simulationSpeedLabel);
         this.inputPanel.add(speedSlider);
         this.inputPanel.add(replicationCountLabel);
@@ -156,6 +177,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.inputPanel.add(workerCSpinner);
         this.centerPanel.add(tablePanel);
 
+        //Observers
 
         GraphObserver graphObserver = new GraphObserver(orderTimeSeries, chart);
         subject.attachObserver(graphObserver);
@@ -163,9 +185,14 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
         subject.attachObserver(tableObserver);
 
-        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel, newOrdersAfterSimulation, timeOfWorkLabel);
+        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel);
         subject.attachObserver(observer);
 
+        AverageTimeObserver averageTimeObserver = new AverageTimeObserver(timeOfWorkLabel, timeOfWorkIntervalLabel);
+        subject.attachObserver(averageTimeObserver);
+
+        AverageNonStartedOrdersObserver averageNonStartedOrdersObserver = new AverageNonStartedOrdersObserver(newOrdersAfterSimulationLabel ,newOrdersIntervalLabel);
+        subject.attachObserver(averageNonStartedOrdersObserver);
     }
 
     @Override

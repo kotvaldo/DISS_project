@@ -26,6 +26,12 @@ public class WeightedStatistic implements Statistic {
         return weightedSum / weightSum;
     }
 
+    @Override
+    public int meanInt() {
+        if (weightSum == 0) return 0;
+        return (int) Math.round(weightedSum / weightSum);
+    }
+
     public double variance() {
         if (weightSum <= 1e-8) return 0;
         double mean = mean();

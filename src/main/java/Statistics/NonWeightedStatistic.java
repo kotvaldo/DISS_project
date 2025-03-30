@@ -20,6 +20,12 @@ public class NonWeightedStatistic implements Statistic {
         return sum / count;
     }
 
+    @Override
+    public int meanInt() {
+        if (count == 0) return 0;
+        return (int) Math.round(sum / count);
+    }
+
     public double variance() {
         if (count < 2) return 0;
         return (sumSquares - (sum * sum) / count) / (count - 1);
