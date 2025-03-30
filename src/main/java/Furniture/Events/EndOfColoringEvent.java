@@ -44,7 +44,7 @@ public class EndOfColoringEvent extends Event {
         } else {
             double newTime = this.time + Utility.calculateThird(order, core, targetWorkerForMontaging);
             if (newTime < core.getEndTime()) {
-                order.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
+                order.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerForMontaging.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 targetWorkerForMontaging.setOrder(order);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, order, targetWorkerForMontaging));
@@ -57,7 +57,7 @@ public class EndOfColoringEvent extends Event {
             Order fittingsOrder = core.getQueueMontage().removeFirst();
             double newTime = this.time + Utility.calculateFourth(fittingsOrder, core, worker);
             if (newTime < core.getEndTime()) {
-                fittingsOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
+                fittingsOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 worker.setOrder(fittingsOrder);
                 order.getWorkPlace().setActivity("Montage");
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, fittingsOrder, worker));

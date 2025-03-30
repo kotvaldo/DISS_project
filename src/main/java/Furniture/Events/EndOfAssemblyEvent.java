@@ -46,7 +46,7 @@ public class EndOfAssemblyEvent extends Event {
             } else {
                 double newTime = this.time + Utility.calculateFourth(order, core, targetWorkerForMontage);
                 if (newTime < core.getEndTime()) {
-                    order.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
+                    order.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                     targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     targetWorkerForMontage.setOrder(order);
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
@@ -75,7 +75,7 @@ public class EndOfAssemblyEvent extends Event {
             Order nextOrder = core.getQueueAssembly().removeFirst();
             double newTime = this.time + Utility.calculateThird(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
-                nextOrder.setState(OrderStateValues.PROCESSING_MONTAGING.getValue());
+                nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 worker.setOrder(nextOrder);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, worker));

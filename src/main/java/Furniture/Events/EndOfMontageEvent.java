@@ -44,7 +44,7 @@ public class EndOfMontageEvent extends Event {
             Order nextOrder = core.getQueueMontage().removeFirst();
             double newTime = this.time + Utility.calculateFourth(nextOrder, core, worker);
             if (newTime < core.getEndTime()) {
-                nextOrder.setState(OrderStateValues.PROCESSING_FITTINGS.getValue());
+                nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 worker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 worker.setOrder(nextOrder);
                 order.getWorkPlace().setActivity("Montage");
