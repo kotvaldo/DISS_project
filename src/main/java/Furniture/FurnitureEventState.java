@@ -17,7 +17,8 @@ public class FurnitureEventState implements IState {
     private ArrayList<WorkPlace> workPlaces;
     private boolean slowDown;
     private int repCount;
-    private Average average;
+    private Average workingTimeAvG;
+    private Average newOrderOnEnd;
     private int queueCutting;
     private int queueColoring;
     private int queueAssembly;
@@ -139,10 +140,18 @@ public class FurnitureEventState implements IState {
     }
 
     public Average getAverageTimeOfWorking() {
-        return average;
+        return workingTimeAvG;
     }
 
     public void setAverageTimeOfWorking(Average average) {
-        this.average = average;
+        this.workingTimeAvG = average;
+    }
+
+    public Average getNewOrderOnEnd() {
+        return newOrderOnEnd;
+    }
+
+    public void setNewOrderOnEnd(Average newOrderOnEnd) {
+        this.newOrderOnEnd = newOrderOnEnd;
     }
 }

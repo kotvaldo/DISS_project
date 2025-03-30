@@ -2,9 +2,15 @@ package GUI;
 
 import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
+import Furniture.Observers.GraphObserver;
 import Furniture.Observers.LabelObserver;
 import Furniture.Observers.TableObserver;
 import Observer.Subject;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,7 +36,12 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private final JLabel countALabel;
     private final JLabel countBLabel;
     private final JLabel countCLabel;
-
+    private final JLabel newOrdersAfterSimulation;
+    private final JLabel timeOfWorkLabel;
+    private JFreeChart chart;
+    private ChartPanel chartPanel;
+    XYSeriesCollection dataset;
+    XYSeries orderTimeSeries;
 
 
     public EventSimulationGUI() {
@@ -45,15 +56,17 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         workerBSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
         workerCSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
 
+        newOrdersAfterSimulation = new JLabel("Average Non Started Orders : ");
+        timeOfWorkLabel = new JLabel("Average time of Work : ");
+
         countALabel = new JLabel("Count A: ");
         countBLabel = new JLabel("Count B: ");
         countCLabel = new JLabel("Count C: ");
         replicationLabel.setVisible(false);
         core = new FurnitureEventCore();
         dayCountLabel = new JLabel("Day : 0");
-        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel);
-        subject.attachObserver(observer);
         core.setListener(subject);
+
 
         JButton pauseButton = new JButton("Pause Simulation");
         this.controlPanel.add(pauseButton);
@@ -108,9 +121,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         });
 
 
-        TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
-        subject.attachObserver(tableObserver);
-
         slowDownCheckBox = new JCheckBox("Slow Down", true);
         slowDownCheckBox.addActionListener(e -> {
             core.setSlowMode(slowDownCheckBox.isSelected());
@@ -124,12 +134,17 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             dayCountLabel.setVisible(slowDownCheckBox.isSelected());
             replicationsInput.setVisible(!slowDownCheckBox.isSelected());
             replicationLabel.setVisible(!slowDownCheckBox.isSelected());
+            if(chartPanel != null) {
+                chartPanel.setVisible(!slowDownCheckBox.isSelected());
+            }
 
         });
 
         this.statsPanel.add(slowDownCheckBox);
         this.statsPanel.add(label);
         this.statsPanel.add(dayCountLabel);
+        this.statsPanel.add(newOrdersAfterSimulation);
+        this.statsPanel.add(timeOfWorkLabel);
         this.inputPanel.add(simulationSpeedLabel);
         this.inputPanel.add(speedSlider);
         this.inputPanel.add(replicationCountLabel);
@@ -140,11 +155,33 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.inputPanel.add(countCLabel);
         this.inputPanel.add(workerCSpinner);
         this.centerPanel.add(tablePanel);
+
+
+        GraphObserver graphObserver = new GraphObserver(orderTimeSeries, chart);
+        subject.attachObserver(graphObserver);
+
+        TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
+        subject.attachObserver(tableObserver);
+
+        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel, newOrdersAfterSimulation, timeOfWorkLabel);
+        subject.attachObserver(observer);
+
     }
 
     @Override
     protected void initializeChart() {
-
+        // === GRAF ===
+        orderTimeSeries = new XYSeries("Priemerný čas výroby");
+        dataset = new XYSeriesCollection(orderTimeSeries);
+        chart = ChartFactory.createXYLineChart(
+                "Ustalovanie - Priemerný čas výroby",
+                "Replikácia",
+                "Čas [hod]",
+                dataset
+        );
+        chartPanel = new ChartPanel(chart);
+        centerPanel.add(chartPanel);
+        chartPanel.setVisible(false);
     }
 
 
@@ -164,6 +201,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     protected void startSimulation() {
         if (worker == null || worker.isDone()) {
             try {
+                orderTimeSeries.clear();
                 SwingUtilities.invokeLater(() -> {
                     dayCountLabel.setText("Day : 0");
                     label.setText("Simulation Time : 0");

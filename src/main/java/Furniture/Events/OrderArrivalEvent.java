@@ -89,5 +89,7 @@ public class OrderArrivalEvent extends Event {
 
         }
 
+        System.out.println(queueOne.size());
+
     }
 }

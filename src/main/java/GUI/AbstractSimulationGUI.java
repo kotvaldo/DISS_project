@@ -26,14 +26,14 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
-        setSize(1200, 700);
+        setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        this.centerPanel = new JPanel();
         initializeChart();
         initializeInputFields();
         initializeButtons();
-
         this.inputPanel = new JPanel();
         replicationLabel = new JLabel("Replication: ");
         inputPanel.add(replicationLabel);
@@ -41,7 +41,6 @@ public abstract class AbstractSimulationGUI extends JFrame {
         this.setupCustomInput();
 
         this.subject = new Subject();
-        this.centerPanel = new JPanel();
         controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
@@ -72,7 +71,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected abstract void initializeChart();
 
     private void initializeInputFields() {
-        replicationsInput = new JTextField("1", 10);
+        replicationsInput = new JTextField("1000", 10);
         burnInInput = new JTextField("1000", 10);
         updateFrequencyInput = new JTextField("1000", 10);
     }

@@ -48,6 +48,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final ArrayList<WorkPlace> workplaces;
 
     private final Average averageTimeOfWorking;
+    private final Average newOrdersAfterSimulation;
 
 
 
@@ -95,7 +96,9 @@ public class FurnitureEventCore extends EventSimulationCore {
         queueMontage = new LinkedList<>();
         queueCutting = new LinkedList<>();
 
+        //statistiky
         averageTimeOfWorking = new Average();
+        newOrdersAfterSimulation = new Average();
     }
 
     @Override
@@ -110,6 +113,7 @@ public class FurnitureEventCore extends EventSimulationCore {
        // initWorkers();
         this.ordersArrayList.clear();
         this.averageTimeOfWorking.clear();
+        this.newOrdersAfterSimulation.clear();
         this.workplaces.clear();
         this.state = new FurnitureEventState();
         this.actualRepCount = 0;
@@ -138,7 +142,11 @@ public class FurnitureEventCore extends EventSimulationCore {
         events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
 
         if (isSlowMode) {
-            events.add(new SystemEvent(simulationTime + 1, PriorityValues.SYSTEM_EVENT.getValue(), this));
+            double timeFor = slowDownSpeed / frequencyOfUpdate;
+            timeFor += this.simulationTime;
+            if(timeFor < endTime) {
+                events.add(new SystemEvent(timeFor, PriorityValues.SYSTEM_EVENT.getValue(), this));
+            }
             this.isGeneratedFirstSystemEvent = true;
         }
     }
@@ -153,7 +161,11 @@ public class FurnitureEventCore extends EventSimulationCore {
     @Override
     protected void afterSimulation() {
         FurnitureEventState state = (FurnitureEventState) this.state;
+        newOrdersAfterSimulation.add(queueCutting.size());
+        System.out.println(queueCutting.size());
         state.setRepCount(this.actualRepCount);
+        state.setAverageTimeOfWorking(averageTimeOfWorking);
+        state.setNewOrderOnEnd(newOrdersAfterSimulation);
         this.listener.setState(state);
         this.listener.notifyObservers();
     }
@@ -180,13 +192,8 @@ public class FurnitureEventCore extends EventSimulationCore {
             state.setQueueCutting(queueCutting.size());
             state.setQueueMontage(queueMontage.size());
 
-        } else {
-
-
         }
-
-
-        state.setAverageTimeOfWorking(averageTimeOfWorking);
+        //state.setAverageTimeOfWorking(averageTimeOfWorking);
 
         this.listener.setState(state);
         this.listener.notifyObservers();
