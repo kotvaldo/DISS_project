@@ -59,6 +59,7 @@ public class OrderArrivalEvent extends Event {
         for(Worker w : core.getWorkersA()) {
             if(w.getCurrentState() == WorkerBussyState.NON_BUSSY_WORKER.getValue()) {
                 targetWorker = w;
+                break;
             }
         }
 
@@ -83,8 +84,10 @@ public class OrderArrivalEvent extends Event {
         }
 
         double newTime = this.time + core.getOrderArrivalDist().sample();
-        core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
+        if(newTime < core.getEndTime()) {
+            core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
 
+        }
 
     }
 }

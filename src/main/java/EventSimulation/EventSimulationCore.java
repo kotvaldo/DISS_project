@@ -30,7 +30,7 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected void experiment() {
         //System.out.println("Spúšťam experiment...");
         //System.out.println("Start Size: " + events.size());
-        while (!events.isEmpty() && !this.isCancelled && simulationTime <= endTime) {
+        while (!events.isEmpty() && !this.isCancelled && simulationTime < endTime) {
             //System.out.println(events.size() + " events arrived");
             Event event = events.poll();
 
@@ -46,7 +46,7 @@ public abstract class EventSimulationCore extends SimulationCore {
             if(!isSlowMode) {
                 dataHandling();
             }
-
+            System.out.println(events.size() + " events arrived");
             //dataHandling();
             //System.out.println(slowDownSpeed);
             if (!isSlowMode && isGeneratedFirstSystemEvent) {
@@ -55,9 +55,11 @@ public abstract class EventSimulationCore extends SimulationCore {
             } else if (isSlowMode && !isGeneratedFirstSystemEvent) {
                 //System.out.println("Generujem systémový event pre pomalý režim.");
                 isGeneratedFirstSystemEvent = true;
-                double timeNew = 1 + this.simulationTime;
-                Event systemEvent = new SystemEvent(timeNew, PriorityValues.SYSTEM_EVENT.getValue(), this);
-                this.events.add(systemEvent);
+                double newTime = slowDownSpeed / frequencyOfUpdate;
+                newTime += this.simulationTime;
+                if(newTime < endTime) {
+                    events.add(new SystemEvent(newTime, PriorityValues.SYSTEM_EVENT.getValue(), this));
+                }
             }
 
             if (paused) {

@@ -29,9 +29,9 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Triangular timeInStorageDist;
     private final Triangular timeMovingToStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
-    private int countWorkerA = 50;
-    private int countWorkerB = 30;
-    private int countWorkerC = 100;
+    private int countWorkerA;
+    private int countWorkerB;
+    private int countWorkerC;
     public ArrayList<Order> ordersArrayList = new ArrayList<>();
     private final LinkedList<Order> queueCutting;
     private final ArrayList<Worker> workersA;
@@ -101,7 +101,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         queueAssembly.clear();
         queueMontage.clear();
         queueColoring.clear();
-        initWorkers();
+       // initWorkers();
         this.ordersArrayList.clear();
         this.workplaces.clear();
         this.state = new FurnitureEventState();
@@ -191,12 +191,6 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     }
 
-    private void resetWorkers() {
-        for(Worker worker : workersA) {
-            worker.setCurrentState(false);
-            worker.setOrder(null);
-        }
-    }
 
     public Exponential getOrderArrivalDist() {
         return orderArrivalDist;
@@ -303,5 +297,17 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public ArrayList<WorkPlace> getWorkplaces() {
         return workplaces;
+    }
+
+    public void setCountWorkerA(int countWorkerA) {
+        this.countWorkerA = countWorkerA;
+    }
+
+    public void setCountWorkerB(int countWorkerB) {
+        this.countWorkerB = countWorkerB;
+    }
+
+    public void setCountWorkerC(int countWorkerC) {
+        this.countWorkerC = countWorkerC;
     }
 }

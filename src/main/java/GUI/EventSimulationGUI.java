@@ -1,6 +1,5 @@
 package GUI;
 
-import Furniture.Entity.WorkPlace;
 import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
 import Furniture.Observers.LabelObserver;
@@ -25,6 +24,15 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private final JLabel replicationCountLabel;
     private final JCheckBox slowDownCheckBox;
     private final JLabel simulationSpeedLabel;
+    private final JSpinner workerASpinner;
+    private final JSpinner workerBSpinner;
+    private final JSpinner workerCSpinner;
+    private final JLabel countALabel;
+    private final JLabel countBLabel;
+    private final JLabel countCLabel;
+
+
+
     public EventSimulationGUI() {
         super("Event Simulation");
         this.simulationSpeedLabel = new JLabel("Simulation Speed: ");
@@ -33,6 +41,13 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.replicationCountLabel = new JLabel("Replication Count : 0");
         replicationCountLabel.setVisible(false);
         replicationsInput.setVisible(false);
+        workerASpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+        workerBSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+        workerCSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+
+        countALabel = new JLabel("Count A: ");
+        countBLabel = new JLabel("Count B: ");
+        countCLabel = new JLabel("Count C: ");
         replicationLabel.setVisible(false);
         core = new FurnitureEventCore();
         dayCountLabel = new JLabel("Day : 0");
@@ -68,12 +83,12 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(workPlaceSroll);
 
 
-        speedSlider = new JSlider(1, 8, 1);
+        speedSlider = new JSlider(1, 9, 1);
         speedSlider.setPaintTicks(true);
         speedSlider.setPaintLabels(true);
         speedSlider.setMajorTickSpacing(1);
         speedSlider.setMinorTickSpacing(1);
-        speedSlider.setPreferredSize(new Dimension(300, 50));
+        speedSlider.setPreferredSize(new Dimension(250, 50));
 
         Dictionary<Integer, JLabel> labelTable = new Hashtable<>();
         labelTable.put(1, new JLabel("1"));
@@ -84,6 +99,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         labelTable.put(6, new JLabel("10K"));
         labelTable.put(7, new JLabel("36K"));
         labelTable.put(8, new JLabel("100K"));
+        labelTable.put(9, new JLabel("300K"));
         speedSlider.setLabelTable(labelTable);
 
         speedSlider.addChangeListener(e -> {
@@ -110,14 +126,20 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             replicationLabel.setVisible(!slowDownCheckBox.isSelected());
 
         });
+
         this.statsPanel.add(slowDownCheckBox);
         this.statsPanel.add(label);
         this.statsPanel.add(dayCountLabel);
         this.inputPanel.add(simulationSpeedLabel);
         this.inputPanel.add(speedSlider);
         this.inputPanel.add(replicationCountLabel);
+        this.inputPanel.add(countALabel);
+        this.inputPanel.add(workerASpinner);
+        this.inputPanel.add(countBLabel);
+        this.inputPanel.add(workerBSpinner);
+        this.inputPanel.add(countCLabel);
+        this.inputPanel.add(workerCSpinner);
         this.centerPanel.add(tablePanel);
-
     }
 
     @Override
@@ -165,7 +187,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                     core.setSlowDownSpeed(speed.getValue());
 
                 }
-
+                core.setCountWorkerA((Integer) workerASpinner.getValue());
+                core.setCountWorkerB((Integer) workerBSpinner.getValue());
+                core.setCountWorkerC((Integer) workerCSpinner.getValue());
                 slowDownCheckBox.setEnabled(false);
 
                 worker = new EventSimulationWorker();
@@ -200,6 +224,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         protected void done() {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
+            slowDownCheckBox.setEnabled(true);
         }
     }
 }

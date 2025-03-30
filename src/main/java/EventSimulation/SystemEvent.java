@@ -24,7 +24,7 @@ public class SystemEvent extends Event {
 
             double newTime = simCore.slowDownSpeed / simCore.frequencyOfUpdate;
             newTime += this.time;
-            if(this.time <= simCore.endTime) {
+            if(this.time < simCore.endTime) {
                 simCore.events.add(new SystemEvent(newTime, this.priority, simulationCore));
             }
 

@@ -9,6 +9,8 @@ public class WorkPlace {
     private final int id;
     private Order order;
     private boolean isBussy;
+    private String activity;
+
 
     public WorkPlace() {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
