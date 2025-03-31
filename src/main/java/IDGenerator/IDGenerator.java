@@ -26,5 +26,9 @@ public class IDGenerator {
 
     public int getNextWorkplaceId() {return counter3.incrementAndGet();}
 
+    public void clearGenerators() {
+        counter.set(0);counter2.set(0);counter3.set(0);
+    }
+
 }
 

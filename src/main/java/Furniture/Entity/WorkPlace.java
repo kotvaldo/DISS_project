@@ -6,12 +6,13 @@ public class WorkPlace {
     private final int id;
     private Order order;
     private boolean isBusy;
-
+    private Worker worker;
 
     public WorkPlace() {
         this.id = IDGenerator.getInstance().getNextWorkplaceId();
         isBusy = false;
         order = null;
+        worker = null;
     }
 
 
@@ -49,4 +50,11 @@ public class WorkPlace {
         return id;
     }
 
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
 }

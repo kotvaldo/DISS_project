@@ -5,31 +5,19 @@ import EventSimulation.SystemEvent;
 import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
 import Furniture.Events.OrderArrivalEvent;
+import Furniture.Generation.Generators;
 import Generators.*;
 import Furniture.Entity.WorkPlace;
 import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
+import IDGenerator.IDGenerator;
 import Statistics.Average;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class FurnitureEventCore extends EventSimulationCore {
-    private final Exponential orderArrivalDist;
-    private final EmpiricDiscrete typeOfOrderDist;
-    private final EmpiricContinuous cuttingTypeOneDist;
-    private final UniformContinuous cuttingTypeTwoDist;
-    private final UniformContinuous cuttingTypeThreeDist;
-    private final UniformContinuous coloringTypeOneDist;
-    private final UniformContinuous coloringTypeTwoDist;
-    private final UniformContinuous coloringTypeThreeDist;
-    private final UniformContinuous assemblyTypeOneDist;
-    private final UniformContinuous assemblyTypeTwoDist;
-    private final UniformContinuous assemblyTypeThreeDist;
-    private final UniformContinuous montageDist;
-    private final Triangular timeInStorageDist;
-    private final Triangular timeMovingToStorageDist;
-    private final Triangular timeMovingToAnotherWorkshopDist;
+
     private int countWorkerA;
     private int countWorkerB;
     private int countWorkerC;
@@ -49,44 +37,13 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     private final Average averageTimeOfWorking;
     private final Average newOrdersAfterSimulation;
-
+    private final Generators generators;
 
 
     public FurnitureEventCore() {
         super();
         state = new FurnitureEventState();
-        orderArrivalDist = new Exponential(1800.0);
-        ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
-        typeList.add(new EmpiricData<>(1, 2, 0.5));
-        typeList.add(new EmpiricData<>(2, 3, 0.2));
-        typeList.add(new EmpiricData<>(3, 4, 0.3));
-        typeOfOrderDist = new EmpiricDiscrete(typeList);
-        ArrayList<EmpiricData<Double>> list = new ArrayList<>();
-        list.add(new EmpiricData<>(10.0, 25.0, 0.6));
-        list.add(new EmpiricData<>(25.0, 50.0, 0.4));
-        //first
-        cuttingTypeOneDist = new EmpiricContinuous(list);
-        coloringTypeOneDist = new UniformContinuous(12000.0, 36600.0);
-        assemblyTypeOneDist = new UniformContinuous(1800.0, 3600.0);
-
-        // second
-        cuttingTypeTwoDist = new UniformContinuous(720.0, 960.0);
-        coloringTypeTwoDist = new UniformContinuous(12600.0, 32400.0);
-        assemblyTypeTwoDist = new UniformContinuous(840.0, 1440.0);
-
         workplaces = new ArrayList<>();
-
-        // third
-        cuttingTypeThreeDist = new UniformContinuous(900.0, 4800.0);
-        coloringTypeThreeDist = new UniformContinuous(36000.0, 42000.0);
-        assemblyTypeThreeDist = new UniformContinuous(2100.0, 4500.0);
-        montageDist = new UniformContinuous(900.0, 1500.0);
-
-        //moving Dist
-        timeMovingToStorageDist = new Triangular(60.0, 480.0, 120.0);
-        timeInStorageDist = new Triangular(300.0, 900.0, 500.0);
-        timeMovingToAnotherWorkshopDist = new Triangular(120.0, 500.0, 150.0);
-
 
         workersA = new ArrayList<>();
         workersB = new ArrayList<>();
@@ -95,7 +52,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         queueAssembly = new LinkedList<>();
         queueMontage = new LinkedList<>();
         queueCutting = new LinkedList<>();
-
+        generators = new Generators();
         //statistiky
         averageTimeOfWorking = new Average();
         newOrdersAfterSimulation = new Average();
@@ -133,6 +90,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.queueColoring.clear();
         this.workplaces.clear();
         this.events.clear();
+        IDGenerator.getInstance().clearGenerators();
         if(isSlowMode) {
             this.state = new FurnitureEventState();
         }
@@ -141,7 +99,7 @@ public class FurnitureEventCore extends EventSimulationCore {
 
         FurnitureEventState currentState = (FurnitureEventState) state;
         currentState.setSlowDown(this.isSlowMode);
-        double newTime = orderArrivalDist.sample();
+        double newTime = generators.getOrderArrivalDist().sample();
         if(newTime < endTime) {
             events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
         }
@@ -225,77 +183,10 @@ public class FurnitureEventCore extends EventSimulationCore {
     }
 
 
-    public Exponential getOrderArrivalDist() {
-        return orderArrivalDist;
-    }
 
-    public EmpiricDiscrete getTypeOfOrderDist() {
-        return typeOfOrderDist;
-    }
-
-
-    public EmpiricContinuous getCuttingTypeOneDist() {
-        return cuttingTypeOneDist;
-    }
-
-
-    public UniformContinuous getCuttingTypeTwoDist() {
-        return cuttingTypeTwoDist;
-    }
 
     public void setReplicationCount(int replicationCount) {
         this.repCount = replicationCount;
-    }
-
-    public UniformContinuous getCuttingTypeThreeDist() {
-        return cuttingTypeThreeDist;
-    }
-
-
-    public UniformContinuous getColoringTypeOneDist() {
-        return coloringTypeOneDist;
-    }
-
-
-    public UniformContinuous getColoringTypeTwoDist() {
-        return coloringTypeTwoDist;
-    }
-
-
-    public UniformContinuous getColoringTypeThreeDist() {
-        return coloringTypeThreeDist;
-    }
-
-
-    public UniformContinuous getAssemblyTypeOneDist() {
-        return assemblyTypeOneDist;
-    }
-
-    public UniformContinuous getAssemblyTypeTwoDist() {
-        return assemblyTypeTwoDist;
-    }
-
-
-    public UniformContinuous getAssemblyTypeThreeDist() {
-        return assemblyTypeThreeDist;
-    }
-
-
-    public UniformContinuous getMontageDist() {
-        return montageDist;
-    }
-
-
-    public Triangular getTimeInStorageDist() {
-        return timeInStorageDist;
-    }
-
-    public Triangular getTimeMovingToStorageDist() {
-        return timeMovingToStorageDist;
-    }
-
-    public Triangular getTimeMovingToAnotherWorkshopDist() {
-        return timeMovingToAnotherWorkshopDist;
     }
 
 
@@ -346,5 +237,9 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public Average getAverageTimeOfWorking() {
         return averageTimeOfWorking;
+    }
+
+    public Generators getGenerators() {
+        return generators;
     }
 }

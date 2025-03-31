@@ -36,26 +36,28 @@ public class Utility {
         WorkPlace target = order.getWorkPlace();
 
         if (current == null) {
-            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
 
         } else if (!current.equals(target)) {
-            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
-            totalTime += core.getTimeInStorageDist().sample();
-            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
 
         } else {
-            totalTime += core.getTimeInStorageDist().sample();
-            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
         }
+
         worker.setCurrentWorkPlace(target);
 
-        totalTime += core.getTimeInStorageDist().sample();
+        totalTime += core.getGenerators().getTimeInStorageDist().sample();
+
         if(order.getType() == 1) {
-            totalTime += core.getCuttingTypeOneDist().sample();
+            totalTime += core.getGenerators().getCuttingTypeOneDist().sample();
         } else if(order.getType() == 2) {
-            totalTime += core.getCuttingTypeTwoDist().sample();
+            totalTime += core.getGenerators().getCuttingTypeTwoDist().sample();
         } else if(order.getType() == 3) {
-            totalTime += core.getCuttingTypeThreeDist().sample();
+            totalTime += core.getGenerators().getCuttingTypeThreeDist().sample();
         }
         return totalTime;
 
@@ -68,10 +70,10 @@ public class Utility {
         WorkPlace target = order.getWorkPlace();
 
         if (current == null) {
-            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
 
         } else if (!current.equals(target)) {
-            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
 
 
         }
@@ -80,13 +82,13 @@ public class Utility {
 
 
         if(order.getType() == 1) {
-            totalTime += core.getColoringTypeOneDist().sample();
+            totalTime += core.getGenerators().getColoringTypeOneDist().sample();
         } else if(order.getType() == 2) {
-            totalTime += core.getColoringTypeTwoDist().sample();
+            totalTime += core.getGenerators().getColoringTypeTwoDist().sample();
         } else if(order.getType() == 3) {
-            totalTime += core.getColoringTypeThreeDist().sample();
+            totalTime += core.getGenerators().getColoringTypeThreeDist().sample();
         }
-        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+
         return totalTime;
 
     }
@@ -98,23 +100,22 @@ public class Utility {
         WorkPlace target = order.getWorkPlace();
 
         if (current == null) {
-            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
 
         } else if (!current.equals(target)) {
-            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
 
 
         }
 
         worker.setCurrentWorkPlace(target);
         if(order.getType() == 1) {
-            totalTime += core.getAssemblyTypeOneDist().sample();
+            totalTime += core.getGenerators().getAssemblyTypeOneDist().sample();
         } else if(order.getType() == 2) {
-            totalTime += core.getAssemblyTypeTwoDist().sample();
+            totalTime += core.getGenerators().getAssemblyTypeTwoDist().sample();
         } else if(order.getType() == 3) {
-            totalTime += core.getAssemblyTypeThreeDist().sample();
+            totalTime += core.getGenerators().getAssemblyTypeThreeDist().sample();
         }
-        totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
         return totalTime;
     }
     public static double calculateFourth(Order order, FurnitureEventCore core, Worker worker) {
@@ -124,10 +125,10 @@ public class Utility {
         WorkPlace target = order.getWorkPlace();
 
         if (current == null) {
-            totalTime += core.getTimeInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
 
         } else if (!current.equals(target)) {
-            totalTime += core.getTimeMovingToAnotherWorkshopDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
         }
 
         worker.setCurrentWorkPlace(target);

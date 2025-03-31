@@ -23,17 +23,13 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected EventSimulationCore() {
         events = new PriorityQueue<>();
         state = null;
-        //System.out.println("Simulácia inicializovaná.");
     }
 
     @Override
     protected void experiment() {
-        //System.out.println("Spúšťam experiment...");
-        //System.out.println("Start Size: " + events.size());
         while (!events.isEmpty() && !this.isCancelled && simulationTime < endTime) {
-            //System.out.println(events.size() + " events arrived");
             Event event = events.poll();
-
+           // System.out.println(events.size());
             if (event.getTime() < simulationTime) {
                 System.out.println("Simulation time: " + event.getTime());
                 System.out.println("Vlákno: " + Thread.currentThread().getName());
@@ -42,21 +38,14 @@ public abstract class EventSimulationCore extends SimulationCore {
             }
 
             this.simulationTime = event.getTime();
-            /*System.out.println("Spracovaný event: " + event.getClass().getSimpleName() +
-                    " | Čas: " + simulationTime);*/
 
             event.Execute();
             if(isSlowMode) {
                 dataHandling();
             }
-            //System.out.println(events.size() + " events arrived");
-            //dataHandling();
-            //System.out.println(slowDownSpeed);
             if (!isSlowMode && isGeneratedFirstSystemEvent) {
-                //System.out.println("Prechádzam z pomalého režimu do rýchleho.");
                 isGeneratedFirstSystemEvent = false;
             } else if (isSlowMode && !isGeneratedFirstSystemEvent) {
-                //System.out.println("Generujem systémový event pre pomalý režim.");
                 isGeneratedFirstSystemEvent = true;
                 double newTime = slowDownSpeed / frequencyOfUpdate;
                 newTime += this.simulationTime;
@@ -66,25 +55,19 @@ public abstract class EventSimulationCore extends SimulationCore {
             }
 
             if (paused) {
-                //System.out.println("Simulácia pozastavená.");
                 dataHandling();
 
                 while (paused) {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
-                       //System.out.println("Simulácia bola prerušená počas pauzy.");
                     }
                 }
-               // System.out.println("Simulácia obnovená.");
+
             }
         }
-       // System.out.println("Experiment skončil.");
         isGeneratedFirstSystemEvent = false;
         this.actualRepCount++;
-        /*System.out.println("RepCount " + actualRepCount);
-        System.out.println("Event Size: " + events.size());
-        System.out.println("SlowMode : " + isSlowMode);*/
     }
 
 

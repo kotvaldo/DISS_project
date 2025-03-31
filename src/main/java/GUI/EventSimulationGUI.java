@@ -52,9 +52,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.replicationCountLabel = new JLabel("Replication Count : 0");
         replicationCountLabel.setVisible(false);
         replicationsInput.setVisible(false);
-        workerASpinner = new JSpinner(new SpinnerNumberModel(3, 0, 1000, 1));
-        workerBSpinner = new JSpinner(new SpinnerNumberModel(3, 0, 1000, 1));
-        workerCSpinner = new JSpinner(new SpinnerNumberModel(3, 0, 1000, 1));
+        workerASpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
+        workerBSpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
+        workerCSpinner = new JSpinner(new SpinnerNumberModel(18, 0, 1000, 1));
 
 
         JPanel newOrdersPanel = new JPanel(new GridLayout(2,1));
@@ -104,10 +104,17 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
 
 
-        JPanel tablePanel = new JPanel(new GridLayout(1, 3));
+        JPanel tablePanel = new JPanel();
+        tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.X_AXIS));
+        tablePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
         tablePanel.add(ordersScroll);
+        tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workersScroll);
+        tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workPlaceSroll);
+
+        this.centerPanel.add(tablePanel);
 
 
         speedSlider = new JSlider(1, 9, 1);
@@ -206,7 +213,10 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 "Čas [hod]",
                 dataset
         );
+        chart.getXYPlot().getRangeAxis().setAutoRange(true);
+        chart.getXYPlot().getDomainAxis().setAutoRange(true);
         chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(600, 400));
         centerPanel.add(chartPanel);
         chartPanel.setVisible(false);
     }

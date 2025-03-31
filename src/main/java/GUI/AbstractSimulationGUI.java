@@ -29,7 +29,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
         setSize(1500, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.centerPanel = new JPanel();
         initializeChart();
         initializeInputFields();

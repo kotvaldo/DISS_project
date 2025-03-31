@@ -26,7 +26,7 @@ public class GraphObserver implements IObserver {
                 double mean = fState.getAverageTimeOfWorking().mean();
                 timeOfWorkingSeries.add(rep, mean);
             });
-            setRangeAxis(timeOfWorkingSeries.getMinY() + 1, timeOfWorkingSeries.getMaxY() + 1);
+            setRangeAxis(timeOfWorkingSeries.getMinY(), timeOfWorkingSeries.getMaxY());
         }
     }
 
