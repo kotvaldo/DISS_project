@@ -12,6 +12,7 @@ import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 import IDGenerator.IDGenerator;
 import Statistics.Average;
+import Statistics.Utilisation;
 import Statistics.WeightedStatistic;
 
 import java.util.ArrayList;
@@ -43,10 +44,10 @@ public class FurnitureEventCore extends EventSimulationCore {
     private int countOfFinishedOrders;
 
     private int burnInCount;
-    private final WeightedStatistic utilizationA = new WeightedStatistic();
-    private final WeightedStatistic utilizationB = new WeightedStatistic();
-    private final WeightedStatistic utilizationC = new WeightedStatistic();
-    private final WeightedStatistic utilizationTotal = new WeightedStatistic();
+    private final Utilisation utilizationA = new Utilisation();
+    private final Utilisation utilizationB = new Utilisation();
+    private final Utilisation utilizationC = new Utilisation();
+    private final Utilisation utilizationTotal = new Utilisation();
 
 
     public FurnitureEventCore() {
