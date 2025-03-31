@@ -65,11 +65,10 @@ public class Order {
 
     public void setEndTime(double endTime) {
         this.endTime = endTime;
-        timeOfWork = endTime - arrivalTime;
     }
 
     public double getTimeOfWork() {
-        return timeOfWork;
+        return  endTime - arrivalTime;
     }
 
     public void addToTimeOfWork(double timeOfWork) {

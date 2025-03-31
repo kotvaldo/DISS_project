@@ -30,7 +30,7 @@ public class EndOfMontageEvent extends Event {
         order.setState(OrderStateValues.ORDER_DONE.getValue());
         order.getWorkPlace().setOrder(null);
         order.setWorkPlace(null);
-        //order.setEndTime(time);
+        order.setEndTime(time);
         core.getAverageTimeOfWorking().add(order.getTimeOfWork());
 
 
