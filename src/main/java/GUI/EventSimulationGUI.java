@@ -7,6 +7,8 @@ import Observer.Subject;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -50,6 +52,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
     XYSeries orderTimeSeries;
+    XYSeries intervalLower;
+    XYSeries intervalUpper;
     private final JLabel newOrdersIntervalLabel;
     private final JLabel timeOfWorkIntervalLabel;
     private JLabel countOfFinishedOrdersLabel;
@@ -103,19 +107,19 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         String[] orderColumns = {"ID", "Type", "State"};
         ordersTableModel = new DefaultTableModel(orderColumns, 0);
         JTable ordersTable = new JTable(ordersTableModel);
-        ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); // ✨
+        ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
 
         String[] workerColumns = {"ID", "Group", "State", "Order_ID", "WorkPlace_ID"};
         workersTableModel = new DefaultTableModel(workerColumns, 0);
         JTable workersTable = new JTable(workersTableModel);
-        workersTable.setPreferredScrollableViewportSize(new Dimension(300, 200)); // ✨
+        workersTable.setPreferredScrollableViewportSize(new Dimension(300, 200)); 
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
         String[] workPlaceColumns = {"ID", "State", "Order_ID", "Activity"};
         workPlaceTableModel = new DefaultTableModel(workPlaceColumns, 0);
         JTable workPlaceTable = new JTable(workPlaceTableModel);
-        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); // ✨
+        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
 
@@ -129,7 +133,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workPlaceSroll);
 
-        tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220)); // ✨
+        tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
 
         this.centerPanel.add(tablePanel);
 
@@ -214,7 +218,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
         //Observers
 
-        GraphObserver graphObserver = new GraphObserver(orderTimeSeries, chart);
+        GraphObserver graphObserver = new GraphObserver(orderTimeSeries, chart, intervalLower, intervalUpper);
         subject.attachObserver(graphObserver);
 
         TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
@@ -244,20 +248,32 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     protected void initializeChart() {
         // === GRAF ===
         orderTimeSeries = new XYSeries("Priemerný čas výroby");
-        dataset = new XYSeriesCollection(orderTimeSeries);
+        intervalLower = new XYSeries("CI: Lower value");
+        intervalUpper = new XYSeries("CI: Upper value");
+
+        dataset = new XYSeriesCollection();
+        dataset.addSeries(orderTimeSeries);
+        dataset.addSeries(intervalLower);
+        dataset.addSeries(intervalUpper);
+
         chart = ChartFactory.createXYLineChart(
                 "Ustalovanie - Priemerný čas výroby",
                 "Replikácia",
                 "Čas [hod]",
                 dataset
         );
-        chart.getXYPlot().getRangeAxis().setAutoRange(true);
-        chart.getXYPlot().getDomainAxis().setAutoRange(true);
+
+        XYPlot plot = chart.getXYPlot();
+
+        plot.getRangeAxis().setAutoRange(true);
+        plot.getDomainAxis().setAutoRange(true);
+
         chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(1000, 600));
         centerPanel.add(chartPanel);
         chartPanel.setVisible(false);
     }
+
 
 
     @Override
@@ -405,6 +421,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         if (worker == null || worker.isDone()) {
             try {
                 orderTimeSeries.clear();
+                intervalUpper.clear();
+                intervalLower.clear();
                 SwingUtilities.invokeLater(() -> {
                     dayCountLabel.setText("Day : 0");
                     label.setText("Simulation Time : 0");

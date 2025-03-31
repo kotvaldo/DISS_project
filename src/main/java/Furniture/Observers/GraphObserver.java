@@ -11,10 +11,14 @@ import javax.swing.*;
 public class GraphObserver implements IObserver {
     private final XYSeries timeOfWorkingSeries;
     private JFreeChart chart;
+    private XYSeries intervalLower;
+    private XYSeries intervalUpper;
 
-    public GraphObserver(XYSeries timeOfWorking, JFreeChart chart) {
+    public GraphObserver(XYSeries timeOfWorking, JFreeChart chart, XYSeries intervalLower, XYSeries intervalUpper) {
         this.timeOfWorkingSeries = timeOfWorking;
         this.chart = chart;
+        this.intervalLower = intervalLower;
+        this.intervalUpper = intervalUpper;
     }
 
     @Override
@@ -26,8 +30,11 @@ public class GraphObserver implements IObserver {
                     int rep = fState.getRepCount();
                     double mean = fState.getAverageTimeOfWorking().mean();
                     timeOfWorkingSeries.add(rep, mean);
+                    fState.getAverageTimeOfWorking().confidenceInterval();
+                    intervalLower.add(rep, fState.getAverageTimeOfWorking().getLowerBound());
+                    intervalUpper.add(rep, fState.getAverageTimeOfWorking().getUpperBound());
                 });
-                setRangeAxis(timeOfWorkingSeries.getMinY(), timeOfWorkingSeries.getMaxY());
+                setRangeAxis(intervalLower.getMinY(), intervalUpper.getMaxY());
             }
 
         }

@@ -4,11 +4,14 @@ public class NonWeightedStatistic implements Statistic {
     private int count;
     private double sum;
     private double sumSquares;
-
+    private double lower;
+    private double upper;
     public NonWeightedStatistic() {
         count = 0;
         sum = 0.0;
         sumSquares = 0.0;
+        lower = 0.0;
+        upper = 0.0;
     }
 
     @Override
@@ -48,12 +51,19 @@ public class NonWeightedStatistic implements Statistic {
         double z = 1.96; // 95% confidence interval
 
         double marginError = z * stdDev / Math.sqrt(count);
-        double lower = mean - marginError;
-        double upper = mean + marginError;
+        lower = mean - marginError;
+        upper = mean + marginError;
 
         return String.format("[%.4f ; %.4f]", lower, upper);
     }
 
+    public double getLowerBound() {
+        return lower;
+    }
+
+    public double getUpperBound() {
+        return upper;
+    }
     @Override
     public void clear() {
         count = 0;
