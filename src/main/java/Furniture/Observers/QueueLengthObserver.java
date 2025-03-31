@@ -7,10 +7,10 @@ import State.IState;
 import javax.swing.*;
 
 public class QueueLengthObserver implements IObserver {
-    private JLabel queueLengthLabel;
-    private JLabel queueLength2Label;
-    private JLabel queueLength3Label;
-    private JLabel queueLength4Label;
+    private final JLabel queueLengthLabel;
+    private final JLabel queueLength2Label;
+    private final JLabel queueLength3Label;
+    private final JLabel queueLength4Label;
 
     public QueueLengthObserver(JLabel queueLengthLabel, JLabel queue2LengthLabel, JLabel queue3LengthLabel, JLabel queue4LengthLabel) {
         this.queueLengthLabel = queueLengthLabel;

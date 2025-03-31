@@ -1,6 +1,5 @@
 package Furniture.Observers;
 
-import Furniture.FurnitureEventCore;
 import Furniture.FurnitureEventState;
 import Observer.IObserver;
 import State.IState;
@@ -8,17 +7,17 @@ import State.IState;
 import javax.swing.*;
 
 public class UtilizationObserver implements IObserver {
-    private JLabel utilizationALabel;
-    private JLabel utilizationAIntervalLabel;
+    private final JLabel utilizationALabel;
+    private final JLabel utilizationAIntervalLabel;
 
-    private JLabel utilizationBLabel;
-    private JLabel utilizationBIntervalLabel;
+    private final JLabel utilizationBLabel;
+    private final JLabel utilizationBIntervalLabel;
 
-    private JLabel utilizationCLabel;
-    private JLabel utilizationCIntervalLabel;
+    private final JLabel utilizationCLabel;
+    private final JLabel utilizationCIntervalLabel;
 
-    private JLabel utilizationAllLabel;
-    private JLabel utilizationAllIntervalLabel;
+    private final JLabel utilizationAllLabel;
+    private final JLabel utilizationAllIntervalLabel;
 
     public UtilizationObserver(
             JLabel utilizationALabel, JLabel utilizationAIntervalLabel,

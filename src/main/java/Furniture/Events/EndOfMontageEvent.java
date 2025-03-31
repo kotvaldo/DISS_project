@@ -11,8 +11,8 @@ import SimulationCore.SimulationCore;
 import Utility.Utility;
 
 public class EndOfMontageEvent extends Event {
-    private Order order;
-    private Worker worker;
+    private final Order order;
+    private final Worker worker;
 
     protected EndOfMontageEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
         super(time, priority, simulationCore);

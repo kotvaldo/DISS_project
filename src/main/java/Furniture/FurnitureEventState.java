@@ -6,7 +6,6 @@ import Furniture.Entity.Worker;
 import State.IState;
 import Statistics.Average;
 import Statistics.Utilisation;
-import Statistics.WeightedStatistic;
 
 import java.util.ArrayList;
 

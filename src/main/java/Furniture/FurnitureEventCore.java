@@ -6,14 +6,12 @@ import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
 import Furniture.Events.OrderArrivalEvent;
 import Furniture.Generation.Generators;
-import Generators.*;
 import Furniture.Entity.WorkPlace;
 import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 import IDGenerator.IDGenerator;
 import Statistics.Average;
 import Statistics.Utilisation;
-import Statistics.WeightedStatistic;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

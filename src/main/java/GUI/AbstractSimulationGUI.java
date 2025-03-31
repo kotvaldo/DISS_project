@@ -1,7 +1,6 @@
 package GUI;
 
 import Observer.Subject;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 
