@@ -104,8 +104,6 @@ public class Utility {
 
         } else if (!current.equals(target)) {
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
-
-
         }
 
         worker.setCurrentWorkPlace(target);
@@ -126,15 +124,17 @@ public class Utility {
 
         if (current == null) {
             totalTime += core.getGenerators().getTimeMovingToStorageDist().sample();
-
         } else if (!current.equals(target)) {
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
         }
 
         worker.setCurrentWorkPlace(target);
-        return totalTime;
 
+        totalTime += core.getGenerators().getMontageDist().sample();
+
+        return totalTime;
     }
+
 
     public static String fromSecondsToTime(double seconds) {
         int secondsInWorkday = 8 * 3600;

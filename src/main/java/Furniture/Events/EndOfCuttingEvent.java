@@ -52,6 +52,7 @@ public class EndOfCuttingEvent extends Event {
                     this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                     targetWorkerColoring.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     targetWorkerColoring.setOrder(order);
+                    //order.addToTimeOfWork(newTime - time);
                     core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerColoring));
                 }
             } else {
@@ -78,6 +79,8 @@ public class EndOfCuttingEvent extends Event {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 targetWorkerForCuttingAgain.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 targetWorkerForCuttingAgain.setOrder(nextOrder);
+                nextOrder.addToTimeOfWork(newTime - time);
+
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForCuttingAgain));
             }
         }

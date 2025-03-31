@@ -30,7 +30,7 @@ public class EndOfMontageEvent extends Event {
         order.setState(OrderStateValues.ORDER_DONE.getValue());
         order.getWorkPlace().setOrder(null);
         order.setWorkPlace(null);
-        order.setEndTime(time);
+        //order.setEndTime(time);
         core.getAverageTimeOfWorking().add(order.getTimeOfWork());
 
 
@@ -44,8 +44,6 @@ public class EndOfMontageEvent extends Event {
             }
         }
 
-
-
         if (!core.getQueueMontage().isEmpty() && targetWorkerForMontage != null) {
             Order nextOrder = core.getQueueMontage().removeFirst();
             double newTime = this.time + Utility.calculateFourth(nextOrder, core, targetWorkerForMontage);
@@ -53,11 +51,10 @@ public class EndOfMontageEvent extends Event {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 targetWorkerForMontage.setOrder(nextOrder);
-                core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForMontage));
-
+                nextOrder.addToTimeOfWork(newTime - time);
+                core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForMontage));
             }
         }
-
 
     }
 }

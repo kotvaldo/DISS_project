@@ -29,24 +29,32 @@ public class EndOfColoringEvent extends Event {
 
         //planning assembly
 
-        Worker targetWorkerForAssembly = null;
+        Worker targetWorkerAssembly = null;
         for (Worker w : core.getWorkersB()) {
             if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
-                targetWorkerForAssembly = w;
+                targetWorkerAssembly = w;
                 break;
             }
         }
 
-        if (targetWorkerForAssembly == null || !core.getQueueAssembly().isEmpty()) {
-            order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
-            core.getQueueAssembly().addLast(order);
+
+        if (targetWorkerAssembly == null) {
+            core.getQueueAssembly().addLast(this.order);
+            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
         } else {
-            double newTime = this.time + Utility.calculateThird(order, core, targetWorkerForAssembly);
-            if (newTime < core.getEndTime()) {
-                order.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
-                targetWorkerForAssembly.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                targetWorkerForAssembly.setOrder(order);
-                core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, order, targetWorkerForAssembly));
+            if (core.getQueueAssembly().isEmpty()) {
+                double ttt = Utility.calculateThird(this.order, core, targetWorkerAssembly);
+                double newTime = this.time + ttt;
+                if (newTime < core.getEndTime()) {
+                    this.order.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
+                    targetWorkerAssembly.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
+                    targetWorkerAssembly.setOrder(order);
+                    order.addToTimeOfWork(newTime - time);
+                    core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerAssembly));
+                }
+            } else {
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
+                core.getQueueAssembly().addLast(this.order);
             }
         }
 
@@ -68,6 +76,8 @@ public class EndOfColoringEvent extends Event {
                 montageOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setOrder(montageOrder);
                 targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
+                //montageOrder.addToTimeOfWork(newTime - time);
+
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, montageOrder, targetWorkerForMontage));
             }
         }
@@ -88,6 +98,7 @@ public class EndOfColoringEvent extends Event {
                 targetWorkerForColoringAgain.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                 targetWorkerForColoringAgain.setOrder(nextColoringOrder);
+                //nextColoringOrder.addToTimeOfWork(newTime - time);
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, targetWorkerForColoringAgain));
             }
         }

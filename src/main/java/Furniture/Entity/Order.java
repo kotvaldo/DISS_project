@@ -17,6 +17,8 @@ public class Order {
         this.type = type;
         this.arrivalTime = arrivalTime;
         this.state = OrderStateValues.ORDER_NEW.getValue();
+        this.timeOfWork = 0.0;
+        this.endTime = 0.0;
     }
 
 
@@ -70,7 +72,9 @@ public class Order {
         return timeOfWork;
     }
 
-
+    public void addToTimeOfWork(double timeOfWork) {
+        this.timeOfWork += timeOfWork;
+    }
 
 
 }

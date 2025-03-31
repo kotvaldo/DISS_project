@@ -37,8 +37,6 @@ public class OrderArrivalEvent extends Event {
         if(core.getWorkplaces().isEmpty()) {
             workPlace = new WorkPlace();
             core.getWorkplaces().add(workPlace);
-            order.setWorkPlace(workPlace);
-            workPlace.setOrder(order);
         } else {
             for (WorkPlace wp : core.getWorkplaces()) {
                 if(!wp.isBusy()) {
@@ -46,16 +44,14 @@ public class OrderArrivalEvent extends Event {
                     break;
                 }
             }
+
             if(workPlace == null) {
                 workPlace = new WorkPlace();
                 core.getWorkplaces().add(workPlace);
-                order.setWorkPlace(workPlace);
-                workPlace.setOrder(order);
-            } else {
-                order.setWorkPlace(workPlace);
-                workPlace.setOrder(order);
             }
         }
+        order.setWorkPlace(workPlace);
+        workPlace.setOrder(order);
 
 
         Worker targetWorker = null;
@@ -78,7 +74,7 @@ public class OrderArrivalEvent extends Event {
                     targetWorker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                     targetWorker.setOrder(order);
-
+                  //  order.addToTimeOfWork(newTime - timeOfEvent);
                     core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
                 }
             } else {

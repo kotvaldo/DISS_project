@@ -47,15 +47,15 @@ class EmpiricDiscreteTest {
     @Test
     void testGenerateValueWithProbabilities() {
         ArrayList<EmpiricData<Integer>> list = new ArrayList<>();
-        list.add(new EmpiricData<>(1, 3, 0.2));
-        list.add(new EmpiricData<>(3, 5, 0.2));
-        list.add(new EmpiricData<>(5, 7, 0.6));
+        list.add(new EmpiricData<>(1, 2, 0.2));
+        list.add(new EmpiricData<>(2, 3, 0.2));
+        list.add(new EmpiricData<>(3, 4, 0.6));
 
         EmpiricDiscrete empiricDiscrete = new EmpiricDiscrete(list);
 
         for (int i = 0; i < 1000; i++) {
-            int value = empiricDiscrete.sampleWithProb(0.4);
-            assertTrue(value >= 3 && value < 5, "Generated value should be within the defined range");
+            int value = empiricDiscrete.sampleWithProb(0.119);
+            assertEquals(1, value, "Generated value should be within the defined range");
         }
 
 

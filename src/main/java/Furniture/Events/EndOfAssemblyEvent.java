@@ -46,6 +46,7 @@ public class EndOfAssemblyEvent extends Event {
                     order.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                     targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     targetWorkerForMontage.setOrder(order);
+                    //order.addToTimeOfWork(newTime - time);
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
                 }
             }
@@ -56,7 +57,7 @@ public class EndOfAssemblyEvent extends Event {
             order.setState(OrderStateValues.ORDER_DONE.getValue());
             order.getWorkPlace().setOrder(null);
             order.setWorkPlace(null);
-            order.setEndTime(time);
+            //order.setEndTime(time);
             core.getAverageTimeOfWorking().add(order.getTimeOfWork());
 
         }
@@ -77,6 +78,7 @@ public class EndOfAssemblyEvent extends Event {
                 nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerForAssemblyAgain.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 targetWorkerForAssemblyAgain.setOrder(nextOrder);
+                nextOrder.addToTimeOfWork(newTime - time);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, targetWorkerForAssemblyAgain));
 
             }
