@@ -5,6 +5,7 @@ import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import State.IState;
 import Statistics.Average;
+import Statistics.WeightedStatistic;
 
 import java.util.ArrayList;
 
@@ -23,11 +24,15 @@ public class FurnitureEventState implements IState {
     private int queueColoring;
     private int queueAssembly;
     private int queueMontage;
-
-
+    private int countOfFinishedOrders;
+    private int countOfAllOrders;
+    private WeightedStatistic utilisationA;
+    private WeightedStatistic utilisationB;
+    private WeightedStatistic utilisationC;
+    private WeightedStatistic utilisationAll;
 
     private int currentDay = 0;
-
+    private int burnRepCount = 0;
     public FurnitureEventState() {
 
 
@@ -153,5 +158,61 @@ public class FurnitureEventState implements IState {
 
     public void setNewOrderOnEnd(Average newOrderOnEnd) {
         this.newOrderOnEnd = newOrderOnEnd;
+    }
+
+    public int getCountOfFinishedOrders() {
+        return countOfFinishedOrders;
+    }
+
+    public void setCountOfFinishedOrders(int countOfFinishedOrders) {
+        this.countOfFinishedOrders = countOfFinishedOrders;
+    }
+
+    public int getCountOfAllOrders() {
+        return countOfAllOrders;
+    }
+
+    public void setCountOfAllOrders(int countOfAllOrders) {
+        this.countOfAllOrders = countOfAllOrders;
+    }
+
+    public int getBurnRepCount() {
+        return burnRepCount;
+    }
+
+    public void setBurnRepCount(int burnRepCount) {
+        this.burnRepCount = burnRepCount;
+    }
+
+    public WeightedStatistic getUtilisationA() {
+        return utilisationA;
+    }
+
+    public void setUtilisationA(WeightedStatistic utilisationA) {
+        this.utilisationA = utilisationA;
+    }
+
+    public WeightedStatistic getUtilisationB() {
+        return utilisationB;
+    }
+
+    public void setUtilisationB(WeightedStatistic utilisationB) {
+        this.utilisationB = utilisationB;
+    }
+
+    public WeightedStatistic getUtilisationC() {
+        return utilisationC;
+    }
+
+    public void setUtilisationC(WeightedStatistic utilisationC) {
+        this.utilisationC = utilisationC;
+    }
+
+    public WeightedStatistic getUtilisationAll() {
+        return utilisationAll;
+    }
+
+    public void setUtilisationAll(WeightedStatistic utilisationAll) {
+        this.utilisationAll = utilisationAll;
     }
 }

@@ -21,12 +21,15 @@ public class GraphObserver implements IObserver {
     public void update(IState state) {
         FurnitureEventState fState = (FurnitureEventState) state;
         if (!fState.isSlowDown()) {
-            SwingUtilities.invokeLater(() -> {
-                int rep = fState.getRepCount();
-                double mean = fState.getAverageTimeOfWorking().mean();
-                timeOfWorkingSeries.add(rep, mean);
-            });
-            setRangeAxis(timeOfWorkingSeries.getMinY(), timeOfWorkingSeries.getMaxY());
+            if(fState.getRepCount() > fState.getBurnRepCount()) {
+                SwingUtilities.invokeLater(() -> {
+                    int rep = fState.getRepCount();
+                    double mean = fState.getAverageTimeOfWorking().mean();
+                    timeOfWorkingSeries.add(rep, mean);
+                });
+                setRangeAxis(timeOfWorkingSeries.getMinY(), timeOfWorkingSeries.getMaxY());
+            }
+
         }
     }
 

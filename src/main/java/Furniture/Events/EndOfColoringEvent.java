@@ -24,8 +24,7 @@ public class EndOfColoringEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
-        worker.setOrder(null);
+        worker.setOrder(null, this.time);
 
         //planning assembly
 
@@ -47,8 +46,7 @@ public class EndOfColoringEvent extends Event {
                 double newTime = this.time + ttt;
                 if (newTime < core.getEndTime()) {
                     this.order.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
-                    targetWorkerAssembly.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                    targetWorkerAssembly.setOrder(order);
+                    targetWorkerAssembly.setOrder(order, this.time);
                     order.addToTimeOfWork(newTime - time);
                     core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerAssembly));
                 }
@@ -74,8 +72,7 @@ public class EndOfColoringEvent extends Event {
             double newTime = this.time + Utility.calculateFourth(montageOrder, core, targetWorkerForMontage);
             if (newTime < core.getEndTime()) {
                 montageOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
-                targetWorkerForMontage.setOrder(montageOrder);
-                targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
+                targetWorkerForMontage.setOrder(montageOrder, this.time);
                 //montageOrder.addToTimeOfWork(newTime - time);
 
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, montageOrder, targetWorkerForMontage));
@@ -95,9 +92,8 @@ public class EndOfColoringEvent extends Event {
             Order nextColoringOrder = core.getQueueColoring().removeFirst();
             double newTime = this.time + Utility.calculateSecondTime(nextColoringOrder, core, targetWorkerForColoringAgain);
             if (newTime < core.getEndTime()) {
-                targetWorkerForColoringAgain.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
-                targetWorkerForColoringAgain.setOrder(nextColoringOrder);
+                targetWorkerForColoringAgain.setOrder(nextColoringOrder, this.time);
                 //nextColoringOrder.addToTimeOfWork(newTime - time);
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, targetWorkerForColoringAgain));
             }

@@ -37,8 +37,10 @@ public abstract class EventSimulationCore extends SimulationCore {
 
             }
 
+            if(event.getTime() > endTime) {
+                break;
+            }
             this.simulationTime = event.getTime();
-
             event.Execute();
             if(isSlowMode) {
                 dataHandling();

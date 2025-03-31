@@ -1,11 +1,15 @@
 package Statistics;
 
 public class NonWeightedStatistic implements Statistic {
-    private int count = 0;
-    private double sum = 0.0;
-    private double sumSquares = 0.0;
+    private int count;
+    private double sum;
+    private double sumSquares;
 
-    public NonWeightedStatistic() {}
+    public NonWeightedStatistic() {
+        count = 0;
+        sum = 0.0;
+        sumSquares = 0.0;
+    }
 
     @Override
     public void add(double value) {

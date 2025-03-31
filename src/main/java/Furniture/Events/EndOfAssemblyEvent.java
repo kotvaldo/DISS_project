@@ -25,8 +25,7 @@ public class EndOfAssemblyEvent extends Event {
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
 
-        worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
-        worker.setOrder(null);
+       worker.setOrder(null, this.time);
 
         if (order.getType() == 3) {
             Worker targetWorkerForMontage = null;
@@ -44,14 +43,12 @@ public class EndOfAssemblyEvent extends Event {
                 double newTime = this.time + Utility.calculateFourth(order, core, targetWorkerForMontage);
                 if (newTime < core.getEndTime()) {
                     order.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
-                    targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                    targetWorkerForMontage.setOrder(order);
+                    targetWorkerForMontage.setOrder(order, this.time);
                     //order.addToTimeOfWork(newTime - time);
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
                 }
             }
         } else {
-
 
             //Order done if not 3
             order.setState(OrderStateValues.ORDER_DONE.getValue());
@@ -59,7 +56,7 @@ public class EndOfAssemblyEvent extends Event {
             order.setWorkPlace(null);
             order.setEndTime(time);
             core.getAverageTimeOfWorking().add(order.getTimeOfWork());
-
+            core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
         }
 
 
@@ -76,8 +73,7 @@ public class EndOfAssemblyEvent extends Event {
             double newTime = this.time + Utility.calculateThird(nextOrder, core, targetWorkerForAssemblyAgain);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
-                targetWorkerForAssemblyAgain.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                targetWorkerForAssemblyAgain.setOrder(nextOrder);
+                targetWorkerForAssemblyAgain.setOrder(nextOrder, this.time);
                 nextOrder.addToTimeOfWork(newTime - time);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, targetWorkerForAssemblyAgain));
 

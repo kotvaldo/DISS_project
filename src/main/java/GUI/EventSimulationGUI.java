@@ -20,7 +20,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JLabel label;
     private final FurnitureEventCore core;
     private EventSimulationWorker worker;
-    private final JSlider speedSlider; // ← teraz ako final atribút
+    private final JSlider speedSlider;
     private final DefaultTableModel ordersTableModel;
     private final DefaultTableModel workersTableModel;
     private final DefaultTableModel workPlaceTableModel;
@@ -28,20 +28,37 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private final JLabel replicationCountLabel;
     private final JCheckBox slowDownCheckBox;
     private final JLabel simulationSpeedLabel;
-    private final JSpinner workerASpinner;
-    private final JSpinner workerBSpinner;
-    private final JSpinner workerCSpinner;
-    private final JLabel countALabel;
-    private final JLabel countBLabel;
-    private final JLabel countCLabel;
+    private JSpinner workerASpinner;
+    private JSpinner workerBSpinner;
+    private JSpinner workerCSpinner;
+    private JLabel countALabel;
+    private JLabel countBLabel;
+    private JLabel countCLabel;
     private final JLabel newOrdersAfterSimulationLabel;
     private final JLabel timeOfWorkLabel;
+    private JLabel utilisationALabel;
+    private JLabel utilisationBLabel;
+    private JLabel utilisationCLabel;
+    private JLabel utilisationAllLabel;
+    private JLabel utilisationAIntervalLabel;
+    private JLabel utilisationBIntervalLabel;
+    private JLabel utilisationCIntervalLabel;
+    private JLabel utilisationAllIntervalLabel;
+
+
     private JFreeChart chart;
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
     XYSeries orderTimeSeries;
     private final JLabel newOrdersIntervalLabel;
     private final JLabel timeOfWorkIntervalLabel;
+    private JLabel countOfFinishedOrdersLabel;
+    private JLabel countOfAllOrdersLabel;
+    private JPanel statisticsForSimPanel;
+    JLabel queueLengthLabel1;
+    JLabel queueLengthLabel2;
+    JLabel queueLengthLabel3;
+    JLabel queueLengthLabel4;
 
 
     public EventSimulationGUI() {
@@ -52,34 +69,27 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.replicationCountLabel = new JLabel("Replication Count : 0");
         replicationCountLabel.setVisible(false);
         replicationsInput.setVisible(false);
-        workerASpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
-        workerBSpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
-        workerCSpinner = new JSpinner(new SpinnerNumberModel(18, 0, 1000, 1));
 
 
-        JPanel newOrdersPanel = new JPanel(new GridLayout(2,1));
+        JPanel newOrdersPanel = new JPanel(new GridLayout(2, 1));
         newOrdersAfterSimulationLabel = new JLabel("Average Non Started Orders : ");
         newOrdersIntervalLabel = new JLabel("CI: ");
         newOrdersPanel.add(newOrdersAfterSimulationLabel);
         newOrdersPanel.add(newOrdersIntervalLabel);
         newOrdersPanel.setVisible(false);
 
-        JPanel timeOfWorkPanel = new JPanel(new GridLayout(2,1));
+        JPanel timeOfWorkPanel = new JPanel(new GridLayout(2, 1));
         timeOfWorkLabel = new JLabel("Average time of Work : ");
         timeOfWorkIntervalLabel = new JLabel("CI: ");
         timeOfWorkPanel.add(timeOfWorkLabel);
         timeOfWorkPanel.add(timeOfWorkIntervalLabel);
         timeOfWorkPanel.setVisible(false);
 
-        countALabel = new JLabel("Count A: ");
-        countBLabel = new JLabel("Count B: ");
-        countCLabel = new JLabel("Count C: ");
+
         replicationLabel.setVisible(false);
         core = new FurnitureEventCore();
         dayCountLabel = new JLabel("Day : 0");
         core.setListener(subject);
-
-
 
 
         JButton pauseButton = new JButton("Pause Simulation");
@@ -87,21 +97,26 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         pauseButton.addActionListener(e -> core.setPaused(!core.isPaused()));
         core.setSlowMode(true);
 
+
+        //tables
+
         String[] orderColumns = {"ID", "Type", "State"};
         ordersTableModel = new DefaultTableModel(orderColumns, 0);
         JTable ordersTable = new JTable(ordersTableModel);
+        ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); // ✨
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
 
         String[] workerColumns = {"ID", "Group", "State", "Order_ID", "WorkPlace_ID"};
         workersTableModel = new DefaultTableModel(workerColumns, 0);
         JTable workersTable = new JTable(workersTableModel);
+        workersTable.setPreferredScrollableViewportSize(new Dimension(300, 200)); // ✨
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
         String[] workPlaceColumns = {"ID", "State", "Order_ID", "Activity"};
         workPlaceTableModel = new DefaultTableModel(workPlaceColumns, 0);
         JTable workPlaceTable = new JTable(workPlaceTableModel);
+        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); // ✨
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
-
 
 
         JPanel tablePanel = new JPanel();
@@ -114,7 +129,11 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workPlaceSroll);
 
+        tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220)); // ✨
+
         this.centerPanel.add(tablePanel);
+
+        //statistic for simulation run
 
 
         speedSlider = new JSlider(1, 9, 1);
@@ -155,7 +174,23 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             dayCountLabel.setVisible(slowDownCheckBox.isSelected());
             replicationsInput.setVisible(!slowDownCheckBox.isSelected());
             replicationLabel.setVisible(!slowDownCheckBox.isSelected());
-            if(chartPanel != null) {
+            burnInInput.setVisible(!slowDownCheckBox.isSelected());
+            burnLabel.setVisible(!slowDownCheckBox.isSelected());
+            queueLengthLabel1.setVisible(slowDownCheckBox.isSelected());
+            queueLengthLabel2.setVisible(slowDownCheckBox.isSelected());
+            queueLengthLabel3.setVisible(slowDownCheckBox.isSelected());
+            queueLengthLabel4.setVisible(slowDownCheckBox.isSelected());
+            utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationBLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationCLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationAllLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationAIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationBIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationCIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+            utilisationAllIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
+
+            //statisticsForSimPanel.setVisible(slowDownCheckBox.isSelected());
+            if (chartPanel != null) {
                 chartPanel.setVisible(!slowDownCheckBox.isSelected());
             }
             newOrdersPanel.setVisible(!slowDownCheckBox.isSelected());
@@ -176,13 +211,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         this.inputPanel.add(simulationSpeedLabel);
         this.inputPanel.add(speedSlider);
         this.inputPanel.add(replicationCountLabel);
-        this.inputPanel.add(countALabel);
-        this.inputPanel.add(workerASpinner);
-        this.inputPanel.add(countBLabel);
-        this.inputPanel.add(workerBSpinner);
-        this.inputPanel.add(countCLabel);
-        this.inputPanel.add(workerCSpinner);
-        this.centerPanel.add(tablePanel);
 
         //Observers
 
@@ -192,14 +220,24 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
         subject.attachObserver(tableObserver);
 
-        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel);
+        LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel, countOfFinishedOrdersLabel, countOfAllOrdersLabel);
         subject.attachObserver(observer);
 
         AverageTimeObserver averageTimeObserver = new AverageTimeObserver(timeOfWorkLabel, timeOfWorkIntervalLabel);
         subject.attachObserver(averageTimeObserver);
 
-        AverageNonStartedOrdersObserver averageNonStartedOrdersObserver = new AverageNonStartedOrdersObserver(newOrdersAfterSimulationLabel ,newOrdersIntervalLabel);
+        AverageNonStartedOrdersObserver averageNonStartedOrdersObserver = new AverageNonStartedOrdersObserver(newOrdersAfterSimulationLabel, newOrdersIntervalLabel);
         subject.attachObserver(averageNonStartedOrdersObserver);
+
+        QueueLengthObserver queueLengthObserver = new QueueLengthObserver(queueLengthLabel1, queueLengthLabel2, queueLengthLabel3, queueLengthLabel4);
+        subject.attachObserver(queueLengthObserver);
+
+        UtilizationObserver utilizationObserver = new UtilizationObserver(utilisationALabel, utilisationAIntervalLabel,
+                                                                        utilisationBLabel, utilisationBIntervalLabel,
+                                                                        utilisationCLabel, utilisationCIntervalLabel,
+                                                                        utilisationAllLabel, utilisationAllIntervalLabel);
+
+        subject.attachObserver(utilizationObserver);
     }
 
     @Override
@@ -216,7 +254,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         chart.getXYPlot().getRangeAxis().setAutoRange(true);
         chart.getXYPlot().getDomainAxis().setAutoRange(true);
         chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(600, 400));
+        chartPanel.setPreferredSize(new Dimension(1000, 600));
         centerPanel.add(chartPanel);
         chartPanel.setVisible(false);
     }
@@ -231,6 +269,134 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
     @Override
     protected void setupCustomPanel() {
+        customPanel = new JPanel();
+        customPanel.setLayout(new GridBagLayout());
+        customPanel.setBorder(BorderFactory.createTitledBorder("Statistics"));
+
+        queueLengthLabel1 = new JLabel("Cutting QL : ");
+        queueLengthLabel2 = new JLabel("Coloring QL : ");
+        queueLengthLabel3 = new JLabel("Assembly QL : ");
+        queueLengthLabel4 = new JLabel("Montage QL : ");
+
+        workerASpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
+        workerBSpinner = new JSpinner(new SpinnerNumberModel(2, 0, 1000, 1));
+        workerCSpinner = new JSpinner(new SpinnerNumberModel(18, 0, 1000, 1));
+
+        countALabel = new JLabel("Count A: ");
+        countBLabel = new JLabel("Count B: ");
+        countCLabel = new JLabel("Count C: ");
+
+        utilisationALabel = new JLabel("Utilisation A: ");
+        utilisationAIntervalLabel = new JLabel("CI: ");
+        utilisationAIntervalLabel.setVisible(false);
+        utilisationALabel.setVisible(false);
+
+        utilisationBLabel = new JLabel("Utilisation B: ");
+        utilisationBIntervalLabel = new JLabel("CI: ");
+
+        utilisationBIntervalLabel.setVisible(false);
+        utilisationBLabel.setVisible(false);
+
+
+        utilisationCLabel = new JLabel("Utilisation C: ");
+        utilisationCIntervalLabel = new JLabel("CI: ");
+
+        utilisationCIntervalLabel.setVisible(false);
+        utilisationCLabel.setVisible(false);
+
+        utilisationAllLabel = new JLabel("Utilisation All: ");
+        utilisationAllIntervalLabel = new JLabel("CI: ");
+        utilisationAllIntervalLabel.setVisible(false);
+        utilisationAllLabel.setVisible(false);
+
+        countOfFinishedOrdersLabel = new JLabel("Finished Orders : ");
+        countOfAllOrdersLabel = new JLabel("All Orders : ");
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // ---------- SPINNERS + LABELS ----------
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        customPanel.add(countALabel, gbc);
+        gbc.gridx = 1;
+        customPanel.add(workerASpinner, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        customPanel.add(countBLabel, gbc);
+        gbc.gridx = 1;
+        customPanel.add(workerBSpinner, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        customPanel.add(countCLabel, gbc);
+        gbc.gridx = 1;
+        customPanel.add(workerCSpinner, gbc);
+
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        customPanel.add(Box.createVerticalStrut(15), gbc);
+        gbc.gridwidth = 1;
+
+// ---------- STATS ----------
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        customPanel.add(queueLengthLabel1, gbc);
+
+        gbc.gridy = 5;
+        customPanel.add(queueLengthLabel2, gbc);
+
+        gbc.gridy = 6;
+        customPanel.add(queueLengthLabel3, gbc);
+
+        gbc.gridy = 7;
+        customPanel.add(queueLengthLabel4, gbc);
+
+        gbc.gridy = 8;
+        customPanel.add(countOfAllOrdersLabel, gbc);
+
+        gbc.gridy = 9;
+        customPanel.add(countOfFinishedOrdersLabel, gbc);
+
+// ---------- UTILISATIONS ----------
+
+        gbc.gridx = 0;
+        gbc.gridy = 10;
+        customPanel.add(utilisationALabel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 11;
+        customPanel.add(utilisationAIntervalLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 12;
+        customPanel.add(utilisationBLabel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 13;
+        customPanel.add(utilisationBIntervalLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 14;
+        customPanel.add(utilisationCLabel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 15;
+        customPanel.add(utilisationCIntervalLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 16;
+        customPanel.add(utilisationAllLabel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 17;
+        customPanel.add(utilisationAllIntervalLabel, gbc);
+        customPanel.add(utilisationAllIntervalLabel, gbc);
+        customPanel.setVisible(true);
     }
 
 
@@ -249,23 +415,27 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                     workersTableModel.fireTableDataChanged();
                 });
                 int replicationCount = 0;
-                if(slowDownCheckBox.isSelected()) {
+                if (slowDownCheckBox.isSelected()) {
                     replicationCount = 1;
 
                 } else {
                     replicationCount = Integer.parseInt(replicationsInput.getText());
 
                 }
+                int burnInCount = 0;
                 core.setReplicationCount(replicationCount);
-                if(slowDownCheckBox.isSelected()) {
+                if (slowDownCheckBox.isSelected()) {
                     SimulationSpeedLimitValues speed = SimulationSpeedLimitValues.fromSliderIndex(speedSlider.getValue());
                     core.setSlowDownSpeed(speed.getValue());
 
+                } else {
+                    burnInCount = Integer.parseInt(burnInInput.getText());
                 }
                 core.setCountWorkerA((Integer) workerASpinner.getValue());
                 core.setCountWorkerB((Integer) workerBSpinner.getValue());
                 core.setCountWorkerC((Integer) workerCSpinner.getValue());
                 slowDownCheckBox.setEnabled(false);
+                core.setBurnInCount(burnInCount);
 
                 worker = new EventSimulationWorker();
                 worker.execute();

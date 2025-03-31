@@ -86,12 +86,11 @@ public class TableObserver implements IObserver {
 
 
                 for (WorkPlace workPlace : snapShotWorkPlaces) {
-                    String id = String.valueOf("WorkPlace ID: " + workPlace.getId());
+                    String id = ("WorkPlace ID: " + workPlace.getId());
                     String busyState = (workPlace.isBusy() ? "Busy" : "Available");
                     String orderId;
                     if(workPlace.getOrder() != null){
                         orderId = "Order ID : " + workPlace.getOrder().getId();
-
                     } else {
                         orderId = "No Order";
                     }

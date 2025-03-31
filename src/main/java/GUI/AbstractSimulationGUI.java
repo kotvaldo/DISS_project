@@ -21,6 +21,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JPanel inputPanel;
     protected JPanel statsPanel;
     protected JLabel replicationLabel;
+    protected JLabel burnLabel;
     protected JPanel controlPanel;
     protected JPanel centerPanel;
 
@@ -36,8 +37,15 @@ public abstract class AbstractSimulationGUI extends JFrame {
         initializeButtons();
         this.inputPanel = new JPanel();
         replicationLabel = new JLabel("Replication: ");
+        burnLabel = new JLabel("Burn rep: ");
+        burnLabel.setVisible(false);
+        burnInInput.setVisible(false);
         inputPanel.add(replicationLabel);
         inputPanel.add(replicationsInput);
+        inputPanel.add(burnLabel);
+        inputPanel.add(burnInInput);
+
+        //inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
 
         this.subject = new Subject();
@@ -50,14 +58,12 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
 
 
-
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.NORTH);
         topPanel.add(statsPanel, BorderLayout.SOUTH);
 
-        this.customPanel = new JPanel();
-        this.customPanel.setVisible(false);
+
         setupCustomPanel();
 
         //getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
@@ -72,7 +78,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
     private void initializeInputFields() {
         replicationsInput = new JTextField("1000", 10);
-        burnInInput = new JTextField("1000", 10);
+        burnInInput = new JTextField("20", 10);
         updateFrequencyInput = new JTextField("1000", 10);
     }
 

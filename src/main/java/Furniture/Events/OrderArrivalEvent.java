@@ -71,9 +71,8 @@ public class OrderArrivalEvent extends Event {
                 double timeOfEvent = Utility.calculateFirstTime(order, core, targetWorker);
                 double newTime = time + timeOfEvent;
                 if(newTime < core.getEndTime()) {
-                    targetWorker.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                    targetWorker.setOrder(order);
+                    targetWorker.setOrder(order, this.time);
                   //  order.addToTimeOfWork(newTime - timeOfEvent);
                     core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
                 }

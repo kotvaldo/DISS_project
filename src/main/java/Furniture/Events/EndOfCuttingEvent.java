@@ -25,8 +25,7 @@ public class EndOfCuttingEvent extends Event {
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
 
-        worker.setOrder(null);
-        worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
+        worker.setOrder(null, this.time);
 
         //finding worker for coloring
 
@@ -50,8 +49,7 @@ public class EndOfCuttingEvent extends Event {
                 double newTime = this.time + ttt;
                 if (newTime < core.getEndTime()) {
                     this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
-                    targetWorkerColoring.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                    targetWorkerColoring.setOrder(order);
+                    targetWorkerColoring.setOrder(order, this.time);
                     //order.addToTimeOfWork(newTime - time);
                     core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerColoring));
                 }
@@ -77,8 +75,7 @@ public class EndOfCuttingEvent extends Event {
             double newTime = this.time + timeOfWork;
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                targetWorkerForCuttingAgain.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                targetWorkerForCuttingAgain.setOrder(nextOrder);
+                targetWorkerForCuttingAgain.setOrder(nextOrder, this.time);
                 nextOrder.addToTimeOfWork(newTime - time);
 
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForCuttingAgain));

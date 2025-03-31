@@ -12,6 +12,7 @@ import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 import IDGenerator.IDGenerator;
 import Statistics.Average;
+import Statistics.WeightedStatistic;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,6 +40,14 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Average newOrdersAfterSimulation;
     private final Generators generators;
 
+    private int countOfFinishedOrders;
+
+    private int burnInCount;
+    private final WeightedStatistic utilizationA = new WeightedStatistic();
+    private final WeightedStatistic utilizationB = new WeightedStatistic();
+    private final WeightedStatistic utilizationC = new WeightedStatistic();
+    private final WeightedStatistic utilizationTotal = new WeightedStatistic();
+
 
     public FurnitureEventCore() {
         super();
@@ -56,6 +65,8 @@ public class FurnitureEventCore extends EventSimulationCore {
         //statistiky
         averageTimeOfWorking = new Average();
         newOrdersAfterSimulation = new Average();
+
+        countOfFinishedOrders = 0;
     }
 
     @Override
@@ -68,6 +79,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         queueAssembly.clear();
         queueMontage.clear();
         queueColoring.clear();
+
        // initWorkers();
         this.ordersArrayList.clear();
         this.averageTimeOfWorking.clear();
@@ -75,14 +87,17 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.workplaces.clear();
         this.state = new FurnitureEventState();
         this.actualRepCount = 0;
-
+        utilizationA.clear();
+        utilizationB.clear();
+        utilizationC.clear();
+        utilizationTotal.clear();
     }
     @Override
     protected void beforeSimulation() {
 
         this.simulationTime = PresetSimulationValues.START_SIMULATION_TIME.getValue();
         this.endTime = PresetSimulationValues.END_OF_SIMULATION.getValue();
-
+        countOfFinishedOrders = 0;
         this.ordersArrayList.clear();
         this.queueCutting.clear();
         this.queueAssembly.clear();
@@ -125,12 +140,41 @@ public class FurnitureEventCore extends EventSimulationCore {
     protected void afterSimulation() {
         FurnitureEventState state = (FurnitureEventState) this.state;
         if(!state.isSlowDown()) {
+            double utilizationGroupA = 0;
+            double utilizationGroupB = 0;
+            double utilizationGroupC = 0;
+            double utilizationAll = 0;
+            int totalWorkers = workersA.size() + workersB.size() + workersC.size();
+
+            for (Worker w : workersA) {
+                utilizationGroupA += w.getTotalBusyTime() / this.endTime;
+                utilizationAll += w.getTotalBusyTime() / this.endTime;
+            }
+            for (Worker w : workersB) {
+                utilizationGroupB += w.getTotalBusyTime() / this.endTime;
+                utilizationAll += w.getTotalBusyTime() / this.endTime;
+            }
+            for (Worker w : workersC) {
+                utilizationGroupC += w.getTotalBusyTime() / this.endTime;
+                utilizationAll += w.getTotalBusyTime() / this.endTime;
+            }
+
+            utilizationA.add(utilizationGroupA / workersA.size());
+            utilizationB.add(utilizationGroupB / workersB.size());
+            utilizationC.add(utilizationGroupC / workersC.size());
+            utilizationTotal.add(utilizationAll / totalWorkers);
             newOrdersAfterSimulation.add(queueCutting.size());
+
+
             //  System.out.println(queueCutting.size());
             state.setRepCount(this.actualRepCount);
             state.setAverageTimeOfWorking(averageTimeOfWorking);
             state.setNewOrderOnEnd(newOrdersAfterSimulation);
-
+            state.setBurnRepCount(this.burnInCount);
+            state.setUtilisationA(utilizationA);
+            state.setUtilisationB(utilizationB);
+            state.setUtilisationC(utilizationC);
+            state.setUtilisationAll(utilizationTotal);
         }
         this.listener.setState(state);
         this.listener.notifyObservers();
@@ -151,12 +195,35 @@ public class FurnitureEventCore extends EventSimulationCore {
             if (newDay > state.getCurrentDay()) {
                 state.setCurrentDay(newDay);
             }
-
+            state.setCountOfAllOrders(ordersArrayList.size());
+            state.setCountOfFinishedOrders(countOfFinishedOrders);
             state.setWorkPlaces(new ArrayList<>(workplaces));
             state.setQueueAssembly(queueAssembly.size());
             state.setQueueColoring(queueColoring.size());
             state.setQueueCutting(queueCutting.size());
             state.setQueueMontage(queueMontage.size());
+            /*
+            if (simulationTime > 0) {
+                double utilizationGroupA = 0;
+                double utilizationGroupB = 0;
+                double utilizationGroupC = 0;
+                double utilizationAll = 0;
+                int totalWorkers = workersA.size() + workersB.size() + workersC.size();
+
+                for (Worker w : workersA) utilizationGroupA += w.getTotalBusyTime() / simulationTime;
+                for (Worker w : workersB) utilizationGroupB += w.getTotalBusyTime() / simulationTime;
+                for (Worker w : workersC) utilizationGroupC += w.getTotalBusyTime() / simulationTime;
+
+                utilizationAll = (utilizationGroupA + utilizationGroupB + utilizationGroupC) / totalWorkers;
+
+                System.out.println("=== Priebežná utilizácia ===");
+                System.out.printf("Group A: %.2f %%\n", utilizationGroupA / workersA.size() * 100);
+                System.out.printf("Group B: %.2f %%\n", utilizationGroupB / workersB.size() * 100);
+                System.out.printf("Group C: %.2f %%\n", utilizationGroupC / workersC.size() * 100);
+                System.out.printf("Total  : %.2f %%\n", utilizationAll * 100);
+                System.out.println("============================");
+            } */
+
 
         }
         //state.setAverageTimeOfWorking(averageTimeOfWorking);
@@ -179,11 +246,16 @@ public class FurnitureEventCore extends EventSimulationCore {
         for (int i = 0; i <  this.countWorkerB; i++) {
             workersB.add(new Worker("B"));
         }
-
     }
 
 
+    public void setCountOfFinishedOrders(int countOfFinishedOrders) {
+        this.countOfFinishedOrders = countOfFinishedOrders;
+    }
 
+    public int getCountOfFinishedOrders() {
+        return this.countOfFinishedOrders;
+    }
 
     public void setReplicationCount(int replicationCount) {
         this.repCount = replicationCount;
@@ -241,5 +313,13 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public Generators getGenerators() {
         return generators;
+    }
+
+    public int getBurnInCount() {
+        return burnInCount;
+    }
+
+    public void setBurnInCount(int burnInCount) {
+        this.burnInCount = burnInCount;
     }
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 class ExponentialTest {
     @Test
     void generateExponential() {
-        Exponential exp = new Exponential(10.0);
+        Exponential exp = new Exponential(1800.0);
         ArrayList<Double> values = new ArrayList<>();
         for (int i = 0; i < 10000; i++) {
             values.add(exp.sample());

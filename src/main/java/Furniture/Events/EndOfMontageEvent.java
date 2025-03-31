@@ -24,15 +24,14 @@ public class EndOfMontageEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        worker.setCurrentState(WorkerBussyState.NON_BUSY_WORKER.getValue());
-        worker.setOrder(null);
+        worker.setOrder(null, this.time);
         //Order finish
         order.setState(OrderStateValues.ORDER_DONE.getValue());
         order.getWorkPlace().setOrder(null);
         order.setWorkPlace(null);
         order.setEndTime(time);
         core.getAverageTimeOfWorking().add(order.getTimeOfWork());
-
+        core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
 
 
         //Again Montage Planning
@@ -49,8 +48,7 @@ public class EndOfMontageEvent extends Event {
             double newTime = this.time + Utility.calculateFourth(nextOrder, core, targetWorkerForMontage);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
-                targetWorkerForMontage.setCurrentState(WorkerBussyState.BUSY_WORKER.getValue());
-                targetWorkerForMontage.setOrder(nextOrder);
+                targetWorkerForMontage.setOrder(nextOrder, this.time);
                 nextOrder.addToTimeOfWork(newTime - time);
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForMontage));
             }

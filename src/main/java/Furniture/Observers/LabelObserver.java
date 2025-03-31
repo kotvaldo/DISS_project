@@ -11,10 +11,15 @@ public class LabelObserver implements IObserver {
     private final JLabel label;
     private final JLabel dayCountLabel;
     private final JLabel repCountLabel;
-    public LabelObserver(JLabel label, JLabel dayCountLabel, JLabel replicationCountLabel) {
+    private final JLabel countOfFinished;
+    private final JLabel countOfAll;
+
+    public LabelObserver(JLabel label, JLabel dayCountLabel, JLabel replicationCountLabel, JLabel countOfFinishedOrders, JLabel countOfAllOrders) {
         this.label = label;
         this.dayCountLabel = dayCountLabel;
         this.repCountLabel = replicationCountLabel;
+        this.countOfFinished = countOfFinishedOrders;
+        this.countOfAll = countOfAllOrders;
 
     }
 
@@ -28,6 +33,8 @@ public class LabelObserver implements IObserver {
                 this.label.setText("Simulation Time: " + Utility.fromSecondsToTime(currSimulation));
 
                 this.dayCountLabel.setText("Day Count : " + (furnitureEventState.getCurrentDay() + 1));
+                this.countOfFinished.setText("Finished Orders : " + furnitureEventState.getCountOfFinishedOrders());
+                this.countOfAll.setText("All Orders : " + furnitureEventState.getCountOfAllOrders());
 
             } else {
                 this.repCountLabel.setText("Rep Count : " + furnitureEventState.getRepCount());
