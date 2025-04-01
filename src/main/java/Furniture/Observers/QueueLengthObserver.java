@@ -28,6 +28,34 @@ public class QueueLengthObserver implements IObserver {
                this.queueLength4Label.setText("Montage QL : " + fState.getQueueMontage());
                this.queueLength2Label.setText("Coloring QL : " + fState.getQueueColoring());
             });
+        } else {
+            SwingUtilities.invokeLater(() -> {
+                fState.getCuttingQLStat().confidenceInterval();
+                fState.getAssemblyQLStat().confidenceInterval();
+                fState.getMontageQLStat().confidenceInterval();
+                fState.getColoringQLStat().confidenceInterval();
+
+                this.queueLengthLabel.setText(String.format("Cutting QL : %.5f  CI: [%.5f ; %.5f]",
+                        fState.getCuttingQLStat().mean(),
+                        fState.getCuttingQLStat().getLowerBound(),
+                        fState.getCuttingQLStat().getUpperBound()));
+
+                this.queueLength2Label.setText(String.format("Coloring QL : %.5f  CI: [%.5f ; %.5f]",
+                        fState.getColoringQLStat().mean(),
+                        fState.getColoringQLStat().getLowerBound(),
+                        fState.getColoringQLStat().getUpperBound()));
+
+                this.queueLength3Label.setText(String.format("Assembly QL : %.5f  CI: [%.5f ; %.5f]",
+                        fState.getAssemblyQLStat().mean(),
+                        fState.getAssemblyQLStat().getLowerBound(),
+                        fState.getAssemblyQLStat().getUpperBound()));
+
+                this.queueLength4Label.setText(String.format("Montage QL : %.5f  CI: [%.5f ; %.5f]",
+                        fState.getMontageQLStat().mean(),
+                        fState.getMontageQLStat().getLowerBound(),
+                        fState.getMontageQLStat().getUpperBound()));
+            });
+
         }
     }
 }

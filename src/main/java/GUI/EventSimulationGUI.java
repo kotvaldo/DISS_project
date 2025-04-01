@@ -52,7 +52,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JLabel utilisationAllIntervalLabel;
 
 
-
     private JFreeChart chart;
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
@@ -182,10 +181,6 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             replicationLabel.setVisible(!slowDownCheckBox.isSelected());
             burnInInput.setVisible(!slowDownCheckBox.isSelected());
             burnLabel.setVisible(!slowDownCheckBox.isSelected());
-            queueLengthLabel1.setVisible(slowDownCheckBox.isSelected());
-            queueLengthLabel2.setVisible(slowDownCheckBox.isSelected());
-            queueLengthLabel3.setVisible(slowDownCheckBox.isSelected());
-            queueLengthLabel4.setVisible(slowDownCheckBox.isSelected());
             utilisationALabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationBLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationCLabel.setVisible(!slowDownCheckBox.isSelected());

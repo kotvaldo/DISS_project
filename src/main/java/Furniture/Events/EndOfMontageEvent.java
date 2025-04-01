@@ -22,6 +22,8 @@ public class EndOfMontageEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
+        core.recordQueueLengths(this.time);
+
 
         // Uvoľní workerC
         worker.setOrder(null, this.time);

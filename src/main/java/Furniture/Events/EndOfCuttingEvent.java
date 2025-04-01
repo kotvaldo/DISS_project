@@ -24,6 +24,7 @@ public class EndOfCuttingEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
+        core.recordQueueLengths(this.time);
 
         worker.setOrder(null, this.time);
         core.getFreeWorkersA().addLast(worker);

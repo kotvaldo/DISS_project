@@ -25,6 +25,7 @@ public class OrderArrivalEvent extends Event {
 
         //orderType
 
+        core.recordQueueLengths(this.time);
 
 
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();

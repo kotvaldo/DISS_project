@@ -22,6 +22,7 @@ public class EndOfAssemblyEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
+        core.recordQueueLengths(this.time);
 
         // Uvoľníme workerB
         worker.setOrder(null, this.time);

@@ -11,6 +11,7 @@ import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 import IDGenerator.IDGenerator;
 import Statistics.Average;
+import Statistics.TimeWeightedStatistic;
 import Statistics.Utilisation;
 
 import java.util.ArrayList;
@@ -54,6 +55,16 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final LinkedList<Worker> freeWorkersB;
     private final LinkedList<Worker> freeWorkersC;
 
+    private final TimeWeightedStatistic cuttingQL = new TimeWeightedStatistic();
+    private final TimeWeightedStatistic coloringQL = new TimeWeightedStatistic();
+    private final TimeWeightedStatistic assemblyQL = new TimeWeightedStatistic();
+    private final TimeWeightedStatistic montageQL = new TimeWeightedStatistic();
+
+    private final Average cuttingQLStats = new Average();
+    private final Average coloringQLStats = new Average();
+    private final Average assemblyQLStats = new Average();
+    private final Average montageQLStats = new Average();
+
     public FurnitureEventCore() {
         super();
         state = new FurnitureEventState();
@@ -90,6 +101,11 @@ public class FurnitureEventCore extends EventSimulationCore {
         queueMontage.clear();
         queueColoring.clear();
 
+        cuttingQLStats.clear();
+        coloringQLStats.clear();
+        assemblyQLStats.clear();
+        montageQLStats.clear();
+
        // initWorkers();
         this.ordersArrayList.clear();
         this.averageTimeOfWorking.clear();
@@ -120,6 +136,11 @@ public class FurnitureEventCore extends EventSimulationCore {
         if(isSlowMode) {
             this.state = new FurnitureEventState();
         }
+        cuttingQL.reset(this.simulationTime);
+        coloringQL.reset(this.simulationTime);
+        assemblyQL.reset(this.simulationTime);
+        montageQL.reset(this.simulationTime);
+
 
         initWorkers();
 
@@ -170,6 +191,10 @@ public class FurnitureEventCore extends EventSimulationCore {
                 utilizationAll += w.getTotalBusyTime() / this.endTime;
             }
 
+            cuttingQLStats.add(cuttingQL.getMean());
+            coloringQLStats.add(coloringQL.getMean());
+            assemblyQLStats.add(assemblyQL.getMean());
+            montageQLStats.add(montageQL.getMean());
 
             utilizationA.add(utilizationGroupA / workersA.size());
             utilizationB.add(utilizationGroupB / workersB.size());
@@ -187,6 +212,10 @@ public class FurnitureEventCore extends EventSimulationCore {
             state.setUtilisationB(utilizationB);
             state.setUtilisationC(utilizationC);
             state.setUtilisationAll(utilizationTotal);
+            state.setAssemblyQLStat(assemblyQLStats);
+            state.setMontageQLStat(montageQLStats);
+            state.setColoringQLStat(coloringQLStats);
+            state.setCuttingQLStat(cuttingQLStats);
         }
         this.listener.setState(state);
         this.listener.notifyObservers();
@@ -274,6 +303,13 @@ public class FurnitureEventCore extends EventSimulationCore {
         System.out.println(workersB.size());
     }
 
+
+    public void recordQueueLengths(double currentTime) {
+        cuttingQL.recordChange(currentTime, queueCutting.size());
+        coloringQL.recordChange(currentTime, queueColoring.size());
+        assemblyQL.recordChange(currentTime, queueAssembly.size());
+        montageQL.recordChange(currentTime, queueMontage.size());
+    }
 
     public void setCountOfFinishedOrders(int countOfFinishedOrders) {
         this.countOfFinishedOrders = countOfFinishedOrders;

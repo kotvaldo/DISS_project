@@ -31,6 +31,11 @@ public class FurnitureEventState implements IState {
     private Utilisation utilisationC;
     private Utilisation utilisationAll;
 
+    private Average cuttingQLStat;
+    private Average coloringQLStat;
+    private Average assemblyQLStat;
+    private Average montageQLStat;
+
     private int currentDay = 0;
     private int burnRepCount = 0;
     public FurnitureEventState() {
@@ -214,5 +219,37 @@ public class FurnitureEventState implements IState {
 
     public void setUtilisationAll(Utilisation utilisationAll) {
         this.utilisationAll = utilisationAll;
+    }
+
+    public Average getCuttingQLStat() {
+        return cuttingQLStat;
+    }
+
+    public void setCuttingQLStat(Average cuttingQLStat) {
+        this.cuttingQLStat = cuttingQLStat;
+    }
+
+    public Average getColoringQLStat() {
+        return coloringQLStat;
+    }
+
+    public void setColoringQLStat(Average coloringQLStat) {
+        this.coloringQLStat = coloringQLStat;
+    }
+
+    public Average getAssemblyQLStat() {
+        return assemblyQLStat;
+    }
+
+    public void setAssemblyQLStat(Average assemblyQLStat) {
+        this.assemblyQLStat = assemblyQLStat;
+    }
+
+    public Average getMontageQLStat() {
+        return montageQLStat;
+    }
+
+    public void setMontageQLStat(Average montageQLStat) {
+        this.montageQLStat = montageQLStat;
     }
 }
