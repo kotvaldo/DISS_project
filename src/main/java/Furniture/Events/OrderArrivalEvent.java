@@ -56,32 +56,36 @@ public class OrderArrivalEvent extends Event {
 
         //planning cutting event
 
-        Worker targetWorker = null;
-        if(!core.getFreeWorkersA().isEmpty()) {
-            targetWorker = core.getFreeWorkersA().getFirst();
-        }
-
-
-
         LinkedList<Order> queueCutting = core.getQueueCutting();
-        if(targetWorker == null) {
+
+
+        if (!core.getFreeWorkersA().isEmpty()) {
+            Worker targetWorker = core.getFreeWorkersA().removeFirst();
+
+            Order orderToProcess;
+            if (!queueCutting.isEmpty()) {
+                orderToProcess = queueCutting.removeFirst();
+                queueCutting.addLast(order);
+                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
+            } else {
+                orderToProcess = order;
+            }
+
+            double timeOfEvent = Utility.calculateFirstTime(orderToProcess, core, targetWorker);
+            double newTime = time + timeOfEvent;
+            if (newTime < core.getEndTime()) {
+                orderToProcess.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
+                targetWorker.setOrder(orderToProcess, this.time);
+                core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorker));
+            }
+
+        } else {
             queueCutting.addLast(order);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
-        } else {
-            if(queueCutting.isEmpty()) {
-                double timeOfEvent = Utility.calculateFirstTime(order, core, targetWorker);
-                double newTime = time + timeOfEvent;
-                if(newTime < core.getEndTime()) {
-                    targetWorker = core.getFreeWorkersA().removeFirst();
-                    order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
-                    targetWorker.setOrder(order, this.time);
-                  //  order.addToTimeOfWork(newTime - timeOfEvent);
-                    core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
-                }
-            }
         }
 
-        // plan another arrival
+
+
         double newTime = this.time + core.getGenerators().getOrderArrivalDist().sample();
         if(newTime < core.getEndTime()) {
             core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));

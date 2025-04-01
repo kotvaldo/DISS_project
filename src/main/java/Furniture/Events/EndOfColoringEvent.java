@@ -23,28 +23,17 @@ public class EndOfColoringEvent extends Event {
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
 
-        // Uvoľni workerC
+
         worker.setOrder(null, this.time);
         core.getFreeWorkersC().addLast(worker);
 
-        // ----------------------------
-        // ASSEMBLY
-        // ----------------------------
 
-        Worker targetWorkerAssembly = null;
         if (!core.getFreeWorkersB().isEmpty()) {
-            targetWorkerAssembly = core.getFreeWorkersB().removeFirst();
-        }
-
-        if (targetWorkerAssembly == null) {
-            core.getQueueAssembly().addLast(this.order);
-            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
-        } else {
+            Worker targetWorkerAssembly = core.getFreeWorkersB().removeFirst();
             Order orderToProcess;
 
             if (!core.getQueueAssembly().isEmpty()) {
                 orderToProcess = core.getQueueAssembly().removeFirst();
-
                 core.getQueueAssembly().addLast(this.order);
                 this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
             } else {
@@ -58,7 +47,12 @@ public class EndOfColoringEvent extends Event {
                 targetWorkerAssembly.setOrder(orderToProcess, this.time);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorkerAssembly));
             }
+
+        } else {
+            core.getQueueAssembly().addLast(this.order);
+            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
         }
+
 
 
         // ----------------------------

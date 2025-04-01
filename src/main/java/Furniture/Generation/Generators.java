@@ -24,7 +24,7 @@ public class Generators {
     public Generators() {
 
 
-        Random rand = new Random(1);
+        Random rand = new Random();
 
         orderArrivalDist = new Exponential(1800.0, rand.nextInt());
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();

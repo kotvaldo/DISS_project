@@ -32,19 +32,13 @@ public class EndOfAssemblyEvent extends Event {
         // ---------------------------------------------------
 
         if (order.getType() == 3) {
-            Worker targetWorkerForMontage = null;
             if (!core.getFreeWorkersC().isEmpty()) {
-                targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
-            }
-
-            if (targetWorkerForMontage == null) {
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
-                core.getQueueMontage().addLast(order);
-            } else {
+                Worker targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
                 Order orderToProcess;
+
                 if (!core.getQueueMontage().isEmpty()) {
                     orderToProcess = core.getQueueMontage().removeFirst();
-                    core.getQueueMontage().addLast(order);
+                    core.getQueueMontage().addLast(this.order);
                     this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
                 } else {
                     orderToProcess = this.order;
@@ -56,12 +50,13 @@ public class EndOfAssemblyEvent extends Event {
                     targetWorkerForMontage.setOrder(orderToProcess, this.time);
                     core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, orderToProcess, targetWorkerForMontage));
                 }
+
+            } else {
+                // Ak nie je voľný worker
+                order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                core.getQueueMontage().addLast(order);
             }
-        }
-        // ---------------------------------------------------
-        // Typ != 3 -> objednávka hotová
-        // ---------------------------------------------------
-        else {
+        }  else {
             order.setState(OrderStateValues.ORDER_DONE.getValue());
             order.getWorkPlace().setOrder(null);
             order.setWorkPlace(null);
@@ -70,9 +65,6 @@ public class EndOfAssemblyEvent extends Event {
             core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
         }
 
-        // ---------------------------------------------------
-        // Pokus o pridelenie ďalšej assembly objednávky
-        // ---------------------------------------------------
 
         if (!core.getQueueAssembly().isEmpty() && !core.getFreeWorkersB().isEmpty()) {
             Worker targetWorkerForAssemblyAgain = core.getFreeWorkersB().removeFirst();

@@ -29,23 +29,15 @@ public class EndOfCuttingEvent extends Event {
         core.getFreeWorkersA().addLast(worker);
 
 
-        Worker targetWorkerColoring = null;
         if (!core.getFreeWorkersC().isEmpty()) {
-            targetWorkerColoring = core.getFreeWorkersC().removeFirst();
-        }
+            Worker targetWorkerColoring = core.getFreeWorkersC().removeFirst();
 
-        if (targetWorkerColoring == null) {
-            core.getQueueColoring().addLast(this.order);
-            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
-        } else {
             Order orderToProcess;
-
             if (!core.getQueueColoring().isEmpty()) {
                 orderToProcess = core.getQueueColoring().removeFirst();
                 core.getQueueColoring().addLast(this.order);
                 this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
             } else {
-
                 orderToProcess = this.order;
             }
 
@@ -56,22 +48,25 @@ public class EndOfCuttingEvent extends Event {
                 targetWorkerColoring.setOrder(orderToProcess, this.time);
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorkerColoring));
             }
+
+        } else {
+            core.getQueueColoring().addLast(this.order);
+            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
         }
+
+
 
 
         // planning cutting event again
 
-        Worker targetWorkerForCuttingAgain = null;
-        if (!core.getFreeWorkersA().isEmpty()) {
-            targetWorkerForCuttingAgain = core.getFreeWorkersA().getFirst();
-        }
 
-        if (targetWorkerForCuttingAgain != null && !core.getQueueCutting().isEmpty()) {
+
+        if (!core.getFreeWorkersA().isEmpty() && !core.getQueueCutting().isEmpty()) {
+            Worker targetWorkerForCuttingAgain = core.getFreeWorkersA().removeFirst();
             Order nextOrder = core.getQueueCutting().removeFirst();
             double timeOfWork = Utility.calculateFirstTime(nextOrder, core, targetWorkerForCuttingAgain);
             double newTime = this.time + timeOfWork;
             if (newTime < core.getEndTime()) {
-                targetWorkerForCuttingAgain = core.getFreeWorkersA().removeFirst();
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 targetWorkerForCuttingAgain.setOrder(nextOrder, this.time);
                 nextOrder.addToTimeOfWork(newTime - time);

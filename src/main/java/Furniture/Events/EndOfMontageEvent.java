@@ -35,9 +35,6 @@ public class EndOfMontageEvent extends Event {
         core.getAverageTimeOfWorking().add(order.getTimeOfWork());
         core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
 
-        // -----------------------------
-        // Pokus o plánovanie ďalšej montage
-        // -----------------------------
 
         if (!core.getQueueMontage().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
             Worker targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
