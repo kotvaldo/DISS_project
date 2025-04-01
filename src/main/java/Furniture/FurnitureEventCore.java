@@ -15,6 +15,7 @@ import Statistics.Utilisation;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class FurnitureEventCore extends EventSimulationCore {
 
@@ -27,6 +28,8 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     private final ArrayList<Worker> workersC;
     private final LinkedList<Order> queueColoring;
+
+    private final Random rand;
 
     private final ArrayList<Worker> workersB;
     private final LinkedList<Order> queueAssembly;
@@ -63,7 +66,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         freeWorkersB = new LinkedList<>();
         freeWorkersC = new LinkedList<>();
 
-
+        rand = new Random();
         queueColoring = new LinkedList<>();
         queueAssembly = new LinkedList<>();
         queueMontage = new LinkedList<>();
@@ -200,7 +203,7 @@ public class FurnitureEventCore extends EventSimulationCore {
             state.setWorkersA(new ArrayList<>(this.getWorkersA()));
             state.setWorkersB(new ArrayList<>(this.getWorkersB()));
             state.setWorkersC(new ArrayList<>(this.getWorkersC()));
-            int newDay = (int)(simulationTime / (8.0 * 3600.0));
+            int newDay = (int) Math.round(simulationTime / (8.0 * 3600.0));
             if (newDay > state.getCurrentDay()) {
                 state.setCurrentDay(newDay);
             }
@@ -356,5 +359,9 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public LinkedList<Worker> getFreeWorkersC() {
         return freeWorkersC;
+    }
+
+    public Random getRand() {
+        return rand;
     }
 }

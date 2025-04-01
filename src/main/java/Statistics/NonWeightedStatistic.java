@@ -69,5 +69,7 @@ public class NonWeightedStatistic implements Statistic {
         count = 0;
         sum = 0.0;
         sumSquares = 0.0;
+        lower = 0.0;
+        upper = 0.0;
     }
 }

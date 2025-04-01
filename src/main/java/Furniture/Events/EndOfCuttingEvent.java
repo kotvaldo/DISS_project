@@ -69,7 +69,7 @@ public class EndOfCuttingEvent extends Event {
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 targetWorkerForCuttingAgain.setOrder(nextOrder, this.time);
-                nextOrder.addToTimeOfWork(newTime - time);
+                //nextOrder.addToTimeOfWork(newTime - time);
 
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForCuttingAgain));
             }

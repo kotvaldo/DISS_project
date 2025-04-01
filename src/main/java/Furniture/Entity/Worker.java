@@ -26,7 +26,7 @@ public class Worker {
         return isBusy;
     }
 
-    public void setCurrentState(boolean busy, double currentTime) {
+    public void setIsBusy(boolean busy, double currentTime) {
         if (this.isBusy && !busy) {
             totalBusyTime += currentTime - lastStartBusyTime;
         }
@@ -53,10 +53,10 @@ public class Worker {
 
     public void setOrder(Order orderId, double currentTime) {
         if (orderId == null) {
-            setCurrentState(false, currentTime);
+            setIsBusy(false, currentTime);
         } else {
             this.order = orderId;
-            setCurrentState(true, currentTime);
+            setIsBusy(true, currentTime);
         }
     }
 

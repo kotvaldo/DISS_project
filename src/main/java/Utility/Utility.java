@@ -36,20 +36,22 @@ public class Utility {
 
         if (current == null) {
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
+            totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
 
         } else if (!current.equals(target)) {
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
+            totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
 
         } else {
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
+            totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
         }
 
         worker.setCurrentWorkPlace(target);
 
-        totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
 
         if(order.getType() == 1) {
             totalTime += core.getGenerators().getCuttingTableDist().sample();

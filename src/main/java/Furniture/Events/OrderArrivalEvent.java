@@ -26,12 +26,11 @@ public class OrderArrivalEvent extends Event {
         //orderType
 
 
-        //initializing new order
+
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
         order.setState(OrderStateValues.ORDER_NEW.getValue());
         core.ordersArrayList.add(order);
-
 
         WorkPlace workPlace = null;
 
