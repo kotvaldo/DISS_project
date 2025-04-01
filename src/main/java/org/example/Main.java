@@ -2,7 +2,7 @@ package org.example;
 
 
 import GUI.EventSimulationGUI;
-import GUI.MonteCarloGUI;
+//import GUI.MonteCarloGUI;
 
 import javax.swing.*;
 
@@ -13,7 +13,6 @@ public class Main {
             gui.setVisible(true);
             System.out.println("GUI executed");
         });
-
     }
 }
 

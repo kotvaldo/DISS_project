@@ -1,7 +1,6 @@
 package SimulationCore;
 
 import Observer.ISubject;
-import Observer.Subject;
 import State.IState;
 
 public abstract class SimulationCore {
@@ -15,7 +14,7 @@ public abstract class SimulationCore {
 
     public void runSimulation() {
         isCancelled = false;
-        beforeRunSimulation();
+        beforeAllReplications();
         for(int i = 0; i < repCount; i++) {
             if(isCancelled) {
                 break;
@@ -27,7 +26,7 @@ public abstract class SimulationCore {
         afterRunSimulation();
     }
     protected abstract void experiment();
-    protected abstract void beforeRunSimulation();
+    protected abstract void beforeAllReplications();
     protected abstract void afterRunSimulation();
     protected abstract void beforeSimulation();
     protected abstract void afterSimulation();

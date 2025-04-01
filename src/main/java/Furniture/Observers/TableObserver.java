@@ -1,6 +1,6 @@
 package Furniture.Observers;
 
-import Furniture.FurnitureEventCore;
+import Furniture.Entity.WorkPlace;
 import Furniture.FurnitureEventState;
 import Observer.IObserver;
 import State.IState;
@@ -10,69 +10,100 @@ import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.WorkerBussyState;
-import Furniture.FurnitureEventState;
-import Observer.IObserver;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 public class TableObserver implements IObserver {
     private final JTable ordersTable;
     private final JTable workersTable;
+    private final JTable workPlaceTable;
     private final DefaultTableModel ordersModel;
     private final DefaultTableModel workersModel;
+    private final DefaultTableModel workPlaceModel;
 
-    public TableObserver(JTable ordersTable, JTable workersTable) {
+    public TableObserver(JTable ordersTable, JTable workersTable, JTable workPlaceTable) {
         this.ordersTable = ordersTable;
         this.workersTable = workersTable;
         this.ordersModel = (DefaultTableModel) ordersTable.getModel();
         this.workersModel = (DefaultTableModel) workersTable.getModel();
+        this.workPlaceTable = workPlaceTable;
+        this.workPlaceModel = (DefaultTableModel) workPlaceTable.getModel();
+
     }
 
     @Override
     public void update(IState state) {
         FurnitureEventState furnitureState = (FurnitureEventState) state;
 
-        SwingUtilities.invokeLater(() -> {
-            ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
+        if(furnitureState.isSlowDown()) {
+            SwingUtilities.invokeLater(() -> {
+                ArrayList<Order> ordersSnapshot = new ArrayList<>(furnitureState.getAllOrders());
 
-            // Vymazanie všetkých riadkov z orders tabuľky
-            while (ordersModel.getRowCount() > 0) {
-                ordersModel.removeRow(0);
-            }
+                ordersModel.setRowCount(0);
 
-            for (Order order : ordersSnapshot) {
-                String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
-                   ordersModel.addRow(new Object[]{
-                            order.getId(),
-                            order.getType(),
-                            stateOfOrder
+                workersModel.setRowCount(0);
+
+                workPlaceModel.setRowCount(0);
+
+
+                for (Order order : ordersSnapshot) {
+                    String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
+                    double processTime = order.getTimeOfWork() < 0 ? -1 : order.getTimeOfWork();
+                    ordersModel.addRow(new Object[]{
+                            "Order ID : " + order.getId(),
+                            "Type : " +order.getType(),
+                            stateOfOrder,
+                            processTime
                     });
-            }
+                }
 
-            // Vymazanie všetkých riadkov z workers tabuľky
-            while (workersModel.getRowCount() > 0) {
-                workersModel.removeRow(0);
-            }
 
-            ArrayList<Worker> snapshot = new ArrayList<>();
-            snapshot.addAll(furnitureState.getWorkersA());
-            snapshot.addAll(furnitureState.getWorkersB());
-            snapshot.addAll(furnitureState.getWorkersC());
 
-            for (Worker worker : snapshot) {
-                String group = worker.getType();
-                String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
-                String orderID = worker.getOrderId() != -1 ? "Order : " + worker.getOrderId() : "No Order";
-                workersModel.addRow(new Object[]{
-                        worker.getId(),
-                        group,
-                        stateOfWorker,
-                        orderID
-                });
-            }
-        });
+                ArrayList<Worker> snapshot = new ArrayList<>();
+                snapshot.addAll(furnitureState.getWorkersA());
+                snapshot.addAll(furnitureState.getWorkersB());
+                snapshot.addAll(furnitureState.getWorkersC());
+
+                for (Worker worker : snapshot) {
+                    String group = worker.getType();
+                    String stateOfWorker = WorkerBussyState.getNameByValue(worker.getCurrentState());
+                    String orderID = worker.getOrder() != null ? "" + worker.getOrder().getId() : "No Order";
+                    String workPlaceID;
+                    if(worker.getCurrentWorkPlace() != null) {
+                        workPlaceID = "" + worker.getCurrentWorkPlace().getId();
+                    } else {
+                        workPlaceID = "Storage";
+                    }
+                    workersModel.addRow(new Object[]{
+                            "Worker ID: " + worker.getId(),
+                            group,
+                            stateOfWorker,
+                            orderID,
+                            workPlaceID
+                    });
+                }
+
+                ArrayList<WorkPlace> snapShotWorkPlaces = new ArrayList<>(furnitureState.getWorkPlaces());
+
+
+                for (WorkPlace workPlace : snapShotWorkPlaces) {
+                    String id = ("WorkPlace ID: " + workPlace.getId());
+                    String busyState = (workPlace.isBusy() ? "Busy" : "Available");
+                    String orderId;
+                    if(workPlace.getOrder() != null){
+                        orderId = "Order ID : " + workPlace.getOrder().getId();
+                    } else {
+                        orderId = "No Order";
+                    }
+
+                    workPlaceModel.addRow(new Object[]{
+                            id, busyState, orderId
+                    });
+                }
+            });
+        }
+
     }
 
 }

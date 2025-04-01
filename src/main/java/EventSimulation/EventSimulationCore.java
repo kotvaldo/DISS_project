@@ -15,6 +15,7 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected double slowDownSpeed;
     protected boolean isGeneratedFirstSystemEvent;
 
+    protected int frequencyOfUpdate = 21;
 
     protected boolean paused;
 
@@ -22,60 +23,58 @@ public abstract class EventSimulationCore extends SimulationCore {
     protected EventSimulationCore() {
         events = new PriorityQueue<>();
         state = null;
-        //System.out.println("Simulácia inicializovaná.");
     }
 
     @Override
     protected void experiment() {
-        //System.out.println("Spúšťam experiment...");
-        while (!events.isEmpty() && !this.isCancelled && simulationTime <= endTime) {
-            //System.out.println(events.size() + " events arrived");
+        while (!events.isEmpty() && !this.isCancelled && simulationTime < endTime) {
             Event event = events.poll();
-
+           // System.out.println(events.size());
             if (event.getTime() < simulationTime) {
+                System.out.println("Simulation time: " + event.getTime());
+                System.out.println("Vlákno: " + Thread.currentThread().getName());
                 throw new RuntimeException("Toto by sa nemalo stať!");
+
             }
 
+            if(event.getTime() > endTime) {
+                break;
+            }
             this.simulationTime = event.getTime();
-            /*System.out.println("Spracovaný event: " + event.getClass().getSimpleName() +
-                    " | Čas: " + simulationTime);*/
-
             event.Execute();
-
-            //dataHandling();
-            //System.out.println(slowDownSpeed);
+            if(isSlowMode) {
+                dataHandling();
+            }
             if (!isSlowMode && isGeneratedFirstSystemEvent) {
-                //System.out.println("Prechádzam z pomalého režimu do rýchleho.");
                 isGeneratedFirstSystemEvent = false;
             } else if (isSlowMode && !isGeneratedFirstSystemEvent) {
-                //System.out.println("Generujem systémový event pre pomalý režim.");
                 isGeneratedFirstSystemEvent = true;
-                double timeNew = 1 + this.simulationTime;
-                Event systemEvent = new SystemEvent(timeNew, PriorityValues.SYSTEM_EVENT.getValue(), this);
-                this.events.add(systemEvent);
+                double newTime = slowDownSpeed / frequencyOfUpdate;
+                newTime += this.simulationTime;
+                if(newTime < endTime) {
+                    events.add(new SystemEvent(newTime, PriorityValues.SYSTEM_EVENT.getValue(), this));
+                }
             }
 
             if (paused) {
-                //System.out.println("Simulácia pozastavená.");
                 dataHandling();
 
                 while (paused) {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
-                       //System.out.println("Simulácia bola prerušená počas pauzy.");
                     }
                 }
-               // System.out.println("Simulácia obnovená.");
+
             }
         }
-       // System.out.println("Experiment skončil.");
         isGeneratedFirstSystemEvent = false;
+        this.actualRepCount++;
     }
 
 
     @Override
-    protected abstract void beforeRunSimulation();
+    protected abstract void beforeAllReplications();
 
     @Override
     protected abstract void afterRunSimulation();

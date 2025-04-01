@@ -12,7 +12,7 @@ public class SystemEvent extends Event {
     public void Execute() {
         EventSimulationCore simCore = (EventSimulationCore) simulationCore;
         if (simCore.slowDownSpeed != 0.0) {
-            long sleepTime = (long) (1000 / simCore.slowDownSpeed);
+            long sleepTime = 1000 / simCore.frequencyOfUpdate;
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException _) {
@@ -21,8 +21,10 @@ public class SystemEvent extends Event {
         }
 
         if (simCore.isSlowMode) {
-            double newTime = 1 + simCore.simulationTime;
-            if(this.time <= simCore.endTime) {
+
+            double newTime = simCore.slowDownSpeed / simCore.frequencyOfUpdate;
+            newTime += this.time;
+            if(this.time < simCore.endTime) {
                 simCore.events.add(new SystemEvent(newTime, this.priority, simulationCore));
             }
 

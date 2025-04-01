@@ -1,7 +1,6 @@
 package GUI;
 
 import Observer.Subject;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 
@@ -20,32 +19,41 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JPanel customPanel;
     protected JPanel inputPanel;
     protected JPanel statsPanel;
+    protected JLabel replicationLabel;
+    protected JLabel burnLabel;
     protected JPanel controlPanel;
     protected JPanel centerPanel;
 
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
-        setSize(1200, 700);
+        setSize(1500, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.centerPanel = new JPanel();
         initializeChart();
         initializeInputFields();
         initializeButtons();
-
         this.inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Replications:"));
+        replicationLabel = new JLabel("Replication: ");
+        burnLabel = new JLabel("Burn rep: ");
+        burnLabel.setVisible(false);
+        burnInInput.setVisible(false);
+        inputPanel.add(replicationLabel);
         inputPanel.add(replicationsInput);
+        inputPanel.add(burnLabel);
+        inputPanel.add(burnInInput);
+
+        //inputPanel.add(updateFrequencyInput);
         this.setupCustomInput();
 
         this.subject = new Subject();
-        this.centerPanel = new JPanel();
         controlPanel = new JPanel();
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
 
         statsPanel = new JPanel();
-        statsPanel.setLayout(new GridLayout(1, 1));
+        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
 
 
@@ -54,8 +62,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
         topPanel.add(inputPanel, BorderLayout.NORTH);
         topPanel.add(statsPanel, BorderLayout.SOUTH);
 
-        this.customPanel = new JPanel();
-        this.customPanel.setVisible(false);
+
         setupCustomPanel();
 
         //getContentPane().add(new ChartPanel(chart), BorderLayout.CENTER);
@@ -69,8 +76,8 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected abstract void initializeChart();
 
     private void initializeInputFields() {
-        replicationsInput = new JTextField("1", 10);
-        burnInInput = new JTextField("1000", 10);
+        replicationsInput = new JTextField("1000", 10);
+        burnInInput = new JTextField("20", 10);
         updateFrequencyInput = new JTextField("1000", 10);
     }
 
@@ -82,13 +89,10 @@ public abstract class AbstractSimulationGUI extends JFrame {
         stopButton.addActionListener(_ -> stopSimulation());
     }
 
-    protected abstract void setupCustomChart();
     protected abstract void setupCustomInput();
     protected abstract void setupCustomPanel();
     protected abstract void startSimulation();
     protected abstract void stopSimulation();
-    protected abstract void updateStatisticsFromDataset();
-    protected abstract void clearStatistics();
 
 
 

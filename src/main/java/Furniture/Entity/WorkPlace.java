@@ -1,127 +1,60 @@
 package Furniture.Entity;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import IDGenerator.IDGenerator;
 
 public class WorkPlace {
-    private final LinkedList<Order> queueOne;
-    private final ArrayList<Worker> workersA;
-    private int stateOne;
-    private int activityOne;
-
-    private final ArrayList<Worker> workersC;
-    private final LinkedList<Order> queueTwo;
-    private int stateTwo;
-    private int activityTwo;
-
-    private final ArrayList<Worker> workersB;
-    private final LinkedList<Order> queueThree;
-    private int stateThree;
-    private int activityThree;
-
-    private final LinkedList<Order> queueFour;
+    private final int id;
+    private Order order;
+    private boolean isBusy;
+    private Worker worker;
 
     public WorkPlace() {
-        queueOne = new LinkedList<>();
-        workersA = new ArrayList<>();
-        workersC = new ArrayList<>();
-        queueThree = new LinkedList<>();
-        workersB = new ArrayList<>();
-        queueTwo = new LinkedList<>();
-        queueFour = new LinkedList<>();
+        this.id = IDGenerator.getInstance().getNextWorkplaceId();
+        isBusy = false;
+        order = null;
+        worker = null;
     }
 
-    public void initWorkers(int countA, int countB, int countC) {
-        workersA.clear();
-        workersC.clear();
-        workersB.clear();
-        for (int i = 0; i < countA; i++) {
-            workersA.add(new Worker("A"));
+
+    public Order getOrder() {
+        return order;
+
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+        this.isBusy = order != null;
+    }
+
+    public boolean isBusy() {
+        return isBusy;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        WorkPlace workplace = (WorkPlace) obj;
+        return id == workplace.id;
+    }
+
+    public void setBusy(boolean busy) {
+        if(!busy) {
+            this.order = null;
+
         }
-        for (int i = 0; i < countC; i++) {
-            workersC.add(new Worker("C"));
-        }
-        for (int i = 0; i < countB; i++) {
-            workersB.add(new Worker("B"));
-        }
-
+        isBusy = busy;
     }
 
-    public void clearOrderQueues() {
-        queueOne.clear();
-        queueTwo.clear();
-        queueThree.clear();
+    public int getId() {
+        return id;
     }
 
-    public LinkedList<Order> getQueueOne() {
-        return queueOne;
+    public Worker getWorker() {
+        return worker;
     }
 
-    public LinkedList<Order> getQueuesTwo() {
-        return this.queueTwo;
-    }
-    public LinkedList<Order> getQueuesThree() {
-        return queueThree;
-    }
-    public ArrayList<Worker> getWorkersA() {
-        return this.workersA;
-    }
-    public ArrayList<Worker> getWorkersC() {
-        return this.workersC;
-    }
-    public ArrayList<Worker> getWorkersB() {
-        return workersB;
-    }
-
-    public int getStateOne() {
-        return stateOne;
-    }
-
-    public void setStateOne(int stateOne) {
-        this.stateOne = stateOne;
-    }
-
-    public int getActivityOne() {
-        return activityOne;
-    }
-
-    public void setActivityOne(int activityOne) {
-        this.activityOne = activityOne;
-    }
-
-    public int getStateTwo() {
-        return stateTwo;
-    }
-
-    public void setStateTwo(int stateTwo) {
-        this.stateTwo = stateTwo;
-    }
-
-    public int getActivityTwo() {
-        return activityTwo;
-    }
-
-    public void setActivityTwo(int activityTwo) {
-        this.activityTwo = activityTwo;
-    }
-
-    public int getStateThree() {
-        return stateThree;
-    }
-
-    public void setStateThree(int stateThree) {
-        this.stateThree = stateThree;
-    }
-
-    public int getActivityThree() {
-        return activityThree;
-    }
-
-    public void setActivityThree(int activityThree) {
-        this.activityThree = activityThree;
-    }
-
-    public LinkedList<Order> getQueueFour() {
-        return queueFour;
+    public void setWorker(Worker worker) {
+        this.worker = worker;
     }
 }

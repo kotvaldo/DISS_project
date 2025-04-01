@@ -1,36 +1,41 @@
 package Furniture.Entity;
 
-import Furniture.Enums.WorkerPlaceValues;
 import IDGenerator.IDGenerator;
-import Furniture.Enums.WorkerBussyState;
 
 public class Worker {
     private final int id;
     private boolean currentState;
     private final String type;
-    private int orderId;
-    private String currentWorkPlace;
+    private Order order;
+    private WorkPlace currentWorkPlace;
+
+    private double totalBusyTime;
+    private double lastStartBusyTime;
 
     public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
         currentState = false;
-        orderId = -1;
-        switch (type) {
-            case "A" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_A.getValue();
-            case "B" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_B.getValue();
-            case "C" -> currentWorkPlace = WorkerPlaceValues.WORKPLACE_C.getValue();
-        }
+        order = null;
+        currentWorkPlace = null;
+        totalBusyTime = 0.0;
+        lastStartBusyTime = 0.0;
     }
 
     public boolean getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(boolean bussy) {
-        this.currentState = bussy;
-        if(!bussy) {
-            orderId = -1;
+    public void setCurrentState(boolean busy, double currentTime) {
+        if (this.currentState && !busy) {
+            totalBusyTime += currentTime - lastStartBusyTime;
+        }
+        if (!this.currentState && busy) {
+            lastStartBusyTime = currentTime;
+        }
+        this.currentState = busy;
+        if (!busy) {
+            order = null;
         }
     }
 
@@ -42,26 +47,48 @@ public class Worker {
         return type;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(int orderId) {
-        if(orderId < 0) {
-            setCurrentState(false);
+    public void setOrder(Order orderId, double currentTime) {
+        if (orderId == null) {
+            setCurrentState(false, currentTime);
         } else {
-            this.orderId = orderId;
-            this.setCurrentState(true);
+            this.order = orderId;
+            setCurrentState(true, currentTime);
         }
-
     }
 
-    public String getCurrentWorkPlace() {
+    public WorkPlace getCurrentWorkPlace() {
         return currentWorkPlace;
     }
 
-    public void setCurrentWorkPlace(String currentWorkPlace) {
+    public void setCurrentWorkPlace(WorkPlace currentWorkPlace) {
         this.currentWorkPlace = currentWorkPlace;
     }
-}
 
+    public double getTotalBusyTime() {
+        return totalBusyTime;
+    }
+
+    public void setTotalBusyTime(double totalBusyTime) {
+        this.totalBusyTime = totalBusyTime;
+    }
+
+    public double getLastStartBusyTime() {
+        return lastStartBusyTime;
+    }
+
+    public void setLastStartBusyTime(double lastStartBusyTime) {
+        this.lastStartBusyTime = lastStartBusyTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Worker worker = (Worker) obj;
+        return id == worker.id;
+    }
+}

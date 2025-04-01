@@ -1,8 +1,11 @@
 package Furniture;
 
 import Furniture.Entity.Order;
+import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import State.IState;
+import Statistics.Average;
+import Statistics.Utilisation;
 
 import java.util.ArrayList;
 
@@ -12,6 +15,24 @@ public class FurnitureEventState implements IState {
     private ArrayList<Worker> workersA;
     private ArrayList<Worker> workersC;
     private ArrayList<Worker> workersB;
+    private ArrayList<WorkPlace> workPlaces;
+    private boolean slowDown;
+    private int repCount;
+    private Average workingTimeAvG;
+    private Average newOrderOnEnd;
+    private int queueCutting;
+    private int queueColoring;
+    private int queueAssembly;
+    private int queueMontage;
+    private int countOfFinishedOrders;
+    private int countOfAllOrders;
+    private Utilisation utilisationA;
+    private Utilisation utilisationB;
+    private Utilisation utilisationC;
+    private Utilisation utilisationAll;
+
+    private int currentDay = 0;
+    private int burnRepCount = 0;
     public FurnitureEventState() {
 
 
@@ -56,5 +77,142 @@ public class FurnitureEventState implements IState {
 
     public void setWorkersB(ArrayList<Worker> workersB) {
         this.workersB = workersB;
+    }
+
+    public int getCurrentDay() {
+        return currentDay;
+    }
+
+    public void setCurrentDay(int currentDay) {
+        this.currentDay = currentDay;
+    }
+
+    public ArrayList<WorkPlace> getWorkPlaces() {
+        return workPlaces;
+    }
+
+    public void setWorkPlaces(ArrayList<WorkPlace> workPlaces) {
+        this.workPlaces = workPlaces;
+    }
+
+    public boolean isSlowDown() {
+        return slowDown;
+    }
+
+    public void setSlowDown(boolean slowDown) {
+        this.slowDown = slowDown;
+    }
+
+    public int getRepCount() {
+        return repCount;
+    }
+
+    public void setRepCount(int repCount) {
+        this.repCount = repCount;
+    }
+
+
+    public int getQueueCutting() {
+        return queueCutting;
+    }
+
+    public void setQueueCutting(int queueCutting) {
+        this.queueCutting = queueCutting;
+    }
+
+    public int getQueueColoring() {
+        return queueColoring;
+    }
+
+    public void setQueueColoring(int queueColoring) {
+        this.queueColoring = queueColoring;
+    }
+
+    public int getQueueAssembly() {
+        return queueAssembly;
+    }
+
+    public void setQueueAssembly(int queueAssembly) {
+        this.queueAssembly = queueAssembly;
+    }
+
+    public int getQueueMontage() {
+        return queueMontage;
+    }
+
+    public void setQueueMontage(int queueMontage) {
+        this.queueMontage = queueMontage;
+    }
+
+    public Average getAverageTimeOfWorking() {
+        return workingTimeAvG;
+    }
+
+    public void setAverageTimeOfWorking(Average average) {
+        this.workingTimeAvG = average;
+    }
+
+    public Average getNewOrderOnEnd() {
+        return newOrderOnEnd;
+    }
+
+    public void setNewOrderOnEnd(Average newOrderOnEnd) {
+        this.newOrderOnEnd = newOrderOnEnd;
+    }
+
+    public int getCountOfFinishedOrders() {
+        return countOfFinishedOrders;
+    }
+
+    public void setCountOfFinishedOrders(int countOfFinishedOrders) {
+        this.countOfFinishedOrders = countOfFinishedOrders;
+    }
+
+    public int getCountOfAllOrders() {
+        return countOfAllOrders;
+    }
+
+    public void setCountOfAllOrders(int countOfAllOrders) {
+        this.countOfAllOrders = countOfAllOrders;
+    }
+
+    public int getBurnRepCount() {
+        return burnRepCount;
+    }
+
+    public void setBurnRepCount(int burnRepCount) {
+        this.burnRepCount = burnRepCount;
+    }
+
+    public Utilisation getUtilisationA() {
+        return utilisationA;
+    }
+
+    public void setUtilisationA(Utilisation utilisationA) {
+        this.utilisationA = utilisationA;
+    }
+
+    public Utilisation getUtilisationB() {
+        return utilisationB;
+    }
+
+    public void setUtilisationB(Utilisation utilisationB) {
+        this.utilisationB = utilisationB;
+    }
+
+    public Utilisation getUtilisationC() {
+        return utilisationC;
+    }
+
+    public void setUtilisationC(Utilisation utilisationC) {
+        this.utilisationC = utilisationC;
+    }
+
+    public Utilisation getUtilisationAll() {
+        return utilisationAll;
+    }
+
+    public void setUtilisationAll(Utilisation utilisationAll) {
+        this.utilisationAll = utilisationAll;
     }
 }

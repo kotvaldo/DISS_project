@@ -1,9 +1,7 @@
 package Furniture.Enums;
 
 public enum PresetSimulationValues {
-    END_OF_SIMULATION(1000000.0),
-    START_TIME_WORKING(60.0*60*6),
-    END_TIME_WORKING(60.0*60*14),
+    END_OF_SIMULATION(60*60*8.0*249),
     START_SIMULATION_TIME(0.0);
     private final Double value;
 
