@@ -65,7 +65,10 @@ public class OrderArrivalEvent extends Event {
             Order orderToProcess;
             if (!queueCutting.isEmpty()) {
                 orderToProcess = queueCutting.removeFirst();
-                queueCutting.addLast(order);
+                if (!queueCutting.contains(order)) {
+                    queueCutting.addLast(order);
+                    order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
+                }
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
             } else {
                 orderToProcess = order;

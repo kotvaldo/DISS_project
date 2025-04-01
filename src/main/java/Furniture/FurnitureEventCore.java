@@ -243,31 +243,9 @@ public class FurnitureEventCore extends EventSimulationCore {
             state.setQueueColoring(queueColoring.size());
             state.setQueueCutting(queueCutting.size());
             state.setQueueMontage(queueMontage.size());
-            /*
-            if (simulationTime > 0) {
-                double utilizationGroupA = 0;
-                double utilizationGroupB = 0;
-                double utilizationGroupC = 0;
-                double utilizationAll = 0;
-                int totalWorkers = workersA.size() + workersB.size() + workersC.size();
-
-                for (Worker w : workersA) utilizationGroupA += w.getTotalBusyTime() / simulationTime;
-                for (Worker w : workersB) utilizationGroupB += w.getTotalBusyTime() / simulationTime;
-                for (Worker w : workersC) utilizationGroupC += w.getTotalBusyTime() / simulationTime;
-
-                utilizationAll = (utilizationGroupA + utilizationGroupB + utilizationGroupC) / totalWorkers;
-
-                System.out.println("=== Priebežná utilizácia ===");
-                System.out.printf("Group A: %.2f %%\n", utilizationGroupA / workersA.size() * 100);
-                System.out.printf("Group B: %.2f %%\n", utilizationGroupB / workersB.size() * 100);
-                System.out.printf("Group C: %.2f %%\n", utilizationGroupC / workersC.size() * 100);
-                System.out.printf("Total  : %.2f %%\n", utilizationAll * 100);
-                System.out.println("============================");
-            } */
 
 
         }
-        //state.setAverageTimeOfWorking(averageTimeOfWorking);
 
         this.listener.setState(state);
         this.listener.notifyObservers();

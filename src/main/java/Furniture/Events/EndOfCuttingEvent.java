@@ -30,14 +30,19 @@ public class EndOfCuttingEvent extends Event {
         core.getFreeWorkersA().addLast(worker);
 
 
+
+
         if (!core.getFreeWorkersC().isEmpty()) {
             Worker targetWorkerColoring = core.getFreeWorkersC().removeFirst();
 
             Order orderToProcess;
             if (!core.getQueueColoring().isEmpty()) {
                 orderToProcess = core.getQueueColoring().removeFirst();
-                core.getQueueColoring().addLast(this.order);
-                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+                if (!core.getQueueColoring().contains(order)) {
+                    core.getQueueColoring().addLast(order);
+                    order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+                }
+
             } else {
                 orderToProcess = this.order;
             }

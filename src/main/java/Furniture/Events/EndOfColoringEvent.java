@@ -35,8 +35,11 @@ public class EndOfColoringEvent extends Event {
 
             if (!core.getQueueAssembly().isEmpty()) {
                 orderToProcess = core.getQueueAssembly().removeFirst();
-                core.getQueueAssembly().addLast(this.order);
-                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
+                if (!core.getQueueAssembly().contains(order)) {
+                    core.getQueueAssembly().addLast(order);
+                    order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
+                }
+
             } else {
                 orderToProcess = this.order;
             }
@@ -69,6 +72,7 @@ public class EndOfColoringEvent extends Event {
                 targetWorkerForMontage.setOrder(montageOrder, this.time);
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, montageOrder, targetWorkerForMontage));
             }
+
         }
 
         // ----------------------------

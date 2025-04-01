@@ -39,8 +39,10 @@ public class EndOfAssemblyEvent extends Event {
 
                 if (!core.getQueueMontage().isEmpty()) {
                     orderToProcess = core.getQueueMontage().removeFirst();
-                    core.getQueueMontage().addLast(this.order);
-                    this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                    if (!core.getQueueMontage().contains(order)) {
+                        core.getQueueMontage().addLast(order);
+                        order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                    }
                 } else {
                     orderToProcess = this.order;
                 }
