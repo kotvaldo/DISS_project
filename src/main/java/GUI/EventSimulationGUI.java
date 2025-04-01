@@ -104,7 +104,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
         //tables
 
-        String[] orderColumns = {"ID", "Type", "State"};
+        String[] orderColumns = {"ID", "Type", "State", "Process Time"};
         ordersTableModel = new DefaultTableModel(orderColumns, 0);
         JTable ordersTable = new JTable(ordersTableModel);
         ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 

@@ -49,10 +49,12 @@ public class TableObserver implements IObserver {
 
                 for (Order order : ordersSnapshot) {
                     String stateOfOrder = OrderStateValues.getNameByValue(order.getState());
+                    double processTime = order.getTimeOfWork() < 0 ? -1 : order.getTimeOfWork();
                     ordersModel.addRow(new Object[]{
                             "Order ID : " + order.getId(),
                             "Type : " +order.getType(),
-                            stateOfOrder
+                            stateOfOrder,
+                            processTime
                     });
                 }
 

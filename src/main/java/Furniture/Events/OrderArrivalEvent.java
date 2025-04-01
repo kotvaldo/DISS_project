@@ -25,7 +25,7 @@ public class OrderArrivalEvent extends Event {
         LinkedList<Order> queueCutting = core.getQueueCutting();
 
         //orderType
-
+        //initializing new order
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
         if(core.isSlowMode()) {
@@ -53,6 +53,7 @@ public class OrderArrivalEvent extends Event {
         order.setWorkPlace(workPlace);
         workPlace.setOrder(order);
 
+        //planning cutting event
 
         Worker targetWorker = null;
         for(Worker w : core.getWorkersA()) {
