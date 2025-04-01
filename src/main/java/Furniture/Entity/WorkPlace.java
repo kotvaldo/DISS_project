@@ -27,7 +27,7 @@ public class WorkPlace {
     }
 
     public boolean isBusy() {
-        return isBusy;
+        return this.isBusy;
     }
 
     @Override
@@ -41,7 +41,6 @@ public class WorkPlace {
     public void setBusy(boolean busy) {
         if(!busy) {
             this.order = null;
-
         }
         isBusy = busy;
     }
