@@ -40,9 +40,9 @@ public class WorkersTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Worker worker = workers.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> "Worker ID: " + worker.getId();
+            case 0 -> worker.getId();
             case 1 -> worker.getType();
-            case 2 -> WorkerBussyState.getNameByValue(worker.getCurrentState());
+            case 2 -> WorkerBussyState.getNameByValue(worker.getBusy());
             case 3 -> worker.getOrder() != null ? "" + worker.getOrder().getId() : "No Order";
             case 4 -> worker.getCurrentWorkPlace() != null ? "" + worker.getCurrentWorkPlace().getId() : "Storage";
             default -> null;

@@ -52,6 +52,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JLabel utilisationAllIntervalLabel;
 
 
+
     private JFreeChart chart;
     private ChartPanel chartPanel;
     XYSeriesCollection dataset;
@@ -193,7 +194,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             utilisationBIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationCIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationAllIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
-
+            countOfAllOrdersLabel.setVisible(slowDownCheckBox.isSelected());
+            countOfFinishedOrdersLabel.setVisible(slowDownCheckBox.isSelected());
             //statisticsForSimPanel.setVisible(slowDownCheckBox.isSelected());
             if (chartPanel != null) {
                 chartPanel.setVisible(!slowDownCheckBox.isSelected());

@@ -32,8 +32,8 @@ public abstract class EventSimulationCore extends SimulationCore {
            // System.out.println(events.size());
             if (event.getTime() < simulationTime) {
                 System.out.println("Simulation time: " + event.getTime());
-                System.out.println("Vlákno: " + Thread.currentThread().getName());
-                throw new RuntimeException("Toto by sa nemalo stať!");
+                System.out.println("Thread: " + Thread.currentThread().getName());
+                throw new RuntimeException("This cannot happen!");
 
             }
 

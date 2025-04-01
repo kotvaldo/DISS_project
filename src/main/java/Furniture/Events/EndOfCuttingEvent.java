@@ -26,47 +26,44 @@ public class EndOfCuttingEvent extends Event {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
 
         worker.setOrder(null, this.time);
+        core.getFreeWorkersA().addLast(worker);
 
-        //finding worker for coloring
 
         Worker targetWorkerColoring = null;
-        for (Worker w : core.getWorkersC()) {
-            if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
-                targetWorkerColoring = w;
-                break;
-            }
+        if (!core.getFreeWorkersC().isEmpty()) {
+            targetWorkerColoring = core.getFreeWorkersC().removeFirst();
         }
-
-        //planning coloring Event
-
 
         if (targetWorkerColoring == null) {
             core.getQueueColoring().addLast(this.order);
             this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
         } else {
-            if (core.getQueueColoring().isEmpty()) {
-                double ttt = Utility.calculateSecondTime(this.order, core, targetWorkerColoring);
-                double newTime = this.time + ttt;
-                if (newTime < core.getEndTime()) {
-                    this.order.setState(OrderStateValues.PROCESSING_COLORING.getValue());
-                    targetWorkerColoring.setOrder(order, this.time);
-                    //order.addToTimeOfWork(newTime - time);
-                    core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, this.order, targetWorkerColoring));
-                }
-            } else {
-                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+            Order orderToProcess;
+
+            if (!core.getQueueColoring().isEmpty()) {
+                orderToProcess = core.getQueueColoring().removeFirst();
                 core.getQueueColoring().addLast(this.order);
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
+            } else {
+
+                orderToProcess = this.order;
+            }
+
+            double ttt = Utility.calculateSecondTime(orderToProcess, core, targetWorkerColoring);
+            double newTime = this.time + ttt;
+            if (newTime < core.getEndTime()) {
+                orderToProcess.setState(OrderStateValues.PROCESSING_COLORING.getValue());
+                targetWorkerColoring.setOrder(orderToProcess, this.time);
+                core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorkerColoring));
             }
         }
+
 
         // planning cutting event again
 
         Worker targetWorkerForCuttingAgain = null;
-        for (Worker w : core.getWorkersA()) {
-            if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
-                targetWorkerForCuttingAgain = w;
-                break;
-            }
+        if (!core.getFreeWorkersA().isEmpty()) {
+            targetWorkerForCuttingAgain = core.getFreeWorkersA().getFirst();
         }
 
         if (targetWorkerForCuttingAgain != null && !core.getQueueCutting().isEmpty()) {
@@ -74,6 +71,7 @@ public class EndOfCuttingEvent extends Event {
             double timeOfWork = Utility.calculateFirstTime(nextOrder, core, targetWorkerForCuttingAgain);
             double newTime = this.time + timeOfWork;
             if (newTime < core.getEndTime()) {
+                targetWorkerForCuttingAgain = core.getFreeWorkersA().removeFirst();
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 targetWorkerForCuttingAgain.setOrder(nextOrder, this.time);
                 nextOrder.addToTimeOfWork(newTime - time);

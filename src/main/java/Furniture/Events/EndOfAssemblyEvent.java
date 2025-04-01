@@ -5,7 +5,6 @@ import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
-import Furniture.Enums.WorkerBussyState;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
 import Utility.Utility;
@@ -18,39 +17,51 @@ public class EndOfAssemblyEvent extends Event {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
-
     }
 
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
 
-       worker.setOrder(null, this.time);
+        // Uvoľníme workerB
+        worker.setOrder(null, this.time);
+        core.getFreeWorkersB().addLast(worker);
+
+        // ---------------------------------------------------
+        // Typ 3 -> potrebuje montage
+        // ---------------------------------------------------
 
         if (order.getType() == 3) {
             Worker targetWorkerForMontage = null;
-            for (Worker w : core.getWorkersC()) {
-                if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
-                    targetWorkerForMontage = w;
-                    break;
-                }
+            if (!core.getFreeWorkersC().isEmpty()) {
+                targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
             }
 
-            if (targetWorkerForMontage == null || !core.getQueueMontage().isEmpty()) {
+            if (targetWorkerForMontage == null) {
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
                 core.getQueueMontage().addLast(order);
             } else {
-                double newTime = this.time + Utility.calculateFourth(order, core, targetWorkerForMontage);
+                Order orderToProcess;
+                if (!core.getQueueMontage().isEmpty()) {
+                    orderToProcess = core.getQueueMontage().removeFirst();
+                    core.getQueueMontage().addLast(order);
+                    this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                } else {
+                    orderToProcess = this.order;
+                }
+
+                double newTime = this.time + Utility.calculateFourth(orderToProcess, core, targetWorkerForMontage);
                 if (newTime < core.getEndTime()) {
-                    order.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
-                    targetWorkerForMontage.setOrder(order, this.time);
-                    //order.addToTimeOfWork(newTime - time);
-                    core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
+                    orderToProcess.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
+                    targetWorkerForMontage.setOrder(orderToProcess, this.time);
+                    core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, orderToProcess, targetWorkerForMontage));
                 }
             }
-        } else {
-
-            //Order done if not 3
+        }
+        // ---------------------------------------------------
+        // Typ != 3 -> objednávka hotová
+        // ---------------------------------------------------
+        else {
             order.setState(OrderStateValues.ORDER_DONE.getValue());
             order.getWorkPlace().setOrder(null);
             order.setWorkPlace(null);
@@ -59,26 +70,19 @@ public class EndOfAssemblyEvent extends Event {
             core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
         }
 
+        // ---------------------------------------------------
+        // Pokus o pridelenie ďalšej assembly objednávky
+        // ---------------------------------------------------
 
-        Worker targetWorkerForAssemblyAgain = null;
-        for (Worker w : core.getWorkersB()) {
-            if (w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
-                targetWorkerForAssemblyAgain = w;
-                break;
-            }
-        }
-
-        if (!core.getQueueAssembly().isEmpty() && targetWorkerForAssemblyAgain != null) {
+        if (!core.getQueueAssembly().isEmpty() && !core.getFreeWorkersB().isEmpty()) {
+            Worker targetWorkerForAssemblyAgain = core.getFreeWorkersB().removeFirst();
             Order nextOrder = core.getQueueAssembly().removeFirst();
             double newTime = this.time + Utility.calculateThird(nextOrder, core, targetWorkerForAssemblyAgain);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerForAssemblyAgain.setOrder(nextOrder, this.time);
-                nextOrder.addToTimeOfWork(newTime - time);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, targetWorkerForAssemblyAgain));
-
             }
         }
-
     }
 }

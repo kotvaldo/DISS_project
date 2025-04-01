@@ -22,13 +22,14 @@ public class OrderArrivalEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        LinkedList<Order> queueCutting = core.getQueueCutting();
 
         //orderType
+
+
         //initializing new order
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
-
+        order.setState(OrderStateValues.ORDER_NEW.getValue());
         core.ordersArrayList.add(order);
 
 
@@ -56,14 +57,13 @@ public class OrderArrivalEvent extends Event {
         //planning cutting event
 
         Worker targetWorker = null;
-        for(Worker w : core.getWorkersA()) {
-            if(w.getCurrentState() == WorkerBussyState.NON_BUSY_WORKER.getValue()) {
-                targetWorker = w;
-                break;
-            }
+        if(!core.getFreeWorkersA().isEmpty()) {
+            targetWorker = core.getFreeWorkersA().getFirst();
         }
 
-        order.setState(OrderStateValues.ORDER_NEW.getValue());
+
+
+        LinkedList<Order> queueCutting = core.getQueueCutting();
         if(targetWorker == null) {
             queueCutting.addLast(order);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
@@ -72,14 +72,12 @@ public class OrderArrivalEvent extends Event {
                 double timeOfEvent = Utility.calculateFirstTime(order, core, targetWorker);
                 double newTime = time + timeOfEvent;
                 if(newTime < core.getEndTime()) {
+                    targetWorker = core.getFreeWorkersA().removeFirst();
                     order.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                     targetWorker.setOrder(order, this.time);
                   //  order.addToTimeOfWork(newTime - timeOfEvent);
                     core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, order, targetWorker));
                 }
-            } else {
-                queueCutting.addLast(order);
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
             }
         }
 
@@ -87,7 +85,6 @@ public class OrderArrivalEvent extends Event {
         double newTime = this.time + core.getGenerators().getOrderArrivalDist().sample();
         if(newTime < core.getEndTime()) {
             core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
-
         }
 
 

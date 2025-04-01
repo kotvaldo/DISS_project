@@ -12,7 +12,7 @@ class ExponentialTest {
     void generateExponential() {
         Exponential exp = new Exponential(1800.0);
         ArrayList<Double> values = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             values.add(exp.sample());
         }
 

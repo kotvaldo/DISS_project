@@ -47,15 +47,23 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Utilisation utilizationC = new Utilisation();
     private final Utilisation utilizationTotal = new Utilisation();
 
+    private final LinkedList<Worker> freeWorkersA;
+    private final LinkedList<Worker> freeWorkersB;
+    private final LinkedList<Worker> freeWorkersC;
 
     public FurnitureEventCore() {
         super();
         state = new FurnitureEventState();
         workplaces = new ArrayList<>();
-
         workersA = new ArrayList<>();
         workersB = new ArrayList<>();
         workersC = new ArrayList<>();
+
+        freeWorkersA = new LinkedList<>();
+        freeWorkersB = new LinkedList<>();
+        freeWorkersC = new LinkedList<>();
+
+
         queueColoring = new LinkedList<>();
         queueAssembly = new LinkedList<>();
         queueMontage = new LinkedList<>();
@@ -101,6 +109,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.queueCutting.clear();
         this.queueAssembly.clear();
         this.queueMontage.clear();
+
         this.queueColoring.clear();
         this.workplaces.clear();
         this.events.clear();
@@ -113,7 +122,7 @@ public class FurnitureEventCore extends EventSimulationCore {
 
         FurnitureEventState currentState = (FurnitureEventState) state;
         currentState.setSlowDown(this.isSlowMode);
-        double newTime = generators.getOrderArrivalDist().sample();
+        double newTime = generators.getOrderArrivalDist().sample() + this.simulationTime;
         if(newTime < endTime) {
             events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
         }
@@ -157,6 +166,7 @@ public class FurnitureEventCore extends EventSimulationCore {
                 utilizationGroupC += w.getTotalBusyTime() / this.endTime;
                 utilizationAll += w.getTotalBusyTime() / this.endTime;
             }
+
 
             utilizationA.add(utilizationGroupA / workersA.size());
             utilizationB.add(utilizationGroupB / workersB.size());
@@ -236,15 +246,29 @@ public class FurnitureEventCore extends EventSimulationCore {
         workersA.clear();
         workersC.clear();
         workersB.clear();
+
+        freeWorkersA.clear();
+        freeWorkersB.clear();
+        freeWorkersC.clear();
+
         for (int i = 0; i < this.countWorkerA; i++) {
             workersA.add(new Worker("A"));
+            freeWorkersA.add(workersA.get(i));
         }
+        System.out.println(workersA.size());
         for (int i = 0; i < this.countWorkerC; i++) {
             workersC.add(new Worker("C"));
+            freeWorkersC.add(workersC.get(i));
         }
+
+        System.out.println(workersC.size());
+        System.out.println(countWorkerB);
         for (int i = 0; i <  this.countWorkerB; i++) {
             workersB.add(new Worker("B"));
+            freeWorkersB.add(workersB.get(i));
         }
+
+        System.out.println(workersB.size());
     }
 
 
@@ -320,5 +344,17 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public void setBurnInCount(int burnInCount) {
         this.burnInCount = burnInCount;
+    }
+
+    public LinkedList<Worker> getFreeWorkersA() {
+        return freeWorkersA;
+    }
+
+    public LinkedList<Worker> getFreeWorkersB() {
+        return freeWorkersB;
+    }
+
+    public LinkedList<Worker> getFreeWorkersC() {
+        return freeWorkersC;
     }
 }

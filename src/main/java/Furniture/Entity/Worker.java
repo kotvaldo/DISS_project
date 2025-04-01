@@ -4,7 +4,7 @@ import IDGenerator.IDGenerator;
 
 public class Worker {
     private final int id;
-    private boolean currentState;
+    private boolean isBusy;
     private final String type;
     private Order order;
     private WorkPlace currentWorkPlace;
@@ -15,25 +15,25 @@ public class Worker {
     public Worker(String type) {
         this.id = IDGenerator.getInstance().getNextPersonId();
         this.type = type;
-        currentState = false;
+        isBusy = false;
         order = null;
         currentWorkPlace = null;
         totalBusyTime = 0.0;
         lastStartBusyTime = 0.0;
     }
 
-    public boolean getCurrentState() {
-        return currentState;
+    public boolean getBusy() {
+        return isBusy;
     }
 
     public void setCurrentState(boolean busy, double currentTime) {
-        if (this.currentState && !busy) {
+        if (this.isBusy && !busy) {
             totalBusyTime += currentTime - lastStartBusyTime;
         }
-        if (!this.currentState && busy) {
+        if (!this.isBusy && busy) {
             lastStartBusyTime = currentTime;
         }
-        this.currentState = busy;
+        this.isBusy = busy;
         if (!busy) {
             order = null;
         }
