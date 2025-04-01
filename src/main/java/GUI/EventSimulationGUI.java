@@ -3,6 +3,9 @@ package GUI;
 import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
 import Furniture.Observers.*;
+import GUI.Models.OrdersTableModel;
+import GUI.Models.WorkPlacesTableModel;
+import GUI.Models.WorkersTableModel;
 import Observer.Subject;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -15,6 +18,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -23,9 +27,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private final FurnitureEventCore core;
     private EventSimulationWorker worker;
     private final JSlider speedSlider;
-    private final DefaultTableModel ordersTableModel;
-    private final DefaultTableModel workersTableModel;
-    private final DefaultTableModel workPlaceTableModel;
+    private final OrdersTableModel ordersTableModel;
+    private final WorkersTableModel workersTableModel;
+    private final WorkPlacesTableModel workPlacesTableModel;
     private final JLabel dayCountLabel;
     private final JLabel replicationCountLabel;
     private final JCheckBox slowDownCheckBox;
@@ -103,22 +107,19 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
 
 
         //tables
+        ordersTableModel = new OrdersTableModel(new ArrayList<>());
+        workersTableModel = new WorkersTableModel(new ArrayList<>());
+        workPlacesTableModel = new WorkPlacesTableModel(new ArrayList<>());
 
-        String[] orderColumns = {"ID", "Type", "State", "Process Time"};
-        ordersTableModel = new DefaultTableModel(orderColumns, 0);
         JTable ordersTable = new JTable(ordersTableModel);
         ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
 
-        String[] workerColumns = {"ID", "Group", "State", "Order_ID", "WorkPlace_ID"};
-        workersTableModel = new DefaultTableModel(workerColumns, 0);
         JTable workersTable = new JTable(workersTableModel);
         workersTable.setPreferredScrollableViewportSize(new Dimension(300, 200)); 
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
-        String[] workPlaceColumns = {"ID", "State", "Order_ID", "Activity"};
-        workPlaceTableModel = new DefaultTableModel(workPlaceColumns, 0);
-        JTable workPlaceTable = new JTable(workPlaceTableModel);
+        JTable workPlaceTable = new JTable(workPlacesTableModel);
         workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
@@ -221,7 +222,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         GraphObserver graphObserver = new GraphObserver(orderTimeSeries, chart, intervalLower, intervalUpper);
         subject.attachObserver(graphObserver);
 
-        TableObserver tableObserver = new TableObserver(ordersTable, workersTable, workPlaceTable);
+        TableObserver tableObserver = new TableObserver(ordersTableModel, workersTableModel, workPlacesTableModel);
         subject.attachObserver(tableObserver);
 
         LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel, countOfFinishedOrdersLabel, countOfAllOrdersLabel);
@@ -426,11 +427,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 SwingUtilities.invokeLater(() -> {
                     dayCountLabel.setText("Day : 0");
                     label.setText("Simulation Time : 0");
-                    ordersTableModel.setRowCount(0);
-                    ordersTableModel.fireTableDataChanged();
-
-                    workersTableModel.setRowCount(0);
-                    workersTableModel.fireTableDataChanged();
+                    ordersTableModel.setOrders(new ArrayList<>());
+                    workersTableModel.setWorkers(new ArrayList<>());
+                    workPlacesTableModel.setWorkPlaces(new ArrayList<>());
                 });
                 int replicationCount = 0;
                 if (slowDownCheckBox.isSelected()) {

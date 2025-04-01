@@ -28,9 +28,9 @@ public class OrderArrivalEvent extends Event {
         //initializing new order
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
-        if(core.isSlowMode()) {
-            core.ordersArrayList.add(order);
-        }
+
+        core.ordersArrayList.add(order);
+
 
         WorkPlace workPlace = null;
 
