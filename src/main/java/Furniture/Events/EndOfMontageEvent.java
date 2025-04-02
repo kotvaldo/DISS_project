@@ -22,9 +22,8 @@ public class EndOfMontageEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        core.recordQueueLengths(this.time);
 
-
+        worker.getUtilisation().stop(this.time);
         // Uvoľní workerC
         worker.setOrder(null, this.time);
         core.getFreeWorkersC().addLast(worker);
@@ -37,17 +36,15 @@ public class EndOfMontageEvent extends Event {
         core.getAverageTimeOfWorking().add(order.getTimeOfWorkArrivalAndEnd());
         core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
 
-        if(order.getId() == 500) {
-            order.getId();
-        }
+
 
         if (!core.getQueueMontage().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
             WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
             Order nextOrder = core.getQueueMontage().removeFirst();
-            double currentTime = this.time;
-            double montageTime = Utility.calculateMontageTime(nextOrder, core, targetWorkerForMontage);
-            double newTime = currentTime + montageTime;
+            core.recordQueueLengthMontage(this.time);
+            double newTime = this.time + Utility.calculateMontageTime(nextOrder, core, targetWorkerForMontage);
             if (newTime < core.getEndTime()) {
+                targetWorkerForMontage.getUtilisation().start(this.time);
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setOrder(nextOrder, this.time);
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForMontage));

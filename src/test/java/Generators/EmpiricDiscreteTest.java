@@ -38,7 +38,7 @@ class EmpiricDiscreteTest {
 
         EmpiricDiscrete empiricDiscrete = new EmpiricDiscrete(list);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             int value = empiricDiscrete.sample();
             assertTrue(value >= 1 && value <= 6, "Generated value should be within the defined range");
         }

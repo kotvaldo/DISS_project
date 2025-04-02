@@ -24,6 +24,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
     protected JPanel controlPanel;
     protected JPanel centerPanel;
 
+
     protected AbstractSimulationGUI(String title) {
         setTitle(title);
         setSize(1500, 900);

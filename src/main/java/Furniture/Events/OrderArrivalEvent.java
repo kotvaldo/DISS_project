@@ -6,7 +6,6 @@ import Furniture.Enums.OrderStateValues;
 import IDGenerator.IDGenerator;
 import Furniture.Entity.Order;
 import Furniture.Entity.WorkPlace;
-import Furniture.Entity.Worker;
 import Furniture.Enums.PriorityValues;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
@@ -23,17 +22,12 @@ public class OrderArrivalEvent extends Event {
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
 
-        core.recordQueueLengths(this.time);
-
-        // vybratie typu orderu
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();
 
-        // novy order
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
         order.setState(OrderStateValues.ORDER_NEW.getValue());
         core.ordersArrayList.add(order);
 
-        // vybratie workPlacu
         WorkPlace workPlace = core.getWorkplaces()
                 .stream()
                 .filter(wp -> !wp.isBusy())
@@ -44,26 +38,22 @@ public class OrderArrivalEvent extends Event {
                     return newWp;
                 });
 
-        //set Workeplacu
         order.setWorkPlace(workPlace);
         workPlace.setOrder(order);
 
-        if(order.getId() == 500) {
-            order.getId();
-        }
-
-
         LinkedList<Order> queueCutting = core.getQueueCutting();
+
         if (!core.getFreeWorkersA().isEmpty()) {
             WorkerA targetWorker = core.getFreeWorkersA().removeFirst();
-
             Order orderToProcess;
 
             if (!queueCutting.isEmpty()) {
-                // spracuj hneď zákazníka z fronty
                 orderToProcess = queueCutting.removeFirst();
+                core.recordQueueLengthCutting(this.time); // zaznamenať PO odstránení z frontu
+                queueCutting.addLast(order);
+                core.recordQueueLengthCutting(this.time); // zaznamenať PO pridaní do frontu
+                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
             } else {
-                // ak fronta prázdna, spracuj aktuálny order bez frontovania
                 orderToProcess = order;
             }
 
@@ -71,24 +61,23 @@ public class OrderArrivalEvent extends Event {
             double newTime = time + timeOfEvent;
 
             if (newTime < core.getEndTime()) {
+                targetWorker.getUtilisation().start(this.time);
+
                 orderToProcess.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 targetWorker.setOrder(orderToProcess, this.time);
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorker));
             }
 
         } else {
-            // iba ak nie je voľný worker, order ide do queue
             queueCutting.addLast(order);
+            core.recordQueueLengthCutting(this.time); // zaznamenať PO pridaní do frontu
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         }
 
-
-        double currentTime = this.time;
         double arrivalTimeOffset = core.getGenerators().getOrderArrivalDist().sample();
-        double newTime = currentTime + arrivalTimeOffset;
+        double newTime = this.time + arrivalTimeOffset;
         if (newTime < core.getEndTime()) {
             core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
         }
     }
-
 }

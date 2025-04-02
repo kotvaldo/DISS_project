@@ -12,7 +12,7 @@ public class TimeWeightedStatistic {
     private double upper;                 // CI upper
 
     public TimeWeightedStatistic() {
-        reset(0);
+        clear();
     }
 
     public void recordChange(double currentTime, int newValue) {
@@ -66,8 +66,8 @@ public class TimeWeightedStatistic {
         return timeSum;
     }
 
-    public void reset(double currentTime) {
-        lastChangeTime = currentTime;
+    public void clear() {
+        lastChangeTime = 0;
         lastValue = 0;
         weightedSum = 0;
         weightedSumSquares = 0;

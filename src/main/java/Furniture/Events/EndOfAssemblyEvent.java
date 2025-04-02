@@ -23,7 +23,7 @@ public class EndOfAssemblyEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        core.recordQueueLengths(this.time);
+        worker.getUtilisation().stop(this.time);
 
         // Uvoľníme workerB
         worker.setOrder(null, this.time);
@@ -32,28 +32,38 @@ public class EndOfAssemblyEvent extends Event {
         // ---------------------------------------------------
         // Typ 3 -> potrebuje montage kovani
         // ---------------------------------------------------
-        if(order.getId() == 500) {
-            order.getId();
-        }
+
         if (order.getType() == 3) {
             if (!core.getFreeWorkersC().isEmpty()) {
                 WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
+                Order orderToProcess;
 
-                order.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
-                targetWorkerForMontage.setOrder(order, this.time);
+                if (!core.getQueueMontage().isEmpty()) {
+                    orderToProcess = core.getQueueMontage().removeFirst();
+                    // aktuálny order (this.order) ide do fronty vždy
+                    core.getQueueMontage().addLast(this.order);
+                    core.recordQueueLengthMontage(this.time);
+                    this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                } else {
+                    orderToProcess = this.order;
+                }
 
-                double montageTime = Utility.calculateMontageTime(order, core, targetWorkerForMontage);
+                double montageTime = Utility.calculateMontageTime(orderToProcess, core, targetWorkerForMontage);
                 double newTime = this.time + montageTime;
 
                 if (newTime < core.getEndTime()) {
-                    core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, order, targetWorkerForMontage));
+                    targetWorkerForMontage.getUtilisation().start(this.time);
+                    orderToProcess.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
+                    targetWorkerForMontage.setOrder(orderToProcess, this.time);
+                    core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, orderToProcess, targetWorkerForMontage));
                 }
 
             } else {
-                core.getQueueMontage().addLast(order);
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
+                // Ak worker C nie je voľný, pridaj objednávku vždy do queue
+                core.getQueueMontage().addLast(this.order);
+                core.recordQueueLengthMontage(this.time);
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
             }
-
         } else {
             //ak order nie je typu skrina, tak skoncim objednavku
             order.setState(OrderStateValues.ORDER_DONE.getValue());
@@ -79,6 +89,8 @@ public class EndOfAssemblyEvent extends Event {
             double newTime = this.time + assemblyTime;
 
             if (newTime < core.getEndTime()) {
+                core.recordQueueLengthAssembly(this.time);
+                targetWorkerForAssemblyAgain.getUtilisation().start(this.time);
                 nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerForAssemblyAgain.setOrder(nextOrder, this.time);
                 core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextOrder, targetWorkerForAssemblyAgain));

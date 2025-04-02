@@ -10,7 +10,7 @@ import java.util.ArrayList;
 class TriangularTest {
     @Test
     void generateTriangularFile() {
-        Triangular triangular = new Triangular(10.0, 100.0, 50.0);
+        Triangular triangular = new Triangular(60.0, 480.0, 120.0);
         ArrayList<Double> values = new ArrayList<>();
         for (int i = 0; i < 10000; i++) {
             values.add(triangular.sample());

@@ -24,8 +24,8 @@ public class EndOfColoringEvent extends Event {
     @Override
     public void Execute() {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
-        core.recordQueueLengths(this.time);
 
+        worker.getUtilisation().stop(this.time);
         //uvolnenie workera C po coloringu
         worker.setOrder(null, this.time);
         core.getFreeWorkersC().addLast(worker);
@@ -36,19 +36,37 @@ public class EndOfColoringEvent extends Event {
         // plánovanie Assembly fázy (Worker B)
         if (!core.getFreeWorkersB().isEmpty()) {
             WorkerB targetWorkerAssembly = core.getFreeWorkersB().removeFirst();
-            order.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
+            Order orderToProcess;
 
-            double assemblyTime = Utility.calculateAssemblyTime(order, core, targetWorkerAssembly);
+            if (!core.getQueueAssembly().isEmpty()) {
+                // vždy zober prvý order z fronty
+                orderToProcess = core.getQueueAssembly().removeFirst();
+                core.recordQueueLengthAssembly(this.time);
+                // aktuálny order (po coloring) daj do fronty na koniec
+                core.getQueueAssembly().addLast(this.order);
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
+                core.recordQueueLengthAssembly(this.time);
+            } else {
+                orderToProcess = this.order;
+            }
+
+            double assemblyTime = Utility.calculateAssemblyTime(orderToProcess, core, targetWorkerAssembly);
             double newTime = this.time + assemblyTime;
 
-            targetWorkerAssembly.setOrder(order, this.time);
-            core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, order, targetWorkerAssembly));
+            if (newTime < core.getEndTime()) {
+                orderToProcess.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
+                targetWorkerAssembly.setOrder(orderToProcess, this.time);
+                targetWorkerAssembly.getUtilisation().start(this.time);
+                core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, orderToProcess, targetWorkerAssembly));
+            }
 
         } else {
-            core.getQueueAssembly().addLast(order);
-            order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
+            // ak WorkerB nie je voľný, vždy pridaj do fronty
+            core.getQueueAssembly().addLast(this.order);
+            core.recordQueueLengthAssembly(this.time);
+            core.recordQueueLengthAssembly(this.time);
+            this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
         }
-
 
 
 
@@ -64,15 +82,16 @@ public class EndOfColoringEvent extends Event {
             double montageTime = Utility.calculateMontageTime(montageOrder, core, targetWorkerForMontage);
             double newTime = currentTime + montageTime;
             if (newTime < core.getEndTime()) {
+                core.recordQueueLengthMontage(this.time);
                 montageOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
+                targetWorkerForMontage.getUtilisation().start(this.time);
                 targetWorkerForMontage.setOrder(montageOrder, this.time);
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), simulationCore, montageOrder, targetWorkerForMontage));
             }
 
         }
-        if(order.getId() == 500) {
-            order.getId();
-        }
+
+
         // ----------------------------
         // COLORING (znova)
         // ----------------------------
@@ -84,6 +103,8 @@ public class EndOfColoringEvent extends Event {
             double newTime = this.time + coloringAgainTime;
 
             if (newTime < core.getEndTime()) {
+                core.recordQueueLengthColoring(this.time);
+                targetWorkerForColoringAgain.getUtilisation().start(this.time);
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                 targetWorkerForColoringAgain.setOrder(nextColoringOrder, this.time);
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, targetWorkerForColoringAgain));

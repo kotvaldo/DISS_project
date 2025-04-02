@@ -26,10 +26,10 @@ public class FurnitureEventState implements IState {
     private int queueMontage;
     private int countOfFinishedOrders;
     private int countOfAllOrders;
-    private Utilisation utilisationA;
-    private Utilisation utilisationB;
-    private Utilisation utilisationC;
-    private Utilisation utilisationAll;
+    private Average utilisationA;
+    private Average utilisationB;
+    private Average utilisationC;
+    private Average utilisationAll;
 
     private Average cuttingQLStat;
     private Average coloringQLStat;
@@ -189,35 +189,35 @@ public class FurnitureEventState implements IState {
         this.burnRepCount = burnRepCount;
     }
 
-    public Utilisation getUtilisationA() {
+    public Average getUtilisationA() {
         return utilisationA;
     }
 
-    public void setUtilisationA(Utilisation utilisationA) {
+    public void setUtilisationA(Average utilisationA) {
         this.utilisationA = utilisationA;
     }
 
-    public Utilisation getUtilisationB() {
+    public Average getUtilisationB() {
         return utilisationB;
     }
 
-    public void setUtilisationB(Utilisation utilisationB) {
-        this.utilisationB = utilisationB;
+    public void setUtilisationB(Average AverageB) {
+        this.utilisationB = AverageB;
     }
 
-    public Utilisation getUtilisationC() {
+    public Average getUtilisationC() {
         return utilisationC;
     }
 
-    public void setUtilisationC(Utilisation utilisationC) {
+    public void setUtilisationC(Average utilisationC) {
         this.utilisationC = utilisationC;
     }
 
-    public Utilisation getUtilisationAll() {
+    public Average getUtilisationAll() {
         return utilisationAll;
     }
 
-    public void setUtilisationAll(Utilisation utilisationAll) {
+    public void setUtilisationAll(Average utilisationAll) {
         this.utilisationAll = utilisationAll;
     }
 
