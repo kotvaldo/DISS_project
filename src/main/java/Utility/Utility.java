@@ -28,23 +28,26 @@ public class Utility {
         return (int) trimmedList.stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
 
-    public static double calculateFirstTime(Order order, FurnitureEventCore core, Worker worker) {
+    public static double calculateCuttingTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
 
         WorkPlace current = worker.getCurrentWorkPlace();
         WorkPlace target = order.getWorkPlace();
 
         if (current == null) {
+            // in storage
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
 
         } else if (!current.equals(target)) {
+            //in other workplace
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
 
         } else {
+            //in targetWorkPlace
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
@@ -64,7 +67,7 @@ public class Utility {
 
     }
 
-    public static double calculateSecondTime(Order order, FurnitureEventCore core, Worker worker) {
+    public static double calculateColoringTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
 
         WorkPlace current = worker.getCurrentWorkPlace();
@@ -94,7 +97,7 @@ public class Utility {
 
     }
 
-    public static double calculateThird(Order order, FurnitureEventCore core, Worker worker) {
+    public static double calculateAssemblyTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
 
         WorkPlace current = worker.getCurrentWorkPlace();
@@ -117,7 +120,7 @@ public class Utility {
         }
         return totalTime;
     }
-    public static double calculateFourth(Order order, FurnitureEventCore core, Worker worker) {
+    public static double calculateMontageTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
 
         WorkPlace current = worker.getCurrentWorkPlace();

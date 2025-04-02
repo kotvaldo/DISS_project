@@ -32,7 +32,7 @@ public class LabelObserver implements IObserver {
 
                 this.label.setText("Simulation Time: " + Utility.fromSecondsToTime(currSimulation));
 
-                this.dayCountLabel.setText("Day Count : " + (furnitureEventState.getCurrentDay() + 1));
+                this.dayCountLabel.setText("Day Count : " + (furnitureEventState.getCurrentDay()));
                 this.countOfFinished.setText("Finished Orders : " + furnitureEventState.getCountOfFinishedOrders());
                 this.countOfAll.setText("All Orders : " + furnitureEventState.getCountOfAllOrders());
 

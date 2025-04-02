@@ -71,6 +71,4 @@ public class Order {
         return endTime - arrivalTime;
     }
 
-
-
 }

@@ -7,7 +7,6 @@ import Furniture.Entity.Order;
 import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import Furniture.Enums.PriorityValues;
-import Furniture.Enums.WorkerBussyState;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
 import Utility.Utility;
@@ -25,11 +24,15 @@ public class OrderArrivalEvent extends Event {
 
         core.recordQueueLengths(this.time);
 
+        // vybratie typu orderu
         int orderType = core.getGenerators().getTypeOfOrderDist().sample();
+
+        // novy order
         Order order = new Order(IDGenerator.getInstance().getNextOrderId(), orderType, time);
         order.setState(OrderStateValues.ORDER_NEW.getValue());
         core.ordersArrayList.add(order);
 
+        // vybratie workPlacu
         WorkPlace workPlace = core.getWorkplaces()
                 .stream()
                 .filter(wp -> !wp.isBusy())
@@ -40,18 +43,22 @@ public class OrderArrivalEvent extends Event {
                     return newWp;
                 });
 
+        //set Workeplacu
         order.setWorkPlace(workPlace);
         workPlace.setOrder(order);
 
         LinkedList<Order> queueCutting = core.getQueueCutting();
 
+        //planovanie cutting fazy
+        //kontrola ci, je volny WorkerA
         if (!core.getFreeWorkersA().isEmpty()) {
             Worker targetWorker = core.getFreeWorkersA().removeFirst();
             Order orderToProcess;
-
+            //kontrola, ci je nieco v queue, ak hej, tak berem prvy z queue
             if (!queueCutting.isEmpty()) {
                 orderToProcess = queueCutting.removeFirst();
                 if (!queueCutting.contains(order)) {
+                    //ak berem prvy z queue, tak vytvoreny order dam do queue na posledne miesto
                     queueCutting.addLast(order);
                     order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
                 }
@@ -59,7 +66,9 @@ public class OrderArrivalEvent extends Event {
                 orderToProcess = order;
             }
 
-            double timeOfEvent = Utility.calculateFirstTime(orderToProcess, core, targetWorker);
+
+            //planovanie eventu
+            double timeOfEvent = Utility.calculateCuttingTime(orderToProcess, core, targetWorker);
             double newTime = time + timeOfEvent;
 
             if (newTime < core.getEndTime()) {
@@ -69,14 +78,13 @@ public class OrderArrivalEvent extends Event {
             }
 
         } else {
-            if (!queueCutting.contains(order)) {
-                queueCutting.addLast(order);
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
-            }
+            //ak nie je volny worker pridam do queue
+            queueCutting.addLast(order);
+            order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         }
 
         double newTime = this.time + core.getGenerators().getOrderArrivalDist().sample();
-        if(newTime < core.getEndTime()) {
+        if (newTime < core.getEndTime()) {
             core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
         }
     }
