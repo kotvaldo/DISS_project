@@ -112,15 +112,15 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         workPlacesTableModel = new WorkPlacesTableModel(new ArrayList<>());
 
         JTable ordersTable = new JTable(ordersTableModel);
-        ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 
+        ordersTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
         JScrollPane ordersScroll = new JScrollPane(ordersTable);
 
         JTable workersTable = new JTable(workersTableModel);
-        workersTable.setPreferredScrollableViewportSize(new Dimension(300, 200)); 
+        workersTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
         JScrollPane workersScroll = new JScrollPane(workersTable);
 
         JTable workPlaceTable = new JTable(workPlacesTableModel);
-        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 200)); 
+        workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
 
