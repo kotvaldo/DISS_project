@@ -42,12 +42,34 @@ public class EndOfMontageEvent extends Event {
             WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
             Order nextOrder = core.getQueueMontage().removeFirst();
             core.recordQueueLengthMontage(this.time);
+            double waitingTime = nextOrder.getQueueMontageLeaveTime() - nextOrder.getQueueMontageEnterTime();
+            if (nextOrder.getQueueMontageEnterTime() >= 0 && nextOrder.getQueueMontageLeaveTime() >= 0 && waitingTime > 0) {
+                core.getAverageTimeInQueueMontage().add(waitingTime);
+            }
+            nextOrder.setQueueMontageLeaveTime(this.time);
             double newTime = this.time + Utility.calculateMontageTime(nextOrder, core, targetWorkerForMontage);
             if (newTime < core.getEndTime()) {
                 targetWorkerForMontage.getUtilisation().start(this.time);
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setOrder(nextOrder, this.time);
                 core.addEvent(new EndOfMontageEvent(newTime, PriorityValues.IMPORTANT_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForMontage));
+            }
+        }
+
+        if (!core.getQueueColoring().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
+            WorkerC targetWorkerForColoringAgain = core.getFreeWorkersC().removeFirst();
+            Order nextColoringOrder = core.getQueueColoring().removeFirst();
+            nextColoringOrder.setQueueColoringLeaveTime(this.time);
+            core.recordQueueLengthColoring(this.time);
+
+            double coloringAgainTime = Utility.calculateColoringTime(nextColoringOrder, core, targetWorkerForColoringAgain);
+            double newTime = this.time + coloringAgainTime;
+
+            if (newTime < core.getEndTime()) {
+                targetWorkerForColoringAgain.getUtilisation().start(this.time);
+                nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
+                targetWorkerForColoringAgain.setOrder(nextColoringOrder, this.time);
+                core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, targetWorkerForColoringAgain));
             }
         }
     }

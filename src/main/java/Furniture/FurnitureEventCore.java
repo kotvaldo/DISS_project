@@ -69,6 +69,11 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Average countOfOrders;
     private final Average countOfOrdersFinished;
 
+    private final Average averageTimeInQueueCutting = new Average();
+    private final Average averageTimeInQueueColoring = new Average();
+    private final Average averageTimeInQueueAssembly = new Average();
+    private final Average averageTimeInQueueMontage = new Average();
+
 
     public FurnitureEventCore() {
         super();
@@ -113,6 +118,12 @@ public class FurnitureEventCore extends EventSimulationCore {
         montageQLStats.clear();
         countOfOrdersFinished.clear();
 
+
+        averageTimeInQueueCutting.clear();
+        averageTimeInQueueColoring.clear();
+        averageTimeInQueueAssembly.clear();
+        averageTimeInQueueMontage.clear();
+
        // initWorkers();
         this.ordersArrayList.clear();
         this.averageTimeOfWorking.clear();
@@ -154,8 +165,8 @@ public class FurnitureEventCore extends EventSimulationCore {
         FurnitureEventState currentState = (FurnitureEventState) state;
         currentState.setSlowDown(this.isSlowMode);
         double newTime = generators.getOrderArrivalDist().sample() + this.simulationTime;
-        if(newTime < endTime) {
-            events.add(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this));
+        if(this.simulationTime < endTime) {
+            events.add(new OrderArrivalEvent(this.simulationTime, PriorityValues.BASIC_EVENT.getValue(), this));
         }
 
         if (isSlowMode) {
@@ -185,6 +196,12 @@ public class FurnitureEventCore extends EventSimulationCore {
         for (Average a : this.utilizationWorkersC) {
             System.out.println("C" + a.mean());
         }
+
+        System.out.println("Avg time in Queue Cutting: " + averageTimeInQueueCutting.mean()/ 3600);
+        System.out.println("Avg time in Queue Coloring: " + averageTimeInQueueColoring.mean()/ 3600);
+        System.out.println("Avg time in Queue Assembly: " + averageTimeInQueueAssembly.mean()/ 3600);
+        System.out.println("Avg time in Queue Montage: " + averageTimeInQueueMontage.mean() / 3600);
+
     }
 
 
@@ -219,7 +236,6 @@ public class FurnitureEventCore extends EventSimulationCore {
                 utilizationGroupC += w.getUtilisation().getUtilisation();
                 utilizationAll += w.getUtilisation().getUtilisation();
             }
-
 
             countOfOrders.add(ordersArrayList.size());
             cuttingQLStats.add(cuttingQL.getMean());
@@ -425,5 +441,21 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     public Random getRand() {
         return rand;
+    }
+
+    public Average getAverageTimeInQueueCutting() {
+        return averageTimeInQueueCutting;
+    }
+
+    public Average getAverageTimeInQueueColoring() {
+        return averageTimeInQueueColoring;
+    }
+
+    public Average getAverageTimeInQueueAssembly() {
+        return averageTimeInQueueAssembly;
+    }
+
+    public Average getAverageTimeInQueueMontage() {
+        return averageTimeInQueueMontage;
     }
 }

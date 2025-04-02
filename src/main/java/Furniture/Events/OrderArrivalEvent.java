@@ -49,9 +49,21 @@ public class OrderArrivalEvent extends Event {
 
             if (!queueCutting.isEmpty()) {
                 orderToProcess = queueCutting.removeFirst();
-                core.recordQueueLengthCutting(this.time); // zaznamenať PO odstránení z frontu
+                // posuvat vytvoreny
+
+                orderToProcess.setQueueCuttingLeaveTime(this.time);
+                double waitingTime = orderToProcess.getQueueCuttingLeaveTime() - orderToProcess.getQueueCuttingEnterTime();
+                if (orderToProcess.getQueueCuttingEnterTime() >= 0 && orderToProcess.getQueueCuttingLeaveTime() >= 0 && waitingTime > 0) {
+                    core.getAverageTimeInQueueCutting().add(waitingTime);
+                }
+
+                core.recordQueueLengthCutting(this.time);
+
                 queueCutting.addLast(order);
-                core.recordQueueLengthCutting(this.time); // zaznamenať PO pridaní do frontu
+                order.setQueueCuttingEnterTime(this.time);
+
+                core.recordQueueLengthCutting(this.time);
+
                 order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
             } else {
                 orderToProcess = order;
@@ -62,17 +74,18 @@ public class OrderArrivalEvent extends Event {
 
             if (newTime < core.getEndTime()) {
                 targetWorker.getUtilisation().start(this.time);
-
                 orderToProcess.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
                 targetWorker.setOrder(orderToProcess, this.time);
                 core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorker));
             }
 
         } else {
+            order.setQueueCuttingEnterTime(this.time);
             queueCutting.addLast(order);
-            core.recordQueueLengthCutting(this.time); // zaznamenať PO pridaní do frontu
+            core.recordQueueLengthCutting(this.time);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         }
+
 
         double arrivalTimeOffset = core.getGenerators().getOrderArrivalDist().sample();
         double newTime = this.time + arrivalTimeOffset;

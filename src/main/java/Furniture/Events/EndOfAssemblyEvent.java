@@ -40,9 +40,21 @@ public class EndOfAssemblyEvent extends Event {
 
                 if (!core.getQueueMontage().isEmpty()) {
                     orderToProcess = core.getQueueMontage().removeFirst();
-                    // aktuálny order (this.order) ide do fronty vždy
+                    orderToProcess.setQueueMontageLeaveTime(this.time);
+
+
+                    double waitingTime = orderToProcess.getQueueMontageLeaveTime() - orderToProcess.getQueueMontageEnterTime();
+                    if (orderToProcess.getQueueMontageEnterTime() >= 0 && orderToProcess.getQueueMontageLeaveTime() >= 0 && waitingTime > 0) {
+                        core.getAverageTimeInQueueMontage().add(waitingTime);
+                    }
+
+                    core.recordQueueLengthMontage(this.time);
+
+
+                    this.order.setQueueMontageEnterTime(this.time);
                     core.getQueueMontage().addLast(this.order);
                     core.recordQueueLengthMontage(this.time);
+
                     this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
                 } else {
                     orderToProcess = this.order;
@@ -59,13 +71,13 @@ public class EndOfAssemblyEvent extends Event {
                 }
 
             } else {
-                // Ak worker C nie je voľný, pridaj objednávku vždy do queue
+                this.order.setQueueMontageEnterTime(this.time); // <-- vstup do queue
                 core.getQueueMontage().addLast(this.order);
                 core.recordQueueLengthMontage(this.time);
                 this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
             }
         } else {
-            //ak order nie je typu skrina, tak skoncim objednavku
+            // ak order nie je typu skrina, tak skoncim objednavku
             order.setState(OrderStateValues.ORDER_DONE.getValue());
             order.getWorkPlace().setOrder(null);
             order.setWorkPlace(null);
@@ -74,22 +86,27 @@ public class EndOfAssemblyEvent extends Event {
             core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
         }
 
+        // ----------------------------
+        // Znovu planovanie assembly
+        // ----------------------------
 
-        // Znovu planovanie skladania
-
-        //kontrola ci je nieco v queue a zaroven ci je volny pracovnik B
         if (!core.getQueueAssembly().isEmpty() && !core.getFreeWorkersB().isEmpty()) {
-            //ak ano vytiahnem si order a aj workera
-
             WorkerB targetWorkerForAssemblyAgain = core.getFreeWorkersB().removeFirst();
             Order nextOrder = core.getQueueAssembly().removeFirst();
-            //vypocet casu
+            nextOrder.setQueueAssemblyLeaveTime(this.time);
+
+            double waitingTime = nextOrder.getQueueAssemblyLeaveTime() - nextOrder.getQueueAssemblyEnterTime();
+            if (nextOrder.getQueueAssemblyEnterTime() >= 0 && nextOrder.getQueueAssemblyLeaveTime() >= 0 && waitingTime > 0) {
+                core.getAverageTimeInQueueAssembly().add(waitingTime);
+            }
+
+            core.recordQueueLengthAssembly(this.time);
+
 
             double assemblyTime = Utility.calculateAssemblyTime(nextOrder, core, targetWorkerForAssemblyAgain);
             double newTime = this.time + assemblyTime;
 
             if (newTime < core.getEndTime()) {
-                core.recordQueueLengthAssembly(this.time);
                 targetWorkerForAssemblyAgain.getUtilisation().start(this.time);
                 nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerForAssemblyAgain.setOrder(nextOrder, this.time);
@@ -97,4 +114,5 @@ public class EndOfAssemblyEvent extends Event {
             }
         }
     }
+
 }
