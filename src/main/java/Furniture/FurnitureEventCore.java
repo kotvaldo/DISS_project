@@ -38,6 +38,7 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final ArrayList<WorkPlace> workplaces;
 
     private final Average averageTimeOfWorking;
+    private final Average averageOfAllTimeOfWorking = new Average();
     private final Average newOrdersAfterSimulation;
     private final Generators generators;
 
@@ -66,6 +67,8 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Average coloringQLStats = new Average();
     private final Average assemblyQLStats = new Average();
     private final Average montageQLStats = new Average();
+
+
     private final Average countOfOrders =  new Average();;
     private final Average countOfOrdersFinished = new Average();
 
@@ -131,6 +134,7 @@ public class FurnitureEventCore extends EventSimulationCore {
             utilizationWorkersC.add(new Average());
         }
 
+        averageOfAllTimeOfWorking.clear();
         averageTimeInQueueCutting.clear();
         averageTimeInQueueColoring.clear();
         averageTimeInQueueAssembly.clear();
@@ -145,6 +149,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.actualRepCount = 0;
         utilizationA.clear();
         utilizationB.clear();
+
         utilizationC.clear();
         utilizationTotal.clear();
         cuttingQL.clear();
@@ -164,6 +169,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.queueAssembly.clear();
         this.queueMontage.clear();
         this.queueColoring.clear();
+        averageTimeOfWorking.clear();
         this.workplaces.clear();
         this.events.clear();
         IDGenerator.getInstance().clearGenerators();
@@ -249,7 +255,7 @@ public class FurnitureEventCore extends EventSimulationCore {
                 utilizationAll += util;
                 utilizationWorkersC.get(i).add(util);
             }
-
+            averageOfAllTimeOfWorking.add(averageTimeOfWorking.mean());
 
             countOfOrders.add(ordersArrayList.size());
             cuttingQLStats.add(cuttingQL.getMean());
@@ -268,7 +274,7 @@ public class FurnitureEventCore extends EventSimulationCore {
 
             //  System.out.println(queueCutting.size());
             state.setRepCount(this.actualRepCount);
-            state.setAverageTimeOfWorking(averageTimeOfWorking);
+            state.setAverageTimeOfWorking(averageOfAllTimeOfWorking);
             state.setNewOrderOnEnd(newOrdersAfterSimulation);
             state.setBurnRepCount(this.burnInCount);
             state.setUtilisationA(utilizationA);
