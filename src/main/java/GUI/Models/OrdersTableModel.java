@@ -42,7 +42,7 @@ public class OrdersTableModel extends AbstractTableModel {
             case 0 -> "Order ID: " + order.getId();
             case 1 -> "Type: " + order.getType();
             case 2 -> OrderStateValues.getNameByValue(order.getState());
-            case 3 -> order.getTimeOfWork() < 0 ? -1 : order.getTimeOfWork();
+            case 3 -> order.getTimeOfWorkArrivalAndEnd() < 0 ? -1 : order.getTimeOfWorkArrivalAndEnd();
             default -> null;
         };
     }

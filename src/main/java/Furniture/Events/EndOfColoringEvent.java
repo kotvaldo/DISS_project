@@ -3,6 +3,8 @@ package Furniture.Events;
 import EventSimulation.Event;
 import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
+import Furniture.Entity.WorkerB;
+import Furniture.Entity.WorkerC;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
 import Furniture.FurnitureEventCore;
@@ -10,10 +12,10 @@ import SimulationCore.SimulationCore;
 import Utility.Utility;
 
 public class EndOfColoringEvent extends Event {
-    private final Worker worker;
+    private final WorkerC worker;
     private final Order order;
 
-    protected EndOfColoringEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
+    protected EndOfColoringEvent(double time, int priority, SimulationCore simulationCore, Order order, WorkerC worker) {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
@@ -24,38 +26,43 @@ public class EndOfColoringEvent extends Event {
         FurnitureEventCore core = (FurnitureEventCore) simulationCore;
         core.recordQueueLengths(this.time);
 
-
+        //uvolnenie workera C po coloringu
         worker.setOrder(null, this.time);
         core.getFreeWorkersC().addLast(worker);
 
 
+        //planovanie assembly eventu
+
+        // plánovanie Assembly fázy (Worker B)
         if (!core.getFreeWorkersB().isEmpty()) {
-            Worker targetWorkerAssembly = core.getFreeWorkersB().removeFirst();
+            WorkerB targetWorkerAssembly = core.getFreeWorkersB().removeFirst();
             Order orderToProcess;
 
             if (!core.getQueueAssembly().isEmpty()) {
+                // vždy zober prvý order z fronty
                 orderToProcess = core.getQueueAssembly().removeFirst();
-                if (!core.getQueueAssembly().contains(order)) {
-                    core.getQueueAssembly().addLast(order);
-                    order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
-                }
-
+                // aktuálny order (po coloring) daj do fronty na koniec
+                core.getQueueAssembly().addLast(this.order);
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
             } else {
                 orderToProcess = this.order;
             }
 
-            double ttt = Utility.calculateThird(orderToProcess, core, targetWorkerAssembly);
-            double newTime = this.time + ttt;
+            double assemblyTime = Utility.calculateAssemblyTime(orderToProcess, core, targetWorkerAssembly);
+            double newTime = this.time + assemblyTime;
+
             if (newTime < core.getEndTime()) {
                 orderToProcess.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerAssembly.setOrder(orderToProcess, this.time);
-                core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorkerAssembly));
+                core.addEvent(new EndOfAssemblyEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, orderToProcess, targetWorkerAssembly));
             }
 
         } else {
+            // ak WorkerB nie je voľný, vždy pridaj do fronty
             core.getQueueAssembly().addLast(this.order);
             this.order.setState(OrderStateValues.WAITING_IN_QUEUE_3.getValue());
         }
+
 
 
 
@@ -64,9 +71,9 @@ public class EndOfColoringEvent extends Event {
         // ----------------------------
 
         if (!core.getQueueMontage().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
-            Worker targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
+            WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
             Order montageOrder = core.getQueueMontage().removeFirst();
-            double newTime = this.time + Utility.calculateFourth(montageOrder, core, targetWorkerForMontage);
+            double newTime = this.time + Utility.calculateMontageTime(montageOrder, core, targetWorkerForMontage);
             if (newTime < core.getEndTime()) {
                 montageOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setOrder(montageOrder, this.time);
@@ -80,9 +87,9 @@ public class EndOfColoringEvent extends Event {
         // ----------------------------
 
         if (!core.getQueueColoring().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
-            Worker targetWorkerForColoringAgain = core.getFreeWorkersC().removeFirst();
+            WorkerC targetWorkerForColoringAgain = core.getFreeWorkersC().removeFirst();
             Order nextColoringOrder = core.getQueueColoring().removeFirst();
-            double newTime = this.time + Utility.calculateSecondTime(nextColoringOrder, core, targetWorkerForColoringAgain);
+            double newTime = this.time + Utility.calculateColoringTime(nextColoringOrder, core, targetWorkerForColoringAgain);
             if (newTime < core.getEndTime()) {
                 nextColoringOrder.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                 targetWorkerForColoringAgain.setOrder(nextColoringOrder, this.time);

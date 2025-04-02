@@ -2,7 +2,7 @@ package Furniture.Events;
 
 import EventSimulation.Event;
 import Furniture.Entity.Order;
-import Furniture.Entity.Worker;
+import Furniture.Entity.WorkerC;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
 import Furniture.FurnitureEventCore;
@@ -11,9 +11,9 @@ import Utility.Utility;
 
 public class EndOfMontageEvent extends Event {
     private final Order order;
-    private final Worker worker;
+    private final WorkerC worker;
 
-    protected EndOfMontageEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
+    protected EndOfMontageEvent(double time, int priority, SimulationCore simulationCore, Order order, WorkerC worker) {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
@@ -34,14 +34,14 @@ public class EndOfMontageEvent extends Event {
         order.getWorkPlace().setOrder(null);
         order.setWorkPlace(null);
         order.setEndTime(time);
-        core.getAverageTimeOfWorking().add(order.getTimeOfWork());
+        core.getAverageTimeOfWorking().add(order.getTimeOfWorkArrivalAndEnd());
         core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
 
 
         if (!core.getQueueMontage().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
-            Worker targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
+            WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
             Order nextOrder = core.getQueueMontage().removeFirst();
-            double newTime = this.time + Utility.calculateFourth(nextOrder, core, targetWorkerForMontage);
+            double newTime = this.time + Utility.calculateMontageTime(nextOrder, core, targetWorkerForMontage);
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setOrder(nextOrder, this.time);

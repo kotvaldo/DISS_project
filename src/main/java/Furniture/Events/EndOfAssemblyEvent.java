@@ -2,7 +2,8 @@ package Furniture.Events;
 
 import EventSimulation.Event;
 import Furniture.Entity.Order;
-import Furniture.Entity.Worker;
+import Furniture.Entity.WorkerB;
+import Furniture.Entity.WorkerC;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
 import Furniture.FurnitureEventCore;
@@ -10,10 +11,10 @@ import SimulationCore.SimulationCore;
 import Utility.Utility;
 
 public class EndOfAssemblyEvent extends Event {
-    private final Worker worker;
+    private final WorkerB worker;
     private final Order order;
 
-    public EndOfAssemblyEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
+    public EndOfAssemblyEvent(double time, int priority, SimulationCore simulationCore, Order order, WorkerB worker) {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
@@ -29,25 +30,26 @@ public class EndOfAssemblyEvent extends Event {
         core.getFreeWorkersB().addLast(worker);
 
         // ---------------------------------------------------
-        // Typ 3 -> potrebuje montage
+        // Typ 3 -> potrebuje montage kovani
         // ---------------------------------------------------
 
         if (order.getType() == 3) {
             if (!core.getFreeWorkersC().isEmpty()) {
-                Worker targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
+                WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
                 Order orderToProcess;
 
                 if (!core.getQueueMontage().isEmpty()) {
                     orderToProcess = core.getQueueMontage().removeFirst();
-                    if (!core.getQueueMontage().contains(order)) {
-                        core.getQueueMontage().addLast(order);
-                        order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
-                    }
+                    // aktuálny order (this.order) ide do fronty vždy
+                    core.getQueueMontage().addLast(this.order);
+                    this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
                 } else {
                     orderToProcess = this.order;
                 }
 
-                double newTime = this.time + Utility.calculateFourth(orderToProcess, core, targetWorkerForMontage);
+                double montageTime = Utility.calculateMontageTime(orderToProcess, core, targetWorkerForMontage);
+                double newTime = this.time + montageTime;
+
                 if (newTime < core.getEndTime()) {
                     orderToProcess.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                     targetWorkerForMontage.setOrder(orderToProcess, this.time);
@@ -55,24 +57,31 @@ public class EndOfAssemblyEvent extends Event {
                 }
 
             } else {
-                // Ak nie je voľný worker
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
-                core.getQueueMontage().addLast(order);
+                // Ak worker C nie je voľný, pridaj objednávku vždy do queue
+                core.getQueueMontage().addLast(this.order);
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_4.getValue());
             }
-        }  else {
+        } else {
+            //ak order nie je typu skrina, tak skoncim objednavku
             order.setState(OrderStateValues.ORDER_DONE.getValue());
             order.getWorkPlace().setOrder(null);
             order.setWorkPlace(null);
             order.setEndTime(time);
-            core.getAverageTimeOfWorking().add(order.getTimeOfWork());
+            core.getAverageTimeOfWorking().add(order.getTimeOfWorkArrivalAndEnd());
             core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
         }
 
 
+        // Znovu planovanie skladania
+
+        //kontrola ci je nieco v queue a zaroven ci je volny pracovnik B
         if (!core.getQueueAssembly().isEmpty() && !core.getFreeWorkersB().isEmpty()) {
-            Worker targetWorkerForAssemblyAgain = core.getFreeWorkersB().removeFirst();
+            //ak ano vytiahnem si order a aj workera
+            WorkerB targetWorkerForAssemblyAgain = core.getFreeWorkersB().removeFirst();
             Order nextOrder = core.getQueueAssembly().removeFirst();
-            double newTime = this.time + Utility.calculateThird(nextOrder, core, targetWorkerForAssemblyAgain);
+            //vypocet casu
+            double newTime = this.time + Utility.calculateAssemblyTime(nextOrder, core, targetWorkerForAssemblyAgain);
+
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_ASSEMBLY.getValue());
                 targetWorkerForAssemblyAgain.setOrder(nextOrder, this.time);

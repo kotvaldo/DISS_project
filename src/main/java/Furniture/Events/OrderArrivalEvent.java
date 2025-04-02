@@ -1,6 +1,7 @@
 package Furniture.Events;
 
 import EventSimulation.Event;
+import Furniture.Entity.WorkerA;
 import Furniture.Enums.OrderStateValues;
 import IDGenerator.IDGenerator;
 import Furniture.Entity.Order;
@@ -49,25 +50,24 @@ public class OrderArrivalEvent extends Event {
 
         LinkedList<Order> queueCutting = core.getQueueCutting();
 
-        //planovanie cutting fazy
-        //kontrola ci, je volny WorkerA
         if (!core.getFreeWorkersA().isEmpty()) {
-            Worker targetWorker = core.getFreeWorkersA().removeFirst();
+            WorkerA targetWorker = core.getFreeWorkersA().removeFirst();
+
             Order orderToProcess;
-            //kontrola, ci je nieco v queue, ak hej, tak berem prvy z queue
+
             if (!queueCutting.isEmpty()) {
+                // Ak fronta nie je prázdna, vždy ber prvú objednávku z fronty
                 orderToProcess = queueCutting.removeFirst();
-                if (!queueCutting.contains(order)) {
-                    //ak berem prvy z queue, tak vytvoreny order dam do queue na posledne miesto
-                    queueCutting.addLast(order);
-                    order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
-                }
+
+                // Práve vytvorená objednávka musí ísť do fronty vždy
+                queueCutting.addLast(order);
+                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
+
             } else {
+                // Ak fronta je prázdna, spracuj aktuálnu objednávku
                 orderToProcess = order;
             }
 
-
-            //planovanie eventu
             double timeOfEvent = Utility.calculateCuttingTime(orderToProcess, core, targetWorker);
             double newTime = time + timeOfEvent;
 
@@ -78,10 +78,11 @@ public class OrderArrivalEvent extends Event {
             }
 
         } else {
-            //ak nie je volny worker pridam do queue
+            // Ak nie je voľný pracovník, pridaj objednávku do fronty
             queueCutting.addLast(order);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         }
+
 
         double newTime = this.time + core.getGenerators().getOrderArrivalDist().sample();
         if (newTime < core.getEndTime()) {

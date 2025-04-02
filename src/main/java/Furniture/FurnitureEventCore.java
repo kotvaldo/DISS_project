@@ -2,11 +2,9 @@ package Furniture;
 
 import EventSimulation.EventSimulationCore;
 import EventSimulation.SystemEvent;
-import Furniture.Entity.Order;
-import Furniture.Entity.Worker;
+import Furniture.Entity.*;
 import Furniture.Events.OrderArrivalEvent;
 import Furniture.Generation.Generators;
-import Furniture.Entity.WorkPlace;
 import Furniture.Enums.PresetSimulationValues;
 import Furniture.Enums.PriorityValues;
 import IDGenerator.IDGenerator;
@@ -25,14 +23,14 @@ public class FurnitureEventCore extends EventSimulationCore {
     private int countWorkerC;
     public ArrayList<Order> ordersArrayList = new ArrayList<>();
     private final LinkedList<Order> queueCutting;
-    private final ArrayList<Worker> workersA;
+    private final ArrayList<WorkerA> workersA;
 
-    private final ArrayList<Worker> workersC;
+    private final ArrayList<WorkerC> workersC;
     private final LinkedList<Order> queueColoring;
 
     private final Random rand;
 
-    private final ArrayList<Worker> workersB;
+    private final ArrayList<WorkerB> workersB;
     private final LinkedList<Order> queueAssembly;
 
     private final LinkedList<Order> queueMontage;
@@ -51,9 +49,9 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Utilisation utilizationC = new Utilisation();
     private final Utilisation utilizationTotal = new Utilisation();
 
-    private final LinkedList<Worker> freeWorkersA;
-    private final LinkedList<Worker> freeWorkersB;
-    private final LinkedList<Worker> freeWorkersC;
+    private final LinkedList<WorkerA> freeWorkersA;
+    private final LinkedList<WorkerB> freeWorkersB;
+    private final LinkedList<WorkerC> freeWorkersC;
 
     private final TimeWeightedStatistic cuttingQL = new TimeWeightedStatistic();
     private final TimeWeightedStatistic coloringQL = new TimeWeightedStatistic();
@@ -262,23 +260,23 @@ public class FurnitureEventCore extends EventSimulationCore {
         freeWorkersC.clear();
 
         for (int i = 0; i < this.countWorkerA; i++) {
-            workersA.add(new Worker("A"));
+            workersA.add(new WorkerA());
             freeWorkersA.add(workersA.get(i));
         }
-        System.out.println(workersA.size());
+       // System.out.println(workersA.size());
         for (int i = 0; i < this.countWorkerC; i++) {
-            workersC.add(new Worker("C"));
+            workersC.add(new WorkerC());
             freeWorkersC.add(workersC.get(i));
         }
 
-        System.out.println(workersC.size());
-        System.out.println(countWorkerB);
+        //System.out.println(workersC.size());
+        //System.out.println(countWorkerB);
         for (int i = 0; i <  this.countWorkerB; i++) {
-            workersB.add(new Worker("B"));
+            workersB.add(new WorkerB());
             freeWorkersB.add(workersB.get(i));
         }
 
-        System.out.println(workersB.size());
+    //    System.out.println(workersB.size());
     }
 
 
@@ -307,11 +305,11 @@ public class FurnitureEventCore extends EventSimulationCore {
         return queueCutting;
     }
 
-    public ArrayList<Worker> getWorkersA() {
+    public ArrayList<WorkerA> getWorkersA() {
         return workersA;
     }
 
-    public ArrayList<Worker> getWorkersC() {
+    public ArrayList<WorkerC> getWorkersC() {
         return workersC;
     }
 
@@ -319,7 +317,7 @@ public class FurnitureEventCore extends EventSimulationCore {
         return queueColoring;
     }
 
-    public ArrayList<Worker> getWorkersB() {
+    public ArrayList<WorkerB> getWorkersB() {
         return workersB;
     }
 
@@ -363,15 +361,15 @@ public class FurnitureEventCore extends EventSimulationCore {
         this.burnInCount = burnInCount;
     }
 
-    public LinkedList<Worker> getFreeWorkersA() {
+    public LinkedList<WorkerA> getFreeWorkersA() {
         return freeWorkersA;
     }
 
-    public LinkedList<Worker> getFreeWorkersB() {
+    public LinkedList<WorkerB> getFreeWorkersB() {
         return freeWorkersB;
     }
 
-    public LinkedList<Worker> getFreeWorkersC() {
+    public LinkedList<WorkerC> getFreeWorkersC() {
         return freeWorkersC;
     }
 

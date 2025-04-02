@@ -67,8 +67,16 @@ public class Order {
         this.endTime = endTime;
     }
 
-    public double getTimeOfWork() {
+    public double getTimeOfWorkArrivalAndEnd() {
         return endTime - arrivalTime;
+    }
+
+    public void addTimeOfWork(double timeOfWork) {
+        this.timeOfWork += timeOfWork;
+    }
+
+    public double getTimeOfWork() {
+        return timeOfWork;
     }
 
 }

@@ -3,18 +3,19 @@ package Furniture.Events;
 import EventSimulation.Event;
 import Furniture.Entity.Order;
 import Furniture.Entity.Worker;
+import Furniture.Entity.WorkerA;
+import Furniture.Entity.WorkerC;
 import Furniture.Enums.OrderStateValues;
 import Furniture.Enums.PriorityValues;
-import Furniture.Enums.WorkerBussyState;
 import Furniture.FurnitureEventCore;
 import SimulationCore.SimulationCore;
 import Utility.Utility;
 
 public class EndOfCuttingEvent extends Event {
     private Order order;
-    private Worker worker;
+    private WorkerA worker;
 
-    public EndOfCuttingEvent(double time, int priority, SimulationCore simulationCore, Order order, Worker worker) {
+    public EndOfCuttingEvent(double time, int priority, SimulationCore simulationCore, Order order, WorkerA worker) {
         super(time, priority, simulationCore);
         this.order = order;
         this.worker = worker;
@@ -29,33 +30,34 @@ public class EndOfCuttingEvent extends Event {
         worker.setOrder(null, this.time);
         core.getFreeWorkersA().addLast(worker);
 
-
-
-
+        // plánovanie fázy coloring (workerC)
         if (!core.getFreeWorkersC().isEmpty()) {
-            Worker targetWorkerColoring = core.getFreeWorkersC().removeFirst();
+            WorkerC targetWorkerColoring = core.getFreeWorkersC().removeFirst();
 
             Order orderToProcess;
+
             if (!core.getQueueColoring().isEmpty()) {
                 orderToProcess = core.getQueueColoring().removeFirst();
-                if (!core.getQueueColoring().contains(order)) {
-                    core.getQueueColoring().addLast(order);
-                    order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
-                }
 
+                // aktuálna objednávka musí vždy do fronty
+                core.getQueueColoring().addLast(this.order);
+                this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
             } else {
+                // ak je queue prázdna, spracujem aktuálnu objednávku
                 orderToProcess = this.order;
             }
 
-            double ttt = Utility.calculateSecondTime(orderToProcess, core, targetWorkerColoring);
-            double newTime = this.time + ttt;
+            double coloringTime = Utility.calculateColoringTime(orderToProcess, core, targetWorkerColoring);
+            double newTime = this.time + coloringTime;
+
             if (newTime < core.getEndTime()) {
                 orderToProcess.setState(OrderStateValues.PROCESSING_COLORING.getValue());
                 targetWorkerColoring.setOrder(orderToProcess, this.time);
-                core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorkerColoring));
+                core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, orderToProcess, targetWorkerColoring));
             }
 
         } else {
+            // Ak WorkerC nie je voľný, vždy pridám do queue
             core.getQueueColoring().addLast(this.order);
             this.order.setState(OrderStateValues.WAITING_IN_QUEUE_2.getValue());
         }
@@ -65,12 +67,10 @@ public class EndOfCuttingEvent extends Event {
 
         // planning cutting event again
 
-
-
         if (!core.getFreeWorkersA().isEmpty() && !core.getQueueCutting().isEmpty()) {
-            Worker targetWorkerForCuttingAgain = core.getFreeWorkersA().removeFirst();
+            WorkerA targetWorkerForCuttingAgain = core.getFreeWorkersA().removeFirst();
             Order nextOrder = core.getQueueCutting().removeFirst();
-            double timeOfWork = Utility.calculateFirstTime(nextOrder, core, targetWorkerForCuttingAgain);
+            double timeOfWork = Utility.calculateCuttingTime(nextOrder, core, targetWorkerForCuttingAgain);
             double newTime = this.time + timeOfWork;
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());

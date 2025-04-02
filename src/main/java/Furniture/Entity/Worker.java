@@ -52,13 +52,10 @@ public class Worker {
     }
 
     public void setOrder(Order orderId, double currentTime) {
-        if (orderId == null) {
-            setIsBusy(false, currentTime);
-        } else {
-            this.order = orderId;
-            setIsBusy(true, currentTime);
-        }
+        this.order = orderId;
+        setIsBusy(orderId != null, currentTime);
     }
+
 
     public WorkPlace getCurrentWorkPlace() {
         return currentWorkPlace;
