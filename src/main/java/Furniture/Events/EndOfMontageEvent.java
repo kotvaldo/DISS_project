@@ -37,11 +37,16 @@ public class EndOfMontageEvent extends Event {
         core.getAverageTimeOfWorking().add(order.getTimeOfWorkArrivalAndEnd());
         core.setCountOfFinishedOrders(core.getCountOfFinishedOrders() + 1);
 
+        if(order.getId() == 500) {
+            order.getId();
+        }
 
         if (!core.getQueueMontage().isEmpty() && !core.getFreeWorkersC().isEmpty()) {
             WorkerC targetWorkerForMontage = core.getFreeWorkersC().removeFirst();
             Order nextOrder = core.getQueueMontage().removeFirst();
-            double newTime = this.time + Utility.calculateMontageTime(nextOrder, core, targetWorkerForMontage);
+            double currentTime = this.time;
+            double montageTime = Utility.calculateMontageTime(nextOrder, core, targetWorkerForMontage);
+            double newTime = currentTime + montageTime;
             if (newTime < core.getEndTime()) {
                 nextOrder.setState(OrderStateValues.PROCESSING_MONTAGE.getValue());
                 targetWorkerForMontage.setOrder(nextOrder, this.time);

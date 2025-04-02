@@ -54,22 +54,16 @@ public class OrderArrivalEvent extends Event {
 
 
         LinkedList<Order> queueCutting = core.getQueueCutting();
-
         if (!core.getFreeWorkersA().isEmpty()) {
             WorkerA targetWorker = core.getFreeWorkersA().removeFirst();
 
             Order orderToProcess;
 
             if (!queueCutting.isEmpty()) {
+                // spracuj hneď zákazníka z fronty
                 orderToProcess = queueCutting.removeFirst();
-
-                // TOTO JE OPRAVA
-                if (!queueCutting.contains(order)) {
-                    queueCutting.addLast(order);
-                    order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
-                }
-
             } else {
+                // ak fronta prázdna, spracuj aktuálny order bez frontovania
                 orderToProcess = order;
             }
 
@@ -83,13 +77,15 @@ public class OrderArrivalEvent extends Event {
             }
 
         } else {
-            // Ak nie je voľný pracovník, pridaj objednávku do fronty
+            // iba ak nie je voľný worker, order ide do queue
             queueCutting.addLast(order);
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         }
 
 
-        double newTime = this.time + core.getGenerators().getOrderArrivalDist().sample();
+        double currentTime = this.time;
+        double arrivalTimeOffset = core.getGenerators().getOrderArrivalDist().sample();
+        double newTime = currentTime + arrivalTimeOffset;
         if (newTime < core.getEndTime()) {
             core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
         }

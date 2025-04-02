@@ -24,10 +24,12 @@ public class Generators {
     public Generators() {
 
 
-        Random rand = new Random(1);
+        Random rand = new Random();
 
         orderArrivalDist = new Exponential(1800.0, rand.nextInt());
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
+
+
         typeList.add(new EmpiricData<>(1, 2, 0.5, rand.nextInt()));
         typeList.add(new EmpiricData<>(2, 3, 0.15, rand.nextInt()));
         typeList.add(new EmpiricData<>(3, 4, 0.35, rand.nextInt()));

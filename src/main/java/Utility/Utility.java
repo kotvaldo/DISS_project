@@ -30,114 +30,80 @@ public class Utility {
 
     public static double calculateCuttingTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
-
         WorkPlace current = worker.getCurrentWorkPlace();
         WorkPlace target = order.getWorkPlace();
 
         if (current == null) {
-            // in storage
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
+            // Worker začína v sklade
             totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
-
-        } else if (!current.equals(target)) {
-            //in other workplace
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
-            totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
-
-        } else {
-            //in targetWorkPlace
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
+        } else if (!current.equals(target)) {
+            // Worker nie je v sklade
             totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
             totalTime += core.getGenerators().getTimeSpentInStorageDist().sample();
+            totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
         }
-
         worker.setCurrentWorkPlace(target);
 
+        // Cutting process
+        if (order.getType() == 1) totalTime += core.getGenerators().getCuttingTableDist().sample();
+        else if (order.getType() == 2) totalTime += core.getGenerators().getCuttingChairDist().sample();
+        else if (order.getType() == 3) totalTime += core.getGenerators().getCuttingWardrobeDist().sample();
 
-        if(order.getType() == 1) {
-            totalTime += core.getGenerators().getCuttingTableDist().sample();
-        } else if(order.getType() == 2) {
-            totalTime += core.getGenerators().getCuttingChairDist().sample();
-        } else if(order.getType() == 3) {
-            totalTime += core.getGenerators().getCuttingWardrobeDist().sample();
-        }
         return totalTime;
-
     }
+
 
     public static double calculateColoringTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
-
         WorkPlace current = worker.getCurrentWorkPlace();
         WorkPlace target = order.getWorkPlace();
 
-        if (current == null) {
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
-
-        } else if (!current.equals(target)) {
+        if (current != null && !current.equals(target)) {
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
-
-
         }
-
         worker.setCurrentWorkPlace(target);
 
-
-        if(order.getType() == 1) {
-            totalTime += core.getGenerators().getColoringTableDist().sample();
-        } else if(order.getType() == 2) {
-            totalTime += core.getGenerators().getColoringChairDist().sample();
-        } else if(order.getType() == 3) {
-            totalTime += core.getGenerators().getColoringWardrobeDist().sample();
-        }
+        if (order.getType() == 1) totalTime += core.getGenerators().getColoringTableDist().sample();
+        else if (order.getType() == 2) totalTime += core.getGenerators().getColoringChairDist().sample();
+        else if (order.getType() == 3) totalTime += core.getGenerators().getColoringWardrobeDist().sample();
 
         return totalTime;
-
     }
+
 
     public static double calculateAssemblyTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
-
         WorkPlace current = worker.getCurrentWorkPlace();
         WorkPlace target = order.getWorkPlace();
 
-        if (current == null) {
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
-
-        } else if (!current.equals(target)) {
+        if (current != null && !current.equals(target)) {
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
         }
-
         worker.setCurrentWorkPlace(target);
-        if(order.getType() == 1) {
-            totalTime += core.getGenerators().getAssemblyTableDist().sample();
-        } else if(order.getType() == 2) {
-            totalTime += core.getGenerators().getAssemblyChairDist().sample();
-        } else if(order.getType() == 3) {
-            totalTime += core.getGenerators().getAssemblyWardrobeDist().sample();
-        }
+
+        if (order.getType() == 1) totalTime += core.getGenerators().getAssemblyTableDist().sample();
+        else if (order.getType() == 2) totalTime += core.getGenerators().getAssemblyChairDist().sample();
+        else if (order.getType() == 3) totalTime += core.getGenerators().getAssemblyWardrobeDist().sample();
+
         return totalTime;
     }
+
     public static double calculateMontageTime(Order order, FurnitureEventCore core, Worker worker) {
         double totalTime = 0.0;
-
         WorkPlace current = worker.getCurrentWorkPlace();
         WorkPlace target = order.getWorkPlace();
 
-        if (current == null) {
-            totalTime += core.getGenerators().getTimeMovingIntoStorageDist().sample();
-        } else if (!current.equals(target)) {
+        if (current != null && !current.equals(target)) {
             totalTime += core.getGenerators().getTimeMovingToAnotherWorkshopDist().sample();
         }
-
         worker.setCurrentWorkPlace(target);
 
         totalTime += core.getGenerators().getMontageWardrobeDist().sample();
 
         return totalTime;
     }
+
 
 
     public static String fromSecondsToTime(double seconds) {
