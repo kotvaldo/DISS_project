@@ -48,6 +48,11 @@ public class OrderArrivalEvent extends Event {
         order.setWorkPlace(workPlace);
         workPlace.setOrder(order);
 
+        if(order.getId() == 500) {
+            order.getId();
+        }
+
+
         LinkedList<Order> queueCutting = core.getQueueCutting();
 
         if (!core.getFreeWorkersA().isEmpty()) {
@@ -56,15 +61,15 @@ public class OrderArrivalEvent extends Event {
             Order orderToProcess;
 
             if (!queueCutting.isEmpty()) {
-                // Ak fronta nie je prázdna, vždy ber prvú objednávku z fronty
                 orderToProcess = queueCutting.removeFirst();
 
-                // Práve vytvorená objednávka musí ísť do fronty vždy
-                queueCutting.addLast(order);
-                order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
+                // TOTO JE OPRAVA
+                if (!queueCutting.contains(order)) {
+                    queueCutting.addLast(order);
+                    order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
+                }
 
             } else {
-                // Ak fronta je prázdna, spracuj aktuálnu objednávku
                 orderToProcess = order;
             }
 

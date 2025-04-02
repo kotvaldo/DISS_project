@@ -7,7 +7,7 @@ import java.util.List;
 
 public class WorkPlacesTableModel extends AbstractTableModel {
 
-    private final String[] columns = {"WorkPlace ID", "Busy State", "Order ID"};
+    private final String[] columns = {"WorkPlace ID", "Busy State", "Order ID", "Curr_Activity"};
     private List<WorkPlace> workPlaces;
 
     public WorkPlacesTableModel(List<WorkPlace> workPlaces) {
@@ -38,9 +38,10 @@ public class WorkPlacesTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         WorkPlace workPlace = workPlaces.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> "WorkPlace ID: " + workPlace.getId();
+            case 0 -> workPlace.getId();
             case 1 -> workPlace.isBusy() ? "Busy" : "Available";
-            case 2 -> workPlace.getOrder() != null ? "Order ID: " + workPlace.getOrder().getId() : "No Order";
+            case 2 -> workPlace.getOrder() != null ? workPlace.getOrder().getId() : "No Order";
+            case 3 -> workPlace.getActivity();
             default -> null;
         };
     }

@@ -28,6 +28,11 @@ public class Order {
 
     public void setState(int state) {
         this.state = state;
+
+        if (this.getWorkPlace() != null) {
+            String stateName = OrderStateValues.getNameByValue(state);
+                this.getWorkPlace().setActivity(stateName);
+        }
     }
 
     public int getId() {
