@@ -24,19 +24,19 @@ public class Generators {
     public Generators() {
 
 
-        Random rand = new Random();
+        Random rand = new Random(1);
 
         orderArrivalDist = new Exponential(1800.0, rand.nextInt());
         ArrayList<EmpiricData<Integer>> typeList = new ArrayList<>();
-        typeList.add(new EmpiricData<>(1, 2, 0.5));
-        typeList.add(new EmpiricData<>(2, 3, 0.15));
-        typeList.add(new EmpiricData<>(3, 4, 0.35));
+        typeList.add(new EmpiricData<>(1, 2, 0.5, rand.nextInt()));
+        typeList.add(new EmpiricData<>(2, 3, 0.15, rand.nextInt()));
+        typeList.add(new EmpiricData<>(3, 4, 0.35, rand.nextInt()));
         typeOfOrderDist = new EmpiricDiscrete(typeList, rand.nextInt());
 
 
         ArrayList<EmpiricData<Double>> typeOneCuttingList = new ArrayList<>();
-        typeOneCuttingList.add(new EmpiricData<>(10.0 * 60, 25.0 * 60, 0.6));
-        typeOneCuttingList.add(new EmpiricData<>(25.0 * 60, 50.0 * 60, 0.4));
+        typeOneCuttingList.add(new EmpiricData<>(10.0 * 60, 25.0 * 60, 0.6, rand.nextInt()));
+        typeOneCuttingList.add(new EmpiricData<>(25.0 * 60, 50.0 * 60, 0.4, rand.nextInt()));
         //first
         cuttingTableDist = new EmpiricContinuous(typeOneCuttingList, rand.nextInt());
         coloringTableDist = new UniformContinuous(200.0 * 60, 610.0 * 60, rand.nextInt());

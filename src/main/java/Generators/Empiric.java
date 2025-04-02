@@ -30,7 +30,7 @@ public abstract class Empiric<T extends Number> extends BaseGenerator<T> {
     
     @Override
     public T sample() {
-        double probability = Math.random();
+        double probability = this.baseRandom.nextDouble();
         cumulativeProbability = 0.0;
 
         for (int i = 0; i < listOfValues.size(); i++) {
