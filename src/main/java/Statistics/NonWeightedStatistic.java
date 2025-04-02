@@ -44,7 +44,7 @@ public class NonWeightedStatistic implements Statistic {
 
     @Override
     public String confidenceInterval() {
-        if (count < 2) return "n/a";
+        if (count < 30) return "n/a";
 
         double mean = mean();
         double stdDev = standardDeviation();
