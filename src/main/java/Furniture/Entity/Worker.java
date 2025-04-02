@@ -68,4 +68,11 @@ public class Worker {
     public Utilisation getUtilisation() {
         return utilisation;
     }
+
+    public void clear() {
+        order = null;
+        currentWorkPlace = null;
+        isBusy = false;
+
+    }
 }

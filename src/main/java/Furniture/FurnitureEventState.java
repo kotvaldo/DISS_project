@@ -1,8 +1,6 @@
 package Furniture;
 
-import Furniture.Entity.Order;
-import Furniture.Entity.WorkPlace;
-import Furniture.Entity.Worker;
+import Furniture.Entity.*;
 import State.IState;
 import Statistics.Average;
 import Statistics.Utilisation;
@@ -12,9 +10,9 @@ import java.util.ArrayList;
 public class FurnitureEventState implements IState {
     private double simulationTime = 0;
     private ArrayList<Order> allOrders;
-    private ArrayList<Worker> workersA;
-    private ArrayList<Worker> workersC;
-    private ArrayList<Worker> workersB;
+    private ArrayList<WorkerA> workersA;
+    private ArrayList<WorkerC> workersC;
+    private ArrayList<WorkerB> workersB;
     private ArrayList<WorkPlace> workPlaces;
     private boolean slowDown;
     private int repCount;
@@ -35,6 +33,13 @@ public class FurnitureEventState implements IState {
     private Average coloringQLStat;
     private Average assemblyQLStat;
     private Average montageQLStat;
+
+    private Average avgFinishedOrders;
+    private Average avgAllOrders;
+
+    private ArrayList<Average> utilisationWorkersA;
+    private ArrayList<Average> utilisationWorkersB;
+    private ArrayList<Average> utilisationWorkersC;
 
     private int currentDay = 0;
     private int burnRepCount = 0;
@@ -60,27 +65,27 @@ public class FurnitureEventState implements IState {
         this.allOrders = allOrders;
     }
 
-    public ArrayList<Worker> getWorkersA() {
+    public ArrayList<WorkerA> getWorkersA() {
         return workersA;
     }
 
-    public void setWorkersA(ArrayList<Worker> workersA) {
+    public void setWorkersA(ArrayList<WorkerA> workersA) {
         this.workersA = workersA;
     }
 
-    public ArrayList<Worker> getWorkersC() {
+    public ArrayList<WorkerC> getWorkersC() {
         return workersC;
     }
 
-    public void setWorkersC(ArrayList<Worker> workersC) {
+    public void setWorkersC(ArrayList<WorkerC> workersC) {
         this.workersC = workersC;
     }
 
-    public ArrayList<Worker> getWorkersB() {
+    public ArrayList<WorkerB> getWorkersB() {
         return workersB;
     }
 
-    public void setWorkersB(ArrayList<Worker> workersB) {
+    public void setWorkersB(ArrayList<WorkerB> workersB) {
         this.workersB = workersB;
     }
 
@@ -251,5 +256,45 @@ public class FurnitureEventState implements IState {
 
     public void setMontageQLStat(Average montageQLStat) {
         this.montageQLStat = montageQLStat;
+    }
+
+    public ArrayList<Average> getUtilisationWorkersA() {
+        return utilisationWorkersA;
+    }
+
+    public void setUtilisationWorkersA(ArrayList<Average> utilisationWorkersA) {
+        this.utilisationWorkersA = utilisationWorkersA;
+    }
+
+    public ArrayList<Average> getUtilisationWorkersB() {
+        return utilisationWorkersB;
+    }
+
+    public void setUtilisationWorkersB(ArrayList<Average> utilisationWorkersB) {
+        this.utilisationWorkersB = utilisationWorkersB;
+    }
+
+    public ArrayList<Average> getUtilisationWorkersC() {
+        return utilisationWorkersC;
+    }
+
+    public void setUtilisationWorkersC(ArrayList<Average> utilisationWorkersC) {
+        this.utilisationWorkersC = utilisationWorkersC;
+    }
+
+    public Average getAvgFinishedOrders() {
+        return avgFinishedOrders;
+    }
+
+    public void setAvgFinishedOrders(Average avgFinishedOrders) {
+        this.avgFinishedOrders = avgFinishedOrders;
+    }
+
+    public Average getAvgAllOrders() {
+        return avgAllOrders;
+    }
+
+    public void setAvgAllOrders(Average avgAllOrders) {
+        this.avgAllOrders = avgAllOrders;
     }
 }

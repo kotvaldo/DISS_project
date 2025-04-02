@@ -15,15 +15,17 @@ public class AverageTimeObserver implements IObserver {
         this.timeOfWorkIntervalLabel = timeOfWorkIntervalLabel;
 
     }
+
     @Override
     public void update(IState state) {
 
         FurnitureEventState s = (FurnitureEventState) state;
 
-        if(!s.isSlowDown()) {
+        if (!s.isSlowDown()) {
             SwingUtilities.invokeLater(() -> {
-            timeOfWorkLabel.setText("Average Time of Work: " + String.format("%.2f", s.getAverageTimeOfWorking().mean()));
-            timeOfWorkIntervalLabel.setText("CI: [" + s.getAverageTimeOfWorking().confidenceInterval());
+                s.getAverageTimeOfWorking().confidenceInterval();
+                timeOfWorkLabel.setText("Average Time of Work (s): " + String.format("%.2f", s.getAverageTimeOfWorking().mean()) + "     Average Time of Work (h): " + String.format("%.2f", s.getAverageTimeOfWorking().mean() / 3600.0));
+                timeOfWorkIntervalLabel.setText("CI(s): [" + s.getAverageTimeOfWorking().confidenceInterval() + "     CI(h):" + String.format("[ %.2f, %.2f ]", s.getAverageTimeOfWorking().getLowerBound() / 3600.0, s.getAverageTimeOfWorking().getUpperBound() / 3600.0));
             });
 
         }

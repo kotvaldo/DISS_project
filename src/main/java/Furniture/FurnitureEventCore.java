@@ -66,8 +66,8 @@ public class FurnitureEventCore extends EventSimulationCore {
     private final Average coloringQLStats = new Average();
     private final Average assemblyQLStats = new Average();
     private final Average montageQLStats = new Average();
-    private final Average countOfOrders;
-    private final Average countOfOrdersFinished;
+    private final Average countOfOrders =  new Average();;
+    private final Average countOfOrdersFinished = new Average();
 
     private final Average averageTimeInQueueCutting = new Average();
     private final Average averageTimeInQueueColoring = new Average();
@@ -82,7 +82,6 @@ public class FurnitureEventCore extends EventSimulationCore {
         workersA = new ArrayList<>();
         workersB = new ArrayList<>();
         workersC = new ArrayList<>();
-        countOfOrders = new Average();
         freeWorkersA = new LinkedList<>();
         freeWorkersB = new LinkedList<>();
         freeWorkersC = new LinkedList<>();
@@ -96,7 +95,6 @@ public class FurnitureEventCore extends EventSimulationCore {
         //statistiky
         averageTimeOfWorking = new Average();
         newOrdersAfterSimulation = new Average();
-        countOfOrdersFinished = new Average();
 
         countOfFinishedOrders = 0;
     }
@@ -118,6 +116,20 @@ public class FurnitureEventCore extends EventSimulationCore {
         montageQLStats.clear();
         countOfOrdersFinished.clear();
 
+        utilizationWorkersA.clear();
+        utilizationWorkersB.clear();
+        utilizationWorkersC.clear();
+
+        // Cyklus podľa countWorkerA/B/C
+        for (int i = 0; i < countWorkerA; i++) {
+            utilizationWorkersA.add(new Average());
+        }
+        for (int i = 0; i < countWorkerB; i++) {
+            utilizationWorkersB.add(new Average());
+        }
+        for (int i = 0; i < countWorkerC; i++) {
+            utilizationWorkersC.add(new Average());
+        }
 
         averageTimeInQueueCutting.clear();
         averageTimeInQueueColoring.clear();
@@ -182,7 +194,7 @@ public class FurnitureEventCore extends EventSimulationCore {
 
     @Override
     protected void afterRunSimulation() {
-        System.out.println(countOfOrders.mean());
+        /*System.out.println(countOfOrders.mean());
         System.out.println(countOfOrdersFinished.mean());
         System.out.println(this.utilizationA.mean());
         System.out.println(this.utilizationB.mean());
@@ -195,12 +207,12 @@ public class FurnitureEventCore extends EventSimulationCore {
         }
         for (Average a : this.utilizationWorkersC) {
             System.out.println("C" + a.mean());
-        }
+        }*/
 
-        System.out.println("Avg time in Queue Cutting: " + averageTimeInQueueCutting.mean()/ 3600);
+       /* System.out.println("Avg time in Queue Cutting: " + averageTimeInQueueCutting.mean()/ 3600);
         System.out.println("Avg time in Queue Coloring: " + averageTimeInQueueColoring.mean()/ 3600);
         System.out.println("Avg time in Queue Assembly: " + averageTimeInQueueAssembly.mean()/ 3600);
-        System.out.println("Avg time in Queue Montage: " + averageTimeInQueueMontage.mean() / 3600);
+        System.out.println("Avg time in Queue Montage: " + averageTimeInQueueMontage.mean() / 3600);*/
 
     }
 
@@ -215,27 +227,29 @@ public class FurnitureEventCore extends EventSimulationCore {
             double utilizationAll = 0.0;
 
             for (int i = 0; i < workersA.size(); i++) {
-                utilizationWorkersA.get(i).add(workersA.get(i).getUtilisation().getUtilisation());
-            }
-            for (int i = 0; i < workersB.size(); i++) {
-                utilizationWorkersB.get(i).add(workersB.get(i).getUtilisation().getUtilisation());
-            }
-            for (int i = 0; i < workersC.size(); i++) {
-                utilizationWorkersC.get(i).add(workersC.get(i).getUtilisation().getUtilisation());
+                Worker w = workersA.get(i);
+                double util = w.getUtilisation().getUtilisation();
+                utilizationGroupA += util;
+                utilizationAll += util;
+                utilizationWorkersA.get(i).add(util);
             }
 
-            for (Worker w : workersA) {
-                utilizationGroupA += w.getUtilisation().getUtilisation();
-                utilizationAll += w.getUtilisation().getUtilisation();
+            for (int i = 0; i < workersB.size(); i++) {
+                Worker w = workersB.get(i);
+                double util = w.getUtilisation().getUtilisation();
+                utilizationGroupB += util;
+                utilizationAll += util;
+                utilizationWorkersB.get(i).add(util);
             }
-            for (Worker w : workersB) {
-                utilizationGroupB += w.getUtilisation().getUtilisation();
-                utilizationAll += w.getUtilisation().getUtilisation();
+
+            for (int i = 0; i < workersC.size(); i++) {
+                Worker w = workersC.get(i);
+                double util = w.getUtilisation().getUtilisation();
+                utilizationGroupC += util;
+                utilizationAll += util;
+                utilizationWorkersC.get(i).add(util);
             }
-            for (Worker w : workersC) {
-                utilizationGroupC += w.getUtilisation().getUtilisation();
-                utilizationAll += w.getUtilisation().getUtilisation();
-            }
+
 
             countOfOrders.add(ordersArrayList.size());
             cuttingQLStats.add(cuttingQL.getMean());
@@ -244,13 +258,13 @@ public class FurnitureEventCore extends EventSimulationCore {
             montageQLStats.add(montageQL.getMean());
             countOfOrdersFinished.add(countOfFinishedOrders);
 
+
             utilizationA.add(utilizationGroupA / workersA.size());
             utilizationB.add(utilizationGroupB / workersB.size());
             utilizationC.add(utilizationGroupC / workersC.size());
             utilizationTotal.add(utilizationAll / (workersA.size() + workersB.size() + workersC.size()));
 
             newOrdersAfterSimulation.add(queueCutting.size());
-
 
             //  System.out.println(queueCutting.size());
             state.setRepCount(this.actualRepCount);
@@ -264,7 +278,15 @@ public class FurnitureEventCore extends EventSimulationCore {
             state.setAssemblyQLStat(assemblyQLStats);
             state.setMontageQLStat(montageQLStats);
             state.setColoringQLStat(coloringQLStats);
+            state.setUtilisationWorkersA(utilizationWorkersA);
+            state.setUtilisationWorkersB(utilizationWorkersB);
+            state.setUtilisationWorkersC(utilizationWorkersC);
+            state.setWorkersA(new ArrayList<>(this.getWorkersA()));
+            state.setWorkersB(new ArrayList<>(this.getWorkersB()));
+            state.setWorkersC(new ArrayList<>(this.getWorkersC()));
             state.setCuttingQLStat(cuttingQLStats);
+            state.setAvgAllOrders(countOfOrders);
+            state.setAvgFinishedOrders(countOfOrdersFinished);
         }
         this.listener.setState(state);
         this.listener.notifyObservers();
@@ -310,20 +332,15 @@ public class FurnitureEventCore extends EventSimulationCore {
         freeWorkersB.clear();
         freeWorkersC.clear();
 
-        utilizationWorkersA.clear();
-        utilizationWorkersB.clear();
-        utilizationWorkersC.clear();
 
         for (int i = 0; i < this.countWorkerA; i++) {
             workersA.add(new WorkerA());
             freeWorkersA.add(workersA.get(i));
-            utilizationWorkersA.add(new Average());
         }
        // System.out.println(workersA.size());
         for (int i = 0; i < this.countWorkerC; i++) {
             workersC.add(new WorkerC());
             freeWorkersC.add(workersC.get(i));
-            utilizationWorkersC.add(new Average());
         }
 
         //System.out.println(workersC.size());
@@ -331,7 +348,6 @@ public class FurnitureEventCore extends EventSimulationCore {
         for (int i = 0; i <  this.countWorkerB; i++) {
             workersB.add(new WorkerB());
             freeWorkersB.add(workersB.get(i));
-            utilizationWorkersB.add(new Average());
         }
 
     //    System.out.println(workersB.size());

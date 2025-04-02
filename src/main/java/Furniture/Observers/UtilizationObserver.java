@@ -43,16 +43,16 @@ public class UtilizationObserver implements IObserver {
         FurnitureEventState fstate = (FurnitureEventState) state;
         if(!fstate.isSlowDown()) {
             SwingUtilities.invokeLater(() -> {
-                utilizationALabel.setText(String.format("Utilization A: %.7f%%", fstate.getUtilisationA().mean()));
+                utilizationALabel.setText(String.format("Utilization A: %.7f%%", fstate.getUtilisationA().mean() * 100));
                 utilizationAIntervalLabel.setText(fstate.getUtilisationA().confidenceInterval());
 
-                utilizationBLabel.setText(String.format("Utilization B: %.7f%%", fstate.getUtilisationB().mean()));
+                utilizationBLabel.setText(String.format("Utilization B: %.7f%%", fstate.getUtilisationB().mean() * 100));
                 utilizationBIntervalLabel.setText(fstate.getUtilisationB().confidenceInterval());
 
-                utilizationCLabel.setText(String.format("Utilization C: %.7f%%", fstate.getUtilisationC().mean()));
+                utilizationCLabel.setText(String.format("Utilization C: %.7f%%", fstate.getUtilisationC().mean() * 100));
                 utilizationCIntervalLabel.setText(fstate.getUtilisationC().confidenceInterval());
 
-                utilizationAllLabel.setText(String.format("Utilization All: %.7f%%", fstate.getUtilisationAll().mean()));
+                utilizationAllLabel.setText(String.format("Utilization All: %.7f%%", fstate.getUtilisationAll().mean() * 100));
                 utilizationAllIntervalLabel.setText(fstate.getUtilisationAll().confidenceInterval());
             });
 

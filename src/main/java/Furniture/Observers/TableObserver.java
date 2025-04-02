@@ -16,11 +16,13 @@ public class TableObserver implements IObserver {
     private final OrdersTableModel ordersModel;
     private final WorkersTableModel workersModel;
     private final WorkPlacesTableModel workPlacesModel;
+    private final UtilisationTableModel utilisationModel;
 
-    public TableObserver(OrdersTableModel ordersModel, WorkersTableModel workersModel, WorkPlacesTableModel workPlacesModel) {
+    public TableObserver(OrdersTableModel ordersModel, WorkersTableModel workersModel, WorkPlacesTableModel workPlacesModel, UtilisationTableModel utilisationModel) {
         this.ordersModel = ordersModel;
         this.workersModel = workersModel;
         this.workPlacesModel = workPlacesModel;
+        this.utilisationModel = utilisationModel;
     }
 
     @Override
@@ -42,6 +44,12 @@ public class TableObserver implements IObserver {
                 workersModel.setWorkers(workersSnapshot);
                 workPlacesModel.setWorkPlaces(workPlacesSnapshot);
             });
+        } else {
+            SwingUtilities.invokeLater(() -> {
+                utilisationModel.setData(furnitureState.getUtilisationWorkersA(), furnitureState.getUtilisationWorkersB(), furnitureState.getUtilisationWorkersC());
+
+            });
+
         }
     }
 }

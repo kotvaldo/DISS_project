@@ -38,6 +38,8 @@ public class LabelObserver implements IObserver {
 
             } else {
                 this.repCountLabel.setText("Rep Count : " + furnitureEventState.getRepCount());
+                this.countOfFinished.setText("Finished : " + String.format("%.4f", furnitureEventState.getAvgFinishedOrders().mean()) + " , "+ furnitureEventState.getAvgFinishedOrders().confidenceInterval());
+                this.countOfAll.setText("All : " + String.format("%.4f", furnitureEventState.getAvgAllOrders().mean()) + " , " + furnitureEventState.getAvgAllOrders().confidenceInterval());
             }
 
         });

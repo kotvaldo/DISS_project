@@ -4,6 +4,7 @@ import Furniture.Enums.SimulationSpeedLimitValues;
 import Furniture.FurnitureEventCore;
 import Furniture.Observers.*;
 import GUI.Models.OrdersTableModel;
+import GUI.Models.UtilisationTableModel;
 import GUI.Models.WorkPlacesTableModel;
 import GUI.Models.WorkersTableModel;
 import Observer.Subject;
@@ -50,7 +51,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     private JLabel utilisationBIntervalLabel;
     private JLabel utilisationCIntervalLabel;
     private JLabel utilisationAllIntervalLabel;
-
+    private UtilisationTableModel utilisationTableModel;
+    private JTable utilisationTable;
 
     private JFreeChart chart;
     private ChartPanel chartPanel;
@@ -123,6 +125,13 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         workPlaceTable.setPreferredScrollableViewportSize(new Dimension(400, 600));
         JScrollPane workPlaceSroll = new JScrollPane(workPlaceTable);
 
+        utilisationTableModel = new UtilisationTableModel(
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+        );
+        utilisationTable = new JTable(utilisationTableModel);
+        utilisationTable.setPreferredScrollableViewportSize(new Dimension(400, 400));
+        JScrollPane utilisationScroll = new JScrollPane(utilisationTable);
+        utilisationScroll.setVisible(false);
 
         JPanel tablePanel = new JPanel();
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.X_AXIS));
@@ -133,7 +142,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         tablePanel.add(workersScroll);
         tablePanel.add(Box.createHorizontalStrut(10));
         tablePanel.add(workPlaceSroll);
-
+        tablePanel.add(utilisationScroll);
         tablePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
 
         this.centerPanel.add(tablePanel);
@@ -189,9 +198,8 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
             utilisationBIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationCIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
             utilisationAllIntervalLabel.setVisible(!slowDownCheckBox.isSelected());
-            countOfAllOrdersLabel.setVisible(slowDownCheckBox.isSelected());
-            countOfFinishedOrdersLabel.setVisible(slowDownCheckBox.isSelected());
             //statisticsForSimPanel.setVisible(slowDownCheckBox.isSelected());
+            utilisationScroll.setVisible(!slowDownCheckBox.isSelected());
             if (chartPanel != null) {
                 chartPanel.setVisible(!slowDownCheckBox.isSelected());
             }
@@ -219,7 +227,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         GraphObserver graphObserver = new GraphObserver(orderTimeSeries, chart, intervalLower, intervalUpper);
         subject.attachObserver(graphObserver);
 
-        TableObserver tableObserver = new TableObserver(ordersTableModel, workersTableModel, workPlacesTableModel);
+        TableObserver tableObserver = new TableObserver(ordersTableModel, workersTableModel, workPlacesTableModel, utilisationTableModel);
         subject.attachObserver(tableObserver);
 
         LabelObserver observer = new LabelObserver(label, dayCountLabel, replicationCountLabel, countOfFinishedOrdersLabel, countOfAllOrdersLabel);
@@ -245,7 +253,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
     @Override
     protected void initializeChart() {
         // === GRAF ===
-        orderTimeSeries = new XYSeries("Priemerný čas výroby");
+        orderTimeSeries = new XYSeries("Average compute time");
         intervalLower = new XYSeries("CI: Lower value");
         intervalUpper = new XYSeries("CI: Upper value");
 
@@ -255,9 +263,9 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
         dataset.addSeries(intervalUpper);
 
         chart = ChartFactory.createXYLineChart(
-                "Ustalovanie - Priemerný čas výroby",
-                "Replikácia",
-                "Čas [hod]",
+                "Average working time",
+                "Replication",
+                "Time [sek]",
                 dataset
         );
 
