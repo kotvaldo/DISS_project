@@ -25,17 +25,21 @@ public class GraphObserver implements IObserver {
     public void update(IState state) {
         FurnitureEventState fState = (FurnitureEventState) state;
         if (!fState.isSlowDown()) {
-            if(fState.getRepCount() > fState.getBurnRepCount()) {
-                SwingUtilities.invokeLater(() -> {
-                    int rep = fState.getRepCount();
-                    double mean = fState.getAverageTimeOfWorking().mean();
-                    timeOfWorkingSeries.add(rep, mean);
-                    fState.getAverageTimeOfWorking().confidenceInterval();
-                    intervalLower.add(rep, fState.getAverageTimeOfWorking().getLowerBound());
-                    intervalUpper.add(rep, fState.getAverageTimeOfWorking().getUpperBound());
-                });
-                setRangeAxis(intervalLower.getMinY(), intervalUpper.getMaxY());
+            if (fState.getRepCount() > fState.getBurnRepCount()) {
+                if (fState.getRepCount() % 2 == 0) {
+
+                    SwingUtilities.invokeLater(() -> {
+                        int rep = fState.getRepCount();
+                        double mean = fState.getAverageTimeOfWorking().mean();
+                        timeOfWorkingSeries.add(rep, mean);
+                        fState.getAverageTimeOfWorking().confidenceInterval();
+                        intervalLower.add(rep, fState.getAverageTimeOfWorking().getLowerBound());
+                        intervalUpper.add(rep, fState.getAverageTimeOfWorking().getUpperBound());
+                    });
+                    setRangeAxis(intervalLower.getMinY(), intervalUpper.getMaxY());
+                }
             }
+
 
         }
     }

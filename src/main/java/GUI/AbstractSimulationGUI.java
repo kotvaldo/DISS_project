@@ -78,7 +78,7 @@ public abstract class AbstractSimulationGUI extends JFrame {
 
     private void initializeInputFields() {
         replicationsInput = new JTextField("1000", 10);
-        burnInInput = new JTextField("20", 10);
+        burnInInput = new JTextField("100", 10);
         updateFrequencyInput = new JTextField("1000", 10);
     }
 
