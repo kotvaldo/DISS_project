@@ -129,7 +129,7 @@ public class EventSimulationGUI extends AbstractSimulationGUI {
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
         );
         utilisationTable = new JTable(utilisationTableModel);
-        utilisationTable.setPreferredScrollableViewportSize(new Dimension(400, 400));
+        utilisationTable.setPreferredScrollableViewportSize(new Dimension(400, 200));
         JScrollPane utilisationScroll = new JScrollPane(utilisationTable);
         utilisationScroll.setVisible(false);
 
