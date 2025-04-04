@@ -86,6 +86,10 @@ public class OrderArrivalEvent extends Event {
             order.setState(OrderStateValues.WAITING_IN_QUEUE_1.getValue());
         }
 
-
+        double arrivalTimeOffset = core.getGenerators().getOrderArrivalDist().sample();
+        double newTime = this.time + arrivalTimeOffset;
+        if (newTime < core.getEndTime()) {
+            core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
+        }
     }
 }
