@@ -72,5 +72,6 @@ public class EndOfMontageEvent extends Event {
                 core.addEvent(new EndOfColoringEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore, nextColoringOrder, targetWorkerForColoringAgain));
             }
         }
+
     }
 }
