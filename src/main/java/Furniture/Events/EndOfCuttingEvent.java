@@ -2,7 +2,6 @@ package Furniture.Events;
 
 import EventSimulation.Event;
 import Furniture.Entity.Order;
-import Furniture.Entity.Worker;
 import Furniture.Entity.WorkerA;
 import Furniture.Entity.WorkerC;
 import Furniture.Enums.OrderStateValues;
@@ -88,16 +87,16 @@ public class EndOfCuttingEvent extends Event {
                 core.getAverageTimeInQueueCutting().add(waitingTime);
             }
 
-            double cuttingTime = Utility.calculateCuttingTime(nextOrder, core, targetWorkerForCuttingAgain);
+            double cuttingTime = Utility.calculateAccessingTime(core);
             double newTime = this.time + cuttingTime;
 
             if (newTime < core.getEndTime()) {
 
                 targetWorkerForCuttingAgain.getUtilisation().start(this.time);
                 nextOrder.setQueueCuttingLeaveTime(this.time);
-                nextOrder.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
+                nextOrder.setState(OrderStateValues.ACCESSING_NEW_ORDER.getValue());
                 targetWorkerForCuttingAgain.setOrder(nextOrder, this.time);
-                core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForCuttingAgain));
+                core.addEvent(new EndOfAccessingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, nextOrder, targetWorkerForCuttingAgain));
             }
         }
     }

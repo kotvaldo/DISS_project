@@ -69,14 +69,14 @@ public class OrderArrivalEvent extends Event {
                 orderToProcess = order;
             }
 
-            double timeOfEvent = Utility.calculateCuttingTime(orderToProcess, core, targetWorker);
+            double timeOfEvent = Utility.calculateAccessingTime(core);
             double newTime = time + timeOfEvent;
 
             if (newTime < core.getEndTime()) {
                 targetWorker.getUtilisation().start(this.time);
-                orderToProcess.setState(OrderStateValues.PROCESSING_CUTTING.getValue());
+                orderToProcess.setState(OrderStateValues.ACCESSING_NEW_ORDER.getValue());
                 targetWorker.setOrder(orderToProcess, this.time);
-                core.addEvent(new EndOfCuttingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorker));
+                core.addEvent(new EndOfAccessingEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), this.simulationCore, orderToProcess, targetWorker));
             }
 
         } else {
@@ -87,10 +87,5 @@ public class OrderArrivalEvent extends Event {
         }
 
 
-        double arrivalTimeOffset = core.getGenerators().getOrderArrivalDist().sample();
-        double newTime = this.time + arrivalTimeOffset;
-        if (newTime < core.getEndTime()) {
-            core.addEvent(new OrderArrivalEvent(newTime, PriorityValues.BASIC_EVENT.getValue(), simulationCore));
-        }
     }
 }

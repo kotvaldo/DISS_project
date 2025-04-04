@@ -4,6 +4,7 @@ import Furniture.Entity.Order;
 import Furniture.Entity.WorkPlace;
 import Furniture.Entity.Worker;
 import Furniture.FurnitureEventCore;
+import SimulationCore.SimulationCore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +27,11 @@ public class Utility {
         ArrayList<Integer> trimmedList = new ArrayList<>(sortedList.subList(trimCount, sortedList.size() - trimCount));
 
         return (int) trimmedList.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+
+    public static double calculateAccessingTime(FurnitureEventCore simulationCore) {
+
+        return simulationCore.getGenerators().getAccessingOrderDist().sample();
     }
 
     public static double calculateCuttingTime(Order order, FurnitureEventCore core, Worker worker) {

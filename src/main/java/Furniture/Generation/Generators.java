@@ -21,7 +21,10 @@ public class Generators {
     private final Triangular timeSpentInStorageDist;
     private final Triangular timeMovingIntoStorageDist;
     private final Triangular timeMovingToAnotherWorkshopDist;
+    private final Triangular accessingOrderDist;
+
     public Generators() {
+        this.accessingOrderDist = new Triangular(2.0 * 60, 8.0 * 60, 4.0 *60);
 
 
         Random rand = new Random();
@@ -60,7 +63,11 @@ public class Generators {
         timeMovingIntoStorageDist = new Triangular(60.0, 480.0, 120.0, rand.nextInt());
         timeSpentInStorageDist = new Triangular(300.0, 900.0, 500.0, rand.nextInt());
         timeMovingToAnotherWorkshopDist = new Triangular(120.0, 500.0, 150.0, rand.nextInt());
+
+
+
     }
+
 
     public Exponential getOrderArrivalDist() {
         return orderArrivalDist;
@@ -120,5 +127,9 @@ public class Generators {
 
     public Triangular getTimeMovingToAnotherWorkshopDist() {
         return timeMovingToAnotherWorkshopDist;
+    }
+
+    public Triangular getAccessingOrderDist() {
+        return accessingOrderDist;
     }
 }

@@ -9,7 +9,8 @@ public enum OrderStateValues {
     PROCESSING_ASSEMBLY(6),
     PROCESSING_MONTAGE(7),
     WAITING_IN_QUEUE_4(8),
-    ORDER_DONE(9);
+    ORDER_DONE(9),
+    ACCESSING_NEW_ORDER(10);
 
     private final Integer value;
 
